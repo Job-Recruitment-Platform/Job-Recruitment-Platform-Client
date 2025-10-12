@@ -30,9 +30,7 @@ export default function AuthLayout({
             {/*  Show Form Here  */}
             {children}
 
-            <div className='text-center text-sm text-gray-500'>
-               Hoặc {isLoginPage ? 'đăng nhập' : 'đăng ký'} bằng
-            </div>
+            <div className='text-center text-sm text-gray-500'>Hoặc đăng nhập bằng</div>
 
             {/*  Social Login  */}
             <div className='grid grid-cols-3 gap-x-3'>
