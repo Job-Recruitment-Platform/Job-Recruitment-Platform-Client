@@ -1,4 +1,3 @@
-
 export interface LoginType {
    email: string
    password: string
@@ -34,8 +33,16 @@ export interface RegisterResponseData {
 
 export interface LoginResponseData {
    accessToken: string
-   refreshToken?: string
-   user: UserData
+   refreshToken: string
+}
+
+export interface RefreshTokenRequest {
+   refreshToken: string
+}
+
+export interface RefreshTokenResponseData {
+   accessToken: string
+   refreshToken: string
 }
 
 export interface AuthUser {

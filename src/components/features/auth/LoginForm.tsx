@@ -4,8 +4,12 @@ import EmailFormField from '@/components/features/auth/EmailFormField'
 import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
 import FormWrapper from '@/components/shared/FormWrapper'
+import { showErrorToast, showSuccessToast } from '@/lib/toast'
+import { authService } from '@/services/auth.service'
 import type { LoginType } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -22,6 +26,9 @@ type LoginFormProps = {
 }
 
 export default function LoginForm({ className }: LoginFormProps) {
+   const router = useRouter()
+   const [isLoading, setIsLoading] = useState(false)
+
    const form = useForm<LoginType>({
       resolver: zodResolver(loginSchema),
       defaultValues: {
@@ -30,12 +37,30 @@ export default function LoginForm({ className }: LoginFormProps) {
       }
    })
 
-   const onSubmit = (data: LoginType) => {
-      console.log('=== LOGIN FORM DATA ===')
-      console.log('Email:', data.email)
-      console.log('Password:', data.password)
-      console.log('Full data:', data)
-      console.log('=====================')
+   const onSubmit = async (data: LoginType) => {
+      try {
+         setIsLoading(true)
+
+         await authService.login(data)
+
+         showSuccessToast('Đăng nhập thành công!')
+
+         // Reset form
+         form.reset()
+
+         // Redirect to home after 1.5 seconds
+         setTimeout(() => {
+            router.push('/home')
+         }, 1500)
+      } catch (error) {
+         if (error instanceof Error) {
+            showErrorToast(error.message)
+         } else {
+            showErrorToast('Đăng nhập thất bại. Vui lòng thử lại!')
+         }
+      } finally {
+         setIsLoading(false)
+      }
    }
 
    return (
@@ -48,8 +73,8 @@ export default function LoginForm({ className }: LoginFormProps) {
             <PasswordFormField control={form.control} name='password' placeholder='Nhập mật khẩu' />
 
             {/* Submit Button */}
-            <Button type='submit' variant='primary' className='w-full py-2.5'>
-               Đăng nhập
+            <Button type='submit' variant='primary' className='w-full py-2.5' disabled={isLoading}>
+               {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </Button>
          </FormWrapper>
       </div>
