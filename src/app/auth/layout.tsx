@@ -1,3 +1,5 @@
+import Button from '@/components/shared/Button'
+import { FacebookIcon, LinkedinIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -11,25 +13,36 @@ export default function AuthLayout({
    children: React.ReactNode
 }>) {
    return (
-      <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900'>
-         <div className='w-full max-w-md px-4 py-8'>
-            {/* Logo/Brand Section */}
-            <div className='mb-8 text-center'>
-               <h1 className='text-3xl font-bold text-slate-900 dark:text-slate-100'>
-                  Dev Hiring Portal
-               </h1>
-               <p className='mt-2 text-sm text-slate-600 dark:text-slate-400'>
-                  Find your next developer role
-               </p>
+      <div className='flex min-h-screen w-full items-center justify-center'>
+         <div className='h-fit w-[650px] space-y-4 rounded-md border p-5'>
+            <div className='space-y-1.5'>
+               <div className='text-primary text-xl font-semibold'>Đăng nhập</div>
+               <div className='text-sm text-gray-500'>
+                  Cùng xây dựng một hồ sơ nổi bật và nhận được các cơ hội sự nghiệp lý tưởng
+               </div>
             </div>
-
-            {/* Auth Form Container */}
-            <div className='rounded-lg bg-white p-8 shadow-xl dark:bg-slate-800'>{children}</div>
-
-            {/* Footer Text */}
-            <p className='mt-6 text-center text-xs text-slate-500 dark:text-slate-400'>
-               © {new Date().getFullYear()} Dev Hiring Portal. All rights reserved.
-            </p>
+            {children}
+            <div className='text-center text-sm text-gray-500'>Hoặc đăng nhập bằng</div>
+            {/*  Social Login  */}
+            <div className='grid grid-cols-3 gap-x-3'>
+               <Button variant='primary' className='w-full !bg-[#e73b2f] py-2.5'>
+                  Google
+               </Button>
+               <Button variant='primary' className='w-full !bg-[#1877f2] py-2.5'>
+                  <FacebookIcon color='white' fill='white' size={16} />
+                  Facebook
+               </Button>
+               <Button variant='primary' className='w-full !bg-[#0a66c2] py-2.5'>
+                  <LinkedinIcon color='white' fill='white' size={16} />
+                  LinkedIn
+               </Button>
+            </div>
+            <div className='text-center text-sm'>
+               Bạn chưa có tài khoản?{' '}
+               <a href='/auth/register' className='text-primary'>
+                  Đăng kí ngay
+               </a>
+            </div>
          </div>
       </div>
    )

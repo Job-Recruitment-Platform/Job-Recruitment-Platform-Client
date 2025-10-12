@@ -19,7 +19,7 @@ export default function FormWrapper<TFieldValues extends FieldValues>({
          <Form {...form}>
             <form
                onSubmit={form.handleSubmit(onSubmit)}
-               className={`flex w-full flex-col gap-y-4 ${className || ''}`}
+               className={`flex w-full flex-col gap-y-3 ${className || ''}`}
             >
                {children}
             </form>
