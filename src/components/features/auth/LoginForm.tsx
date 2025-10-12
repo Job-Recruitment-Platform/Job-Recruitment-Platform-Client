@@ -1,8 +1,8 @@
 'use client'
 
-import EmailFormField from '@/components/features/auth/EmailFormField'
 import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
+import EmailFormField from '@/components/shared/EmailFormField'
 import FormWrapper from '@/components/shared/FormWrapper'
 import { useAuth } from '@/contexts/AuthContext'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
