@@ -68,9 +68,7 @@ export default function RegisterForm({ className }: RegisterFormProps) {
          const response = await authService.registerCandidate(registerData)
 
          // Show success toast
-         showSuccessToast(
-            `${response.message}\nEmail: ${response.data.email}\nTrạng thái: ${response.data.status}`
-         )
+         showSuccessToast('Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.')
 
          // Reset form
          form.reset()
@@ -90,7 +88,7 @@ export default function RegisterForm({ className }: RegisterFormProps) {
          }
 
          // Show error toast
-         showErrorToast(errorMessage)
+         showErrorToast(errorMessage, { id: 'register-error' })
       } finally {
          setIsLoading(false)
       }
