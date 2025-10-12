@@ -1,3 +1,4 @@
+
 export interface LoginType {
    email: string
    password: string
@@ -9,7 +10,38 @@ export interface RegisterType {
    password: string
 }
 
-// Type cho form (bao gồm confirmPassword để validate UI)
 export interface RegisterFormType extends RegisterType {
    confirmPassword: string
+}
+
+export interface UserData {
+   id: number
+   email: string
+   roleName: 'CANDIDATE' | 'RECRUITER' | 'ADMIN'
+   status: 'ACTIVE' | 'INACTIVE' | 'BANNED'
+   provider: 'LOCAL' | 'GOOGLE' | 'FACEBOOK' | 'LINKEDIN'
+   dateCreated: string
+}
+
+export interface RegisterResponseData {
+   id: number
+   email: string
+   roleName: string
+   status: string
+   provider: string
+   dateCreated: string
+}
+
+export interface LoginResponseData {
+   accessToken: string
+   refreshToken?: string
+   user: UserData
+}
+
+export interface AuthUser {
+   id: number
+   email: string
+   fullName?: string
+   role: string
+   status: string
 }
