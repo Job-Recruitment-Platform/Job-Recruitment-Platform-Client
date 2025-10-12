@@ -6,6 +6,7 @@ import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
 import FormWrapper from '@/components/shared/FormWrapper'
 import { ApiError } from '@/lib/axios'
+import { showErrorToast, showSuccessToast } from '@/lib/toast'
 import { authService } from '@/services/auth.service'
 import type { RegisterFormType } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -44,7 +45,6 @@ type RegisterFormProps = {
 export default function RegisterForm({ className }: RegisterFormProps) {
    const router = useRouter()
    const [isLoading, setIsLoading] = useState(false)
-   const [error, setError] = useState<string | null>(null)
 
    const form = useForm<RegisterFormType>({
       resolver: zodResolver(registerSchema),
@@ -59,45 +59,38 @@ export default function RegisterForm({ className }: RegisterFormProps) {
    const onSubmit = async (data: RegisterFormType) => {
       try {
          setIsLoading(true)
-         setError(null)
 
          // Loại bỏ confirmPassword trước khi gửi lên server
          // eslint-disable-next-line @typescript-eslint/no-unused-vars
          const { confirmPassword, ...registerData } = data
 
-         console.log('🚀 Sending register request...')
-         console.log('Data:', registerData)
-
          // Call API register
          const response = await authService.registerCandidate(registerData)
 
-         console.log('✅ Register success!')
-         console.log('Response:', response)
-
-         // Hiển thị thông báo thành công
-         alert(
-            `${response.message}\n\nEmail: ${response.data.email}\nRole: ${response.data.roleName}\nStatus: ${response.data.status}`
+         // Show success toast
+         showSuccessToast(
+            `${response.message}\nEmail: ${response.data.email}\nTrạng thái: ${response.data.status}`
          )
 
          // Reset form
          form.reset()
 
-         // Redirect về trang login sau 1s
+         // Redirect về trang login sau 2s
          setTimeout(() => {
             router.push('/auth/login')
-         }, 1000)
+         }, 2000)
       } catch (err) {
-         console.error('❌ Register failed!')
-         console.error('Error:', err)
-
          // Handle error
+         let errorMessage = 'Đã có lỗi xảy ra. Vui lòng thử lại.'
+
          if (err instanceof ApiError) {
-            setError(err.message || 'Đăng ký thất bại. Vui lòng thử lại.')
+            errorMessage = err.message || 'Đăng ký thất bại. Vui lòng thử lại.'
          } else if (err instanceof Error) {
-            setError(err.message)
-         } else {
-            setError('Đã có lỗi xảy ra. Vui lòng thử lại.')
+            errorMessage = err.message
          }
+
+         // Show error toast
+         showErrorToast(errorMessage)
       } finally {
          setIsLoading(false)
       }
@@ -106,13 +99,6 @@ export default function RegisterForm({ className }: RegisterFormProps) {
    return (
       <div className={`${className} w-full`}>
          <FormWrapper form={form} onSubmit={onSubmit} className='space-y-1'>
-            {/* Error Alert */}
-            {error && (
-               <div className='rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600'>
-                  <strong>Lỗi:</strong> {error}
-               </div>
-            )}
-
             {/* Full Name Field */}
             <FullNameFormField
                control={form.control}
