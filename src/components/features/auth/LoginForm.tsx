@@ -4,8 +4,8 @@ import EmailFormField from '@/components/features/auth/EmailFormField'
 import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
 import FormWrapper from '@/components/shared/FormWrapper'
+import { useAuth } from '@/contexts/AuthContext'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
-import { authService } from '@/services/auth.service'
 import type { LoginType } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -27,6 +27,7 @@ type LoginFormProps = {
 
 export default function LoginForm({ className }: LoginFormProps) {
    const router = useRouter()
+   const { login: authLogin } = useAuth()
    const [isLoading, setIsLoading] = useState(false)
 
    const form = useForm<LoginType>({
@@ -41,7 +42,7 @@ export default function LoginForm({ className }: LoginFormProps) {
       try {
          setIsLoading(true)
 
-         await authService.login(data)
+         await authLogin(data)
 
          showSuccessToast('Đăng nhập thành công!')
 

@@ -1,5 +1,6 @@
 import Footer from '@/components/shared/Footer'
 import Header from '@/components/shared/Header'
+import { AuthProvider } from '@/contexts/AuthContext'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
@@ -28,52 +29,54 @@ export default function RootLayout({
    return (
       <html lang='en'>
          <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-            <Header />
-            {children}
-            <Footer />
+            <AuthProvider>
+               <Header />
+               {children}
+               <Footer />
 
-            {/* Toast Configuration - Anti-spam via Map-based tracking system */}
-            <Toaster
-               position='top-right'
-               reverseOrder={false}
-               gutter={8}
-               toastOptions={{
-                  // Default options
-                  duration: 4000,
-                  style: {
-                     background: '#363636',
-                     color: '#fff',
-                     padding: '16px',
-                     borderRadius: '8px',
-                     fontSize: '14px',
-                     fontWeight: '500',
-                     maxWidth: '500px'
-                  },
-                  // Success
-                  success: {
+               {/* Toast Configuration - Anti-spam via Map-based tracking system */}
+               <Toaster
+                  position='top-right'
+                  reverseOrder={false}
+                  gutter={8}
+                  toastOptions={{
+                     // Default options
                      duration: 4000,
-                     iconTheme: {
-                        primary: '#10b981',
-                        secondary: '#fff'
+                     style: {
+                        background: '#363636',
+                        color: '#fff',
+                        padding: '16px',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        maxWidth: '500px'
+                     },
+                     // Success
+                     success: {
+                        duration: 4000,
+                        iconTheme: {
+                           primary: '#10b981',
+                           secondary: '#fff'
+                        }
+                     },
+                     // Error
+                     error: {
+                        duration: 5000,
+                        iconTheme: {
+                           primary: '#ef4444',
+                           secondary: '#fff'
+                        }
+                     },
+                     // Loading
+                     loading: {
+                        iconTheme: {
+                           primary: '#3b82f6',
+                           secondary: '#fff'
+                        }
                      }
-                  },
-                  // Error
-                  error: {
-                     duration: 5000,
-                     iconTheme: {
-                        primary: '#ef4444',
-                        secondary: '#fff'
-                     }
-                  },
-                  // Loading
-                  loading: {
-                     iconTheme: {
-                        primary: '#3b82f6',
-                        secondary: '#fff'
-                     }
-                  }
-               }}
-            />
+                  }}
+               />
+            </AuthProvider>
          </body>
       </html>
    )

@@ -5,9 +5,9 @@ import FullNameFormField from '@/components/features/auth/FullNameFormField'
 import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
 import FormWrapper from '@/components/shared/FormWrapper'
+import { useAuth } from '@/contexts/AuthContext'
 import { ApiError } from '@/lib/axios'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
-import { authService } from '@/services/auth.service'
 import type { RegisterFormType } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -44,6 +44,7 @@ type RegisterFormProps = {
 
 export default function RegisterForm({ className }: RegisterFormProps) {
    const router = useRouter()
+   const { register: authRegister } = useAuth()
    const [isLoading, setIsLoading] = useState(false)
 
    const form = useForm<RegisterFormType>({
@@ -65,7 +66,7 @@ export default function RegisterForm({ className }: RegisterFormProps) {
          const { confirmPassword, ...registerData } = data
 
          // Call API register
-         const response = await authService.registerCandidate(registerData)
+         await authRegister(registerData)
 
          // Show success toast
          showSuccessToast('Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.')
