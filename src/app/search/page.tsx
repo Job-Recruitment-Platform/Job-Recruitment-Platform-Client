@@ -1,4 +1,6 @@
-import JobSearchItem from "@/components/features/job/JobSearchItem"
+import JobSearchItem from '@/components/features/job/JobSearchItem'
+import RadioFilter from '@/components/ui/radio-filter'
+import { experienceOptions } from '@/types/data'
 
 export default function SearchResultsPage() {
    return (
@@ -6,10 +8,18 @@ export default function SearchResultsPage() {
          <div className='container flex gap-x-2 px-2'>
             <div className='w-[295px]'>
                <div className='w-full text-center'>Lọc nâng cao</div>
-               <div></div>
+               <div>
+                  <RadioFilter header='Kinh nghiệm' columns={2} options={experienceOptions} />
+                  <RadioFilter header='Kinh nghiệm' columns={2} options={experienceOptions} />
+                  <RadioFilter header='Kinh nghiệm' columns={2} options={experienceOptions} />
+               </div>
             </div>
-            <div className='flex-1'>
-               <JobSearchItem />
+            <div className='flex-1 space-y-3'>
+               {Array(7)
+                  .fill(0)
+                  .map((_, index) => (
+                     <JobSearchItem key={index} />
+                  ))}
             </div>
          </div>
       </div>
