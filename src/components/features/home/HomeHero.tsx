@@ -1,3 +1,4 @@
+import CategoryMenu from '@/components/features/category/category-menu/CategoryMenu'
 import SearchBar from '@/components/features/home/searchbar/SearchBar'
 
 export default function HomeHero() {
@@ -16,7 +17,9 @@ export default function HomeHero() {
             <SearchBar />
             {/*  category & category list  */}
             <div className='flex h-[288px] items-stretch gap-x-2'>
-               <div className='flex-1/3'></div>
+               <div className='flex-1/3'>
+                  <CategoryMenu />
+               </div>
                <div className='flex-2/3'></div>
             </div>
          </div>
