@@ -1,4 +1,5 @@
 import CategoryItem from '@/components/features/category/category-menu/CategoryItem'
+import Pagination from '@/components/ui/pagination'
 
 type CategoryMenuProps = {
    className?: string
@@ -6,8 +7,10 @@ type CategoryMenuProps = {
 
 export default function CategoryMenu({ className }: CategoryMenuProps) {
    return (
-      <div className={`flex w-full flex-col rounded-md pt-2.5 bg-white text-black ${className}`}>
-         <div className='flex-1 pl-5'>
+      <div
+         className={`flex h-[270px] w-full flex-col rounded-md bg-white pt-2.5 text-black ${className}`}
+      >
+         <div className='flex flex-1 flex-col justify-evenly pl-5'>
             <CategoryItem item='Công nghệ thông tin' />
             <CategoryItem item='Kinh doanh' />
             <CategoryItem item='Tiếp thị' />
@@ -16,7 +19,10 @@ export default function CategoryMenu({ className }: CategoryMenuProps) {
             <CategoryItem item='Tiếp thị' />
          </div>
          {/*  Pagination  */}
-         <div className='h-[27px] w-full border'></div>
+         <div className='flex h-[40px] w-full items-center justify-between border-t pr-3 pl-5'>
+            <div className='text-sm font-semibold text-gray-400'>1/5</div>
+            <Pagination className='!gap-x-2' />
+         </div>
       </div>
    )
 }
