@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import React, { createContext, useContext } from 'react'
 
 /** small cx helper (tránh cài clsx) */
@@ -42,23 +41,18 @@ export const Body = ({ children, className }: WithChildren) => (
 )
 
 export const Footer = ({ children, className }: WithChildren) => (
-   <div className={cx('flex items-center justify-between', className)}>{children}</div>
+   <div className={cx('flex items-center', className)}>{children}</div>
 )
 
 export function Logo({
    src,
    alt = 'Company logo',
    className
-}: { src?: string; alt?: string } & WithChildren) {
+}: { src?: string; alt?: string; width?: number; height?: number } & WithChildren) {
    return (
-      <Image
-         width={120}
-         height={120}
-         src={src || ''}
-         alt={alt}
-         loading='lazy'
-         className='rounded-lg border object-cover p-2'
-      />
+      <div className={cx('rounded-lg border p-1', className)}>
+         <img src={src} alt={alt} className={cx('h-full w-full object-cover')} />
+      </div>
    )
 }
 

@@ -125,6 +125,10 @@
    h4 {
       @apply !text-[18px] leading-6 font-semibold;
    }
+
+   h2 {
+      @apply text-2xl font-bold;
+   }
 }
 
 @layer utilities {
