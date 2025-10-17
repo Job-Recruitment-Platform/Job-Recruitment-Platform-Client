@@ -1,3 +1,9 @@
+import HomeHero from '@/components/features/home/HomeHero'
+
 export default function Home() {
-   return <div className='text-red-500 underline'>Hello World</div>
+   return (
+      <div className='w-full'>
+         <HomeHero />
+      </div>
+   )
 }

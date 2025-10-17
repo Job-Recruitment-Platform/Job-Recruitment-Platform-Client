@@ -6,7 +6,7 @@ type CategoryItemProps = {
 
 export default function CategoryItem({ item }: CategoryItemProps) {
    return (
-      <div className='group flex w-full text-white items-center justify-between py-2 pr-2'>
+      <div className='group flex w-full items-center justify-between py-2 pr-2 text-black'>
          <span className='group-hover:text-primary text-sm font-medium'>{item}</span>
          <ChevronRightIcon size={16} className='group-hover:text-primary' />
       </div>
