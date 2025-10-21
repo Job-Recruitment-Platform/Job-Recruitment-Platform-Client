@@ -1,15 +1,15 @@
 'use client'
 
 import { authService } from '@/services/auth.service'
-import type { LoginType, RegisterType } from '@/types/auth.type'
+import type { LoginRequest, RegisterRequest } from '@/types/auth.type'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
 interface AuthContextType {
    isLogin: boolean
    isLoading: boolean
-   login: (data: LoginType) => Promise<void>
+   login: (data: LoginRequest) => Promise<void>
    logout: () => Promise<void>
-   register: (data: RegisterType) => Promise<void>
+   register: (data: RegisterRequest) => Promise<void>
    checkAuth: () => void
 }
 
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(false)
    }, [])
 
-   const login = async (data: LoginType) => {
+   const login = async (data: LoginRequest) => {
       await authService.login(data)
       setIsLogin(true)
    }
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLogin(false)
    }
 
-   const register = async (data: RegisterType) => {
+   const register = async (data: RegisterRequest) => {
       await authService.registerCandidate(data)
       // Don't auto login after register
    }

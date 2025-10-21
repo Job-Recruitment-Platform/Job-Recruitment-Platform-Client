@@ -20,7 +20,7 @@ export class ApiError extends Error {
 }
 
 // Create axios instance
-const axiosInstance: AxiosInstance = axios.create({
+const apiClient: AxiosInstance = axios.create({
    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
    timeout: 30000, // 30 seconds
    headers: {
@@ -48,7 +48,7 @@ const processQueue = (error: Error | null = null) => {
 }
 
 // Request interceptor
-axiosInstance.interceptors.request.use(
+apiClient.interceptors.request.use(
    (config: InternalAxiosRequestConfig) => {
       // Get token from localStorage (nếu có)
       if (typeof window !== 'undefined') {
@@ -66,7 +66,7 @@ axiosInstance.interceptors.request.use(
 )
 
 // Response interceptor
-axiosInstance.interceptors.response.use(
+apiClient.interceptors.response.use(
    (response) => {
       return response
    },
@@ -95,7 +95,7 @@ axiosInstance.interceptors.response.use(
                failedQueue.push({ resolve, reject })
             })
                .then(() => {
-                  return axiosInstance(originalRequest)
+                  return apiClient(originalRequest)
                })
                .catch((err) => {
                   return Promise.reject(err)
@@ -115,7 +115,7 @@ axiosInstance.interceptors.response.use(
             // Call refresh token API
             const response = await axios.post<
                ApiResponse<{ accessToken: string; refreshToken: string }>
-            >(`${axiosInstance.defaults.baseURL}/auth/refresh`, {
+            >(`${apiClient.defaults.baseURL}/auth/refresh`, {
                refreshToken
             })
 
@@ -131,7 +131,7 @@ axiosInstance.interceptors.response.use(
             }
 
             processQueue(null)
-            return axiosInstance(originalRequest)
+            return apiClient(originalRequest)
          } catch {
             processQueue(new Error('Token refresh failed'))
 
@@ -170,4 +170,4 @@ axiosInstance.interceptors.response.use(
    }
 )
 
-export default axiosInstance
+export default apiClient

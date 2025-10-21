@@ -1,50 +1,46 @@
-export interface LoginType {
+/**
+ * Authentication Request Types
+ */
+export interface LoginRequest {
    email: string
    password: string
 }
 
-export interface RegisterType {
+export interface RegisterRequest {
    email: string
    fullName: string
    password: string
 }
 
-export interface RegisterFormType extends RegisterType {
+export interface RegisterFormRequest extends RegisterRequest {
    confirmPassword: string
-}
-
-export interface UserData {
-   id: number
-   email: string
-   roleName: 'CANDIDATE' | 'RECRUITER' | 'ADMIN'
-   status: 'ACTIVE' | 'INACTIVE' | 'BANNED'
-   provider: 'LOCAL' | 'GOOGLE' | 'FACEBOOK' | 'LINKEDIN'
-   dateCreated: string
-}
-
-export interface RegisterResponseData {
-   id: number
-   email: string
-   roleName: string
-   status: string
-   provider: string
-   dateCreated: string
-}
-
-export interface LoginResponseData {
-   accessToken: string
-   refreshToken: string
 }
 
 export interface RefreshTokenRequest {
    refreshToken: string
 }
 
-export interface RefreshTokenResponseData {
+/**
+ * Authentication Response Types
+ */
+export interface TokenResponse {
    accessToken: string
    refreshToken: string
 }
 
+export interface UserResponse {
+   id: number
+   email: string
+   fullName?: string
+   roleName: 'CANDIDATE' | 'RECRUITER' | 'ADMIN'
+   status: 'ACTIVE' | 'INACTIVE' | 'BANNED'
+   provider: 'LOCAL' | 'GOOGLE' | 'FACEBOOK' | 'LINKEDIN'
+   dateCreated: string
+}
+
+/**
+ * Internal authentication state
+ */
 export interface AuthUser {
    id: number
    email: string

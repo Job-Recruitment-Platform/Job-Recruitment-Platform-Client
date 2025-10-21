@@ -8,7 +8,7 @@ import FullNameFormField from '@/components/shared/FullNameFormField'
 import { useAuth } from '@/contexts/AuthContext'
 import { ApiError } from '@/lib/axios'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
-import type { RegisterFormType } from '@/types/auth.type'
+import type { RegisterFormRequest } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -47,7 +47,7 @@ export default function RegisterForm({ className }: RegisterFormProps) {
    const { register: authRegister } = useAuth()
    const [isLoading, setIsLoading] = useState(false)
 
-   const form = useForm<RegisterFormType>({
+   const form = useForm<RegisterFormRequest>({
       resolver: zodResolver(registerSchema),
       defaultValues: {
          fullName: '',
@@ -57,29 +57,29 @@ export default function RegisterForm({ className }: RegisterFormProps) {
       }
    })
 
-   const onSubmit = async (data: RegisterFormType) => {
+   const onSubmit = async (data: RegisterFormRequest) => {
       try {
          setIsLoading(true)
 
-         // Loại bỏ confirmPassword trước khi gửi lên server
+         // Remove confirmPassword before sending to server
          // eslint-disable-next-line @typescript-eslint/no-unused-vars
          const { confirmPassword, ...registerData } = data
 
-         // Call API register
+         // Call register API
          await authRegister(registerData)
 
-         // Show success toast
+         // Show success notification
          showSuccessToast('Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.')
 
-         // Reset form
+         // Clear form after successful registration
          form.reset()
 
-         // Redirect về trang login sau 2s
+         // Redirect to login page after 2 seconds
          setTimeout(() => {
             router.push('/auth/login')
          }, 2000)
       } catch (err) {
-         // Handle error
+         // Handle registration error
          let errorMessage = 'Đã có lỗi xảy ra. Vui lòng thử lại.'
 
          if (err instanceof ApiError) {
@@ -88,7 +88,7 @@ export default function RegisterForm({ className }: RegisterFormProps) {
             errorMessage = err.message
          }
 
-         // Show error toast
+         // Show error notification
          showErrorToast(errorMessage, { id: 'register-error' })
       } finally {
          setIsLoading(false)
@@ -98,20 +98,20 @@ export default function RegisterForm({ className }: RegisterFormProps) {
    return (
       <div className={`${className} w-full`}>
          <FormWrapper form={form} onSubmit={onSubmit} className='space-y-1'>
-            {/* Full Name Field */}
+            {/* Full name input field */}
             <FullNameFormField
                control={form.control}
                name='fullName'
                placeholder='Nhập họ và tên'
             />
 
-            {/* Email Field */}
+            {/* Email input field */}
             <EmailFormField control={form.control} name='email' placeholder='Nhập email' />
 
-            {/* Password Field */}
+            {/* Password input field */}
             <PasswordFormField control={form.control} name='password' placeholder='Nhập mật khẩu' />
 
-            {/* Confirm Password Field */}
+            {/* Password confirmation input field */}
             <PasswordFormField
                control={form.control}
                name='confirmPassword'
@@ -119,7 +119,7 @@ export default function RegisterForm({ className }: RegisterFormProps) {
                placeholder='Nhập lại mật khẩu'
             />
 
-            {/* Submit Button */}
+            {/* Register submit button */}
             <Button type='submit' variant='primary' className='w-full py-2.5' disabled={isLoading}>
                {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
             </Button>

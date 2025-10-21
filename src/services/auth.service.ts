@@ -1,103 +1,85 @@
-import axiosInstance, { type ApiResponse } from '@/lib/axios'
-import type {
-   LoginResponseData,
-   LoginType,
-   RefreshTokenResponseData,
-   RegisterResponseData,
-   RegisterType
-} from '@/types/auth.type'
+import type { ApiResponse } from '@/lib/axios'
+import { BaseService } from '@/services/base.service'
+import type { LoginRequest, RegisterRequest, TokenResponse, UserResponse } from '@/types/auth.type'
 
-class AuthService {
-   private readonly BASE_PATH = '/auth'
-
-   /**
-    * Register new candidate
-    * POST /auth/register/candidate
-    */
-   async registerCandidate(data: RegisterType): Promise<ApiResponse<RegisterResponseData>> {
-      const response = await axiosInstance.post<ApiResponse<RegisterResponseData>>(
-         `${this.BASE_PATH}/register/candidate`,
-         data
-      )
-      return response.data
+/**
+ * Authentication Service
+ * Handles all auth-related API calls and token management
+ */
+class AuthService extends BaseService {
+   constructor() {
+      super('/auth')
    }
 
    /**
-    * Login user
-    * POST /auth/login
+    * Register a new candidate
     */
-   async login(data: LoginType): Promise<ApiResponse<LoginResponseData>> {
-      const response = await axiosInstance.post<ApiResponse<LoginResponseData>>(
-         `${this.BASE_PATH}/login`,
-         data
-      )
+   async registerCandidate(payload: RegisterRequest): Promise<ApiResponse<UserResponse>> {
+      return this.post<UserResponse>('/register/candidate', payload)
+   }
 
-      // Save tokens to localStorage
-      const { accessToken, refreshToken } = response.data.data
-      if (accessToken) {
-         localStorage.setItem('accessToken', accessToken)
-      }
-      if (refreshToken) {
-         localStorage.setItem('refreshToken', refreshToken)
-      }
-
-      return response.data
+   /**
+    * Login user and save tokens
+    */
+   async login(payload: LoginRequest): Promise<ApiResponse<TokenResponse>> {
+      const response = await this.post<TokenResponse>('/login', payload)
+      this.saveTokens(response.data)
+      return response
    }
 
    /**
     * Logout user
-    * POST /auth/logout
     */
    async logout(): Promise<void> {
       try {
-         await axiosInstance.post(`${this.BASE_PATH}/logout`)
+         await this.post('/logout')
       } finally {
-         // Clear tokens regardless of API response
          this.clearTokens()
       }
    }
 
    /**
-    * Get current user
-    * GET /auth/me
+    * Get current authenticated user
     */
-   async getCurrentUser(): Promise<ApiResponse<RegisterResponseData>> {
-      const response = await axiosInstance.get<ApiResponse<RegisterResponseData>>(
-         `${this.BASE_PATH}/me`
-      )
-      return response.data
+   async getCurrentUser(): Promise<ApiResponse<UserResponse>> {
+      return this.get<UserResponse>('/me')
    }
 
    /**
-    * Refresh token
-    * POST /auth/refresh
+    * Refresh access token
     */
-   async refreshToken(): Promise<ApiResponse<RefreshTokenResponseData>> {
-      const currentRefreshToken = this.getRefreshToken()
+   async refreshToken(): Promise<ApiResponse<TokenResponse>> {
+      const refreshToken = this.getRefreshToken()
 
-      if (!currentRefreshToken) {
+      if (!refreshToken) {
          throw new Error('No refresh token available')
       }
 
-      const response = await axiosInstance.post<ApiResponse<RefreshTokenResponseData>>(
-         `${this.BASE_PATH}/refresh`,
-         { refreshToken: currentRefreshToken }
-      )
+      const response = await this.post<TokenResponse>('/refresh', {
+         refreshToken
+      })
 
-      // Update both tokens
-      const { accessToken, refreshToken } = response.data.data
-      if (accessToken) {
-         localStorage.setItem('accessToken', accessToken)
-      }
-      if (refreshToken) {
-         localStorage.setItem('refreshToken', refreshToken)
-      }
-
-      return response.data
+      this.saveTokens(response.data)
+      return response
    }
 
    /**
-    * Clear all tokens
+    * Token management - Private methods
+    */
+
+   private saveTokens(tokens: TokenResponse): void {
+      if (typeof window === 'undefined') return
+
+      if (tokens.accessToken) {
+         localStorage.setItem('accessToken', tokens.accessToken)
+      }
+      if (tokens.refreshToken) {
+         localStorage.setItem('refreshToken', tokens.refreshToken)
+      }
+   }
+
+   /**
+    * Clear all stored tokens
     */
    clearTokens(): void {
       if (typeof window === 'undefined') return
@@ -110,11 +92,11 @@ class AuthService {
     */
    isAuthenticated(): boolean {
       if (typeof window === 'undefined') return false
-      return !!localStorage.getItem('accessToken')
+      return !!this.getAccessToken()
    }
 
    /**
-    * Get access token
+    * Get stored access token
     */
    getAccessToken(): string | null {
       if (typeof window === 'undefined') return null
@@ -122,7 +104,7 @@ class AuthService {
    }
 
    /**
-    * Get refresh token
+    * Get stored refresh token
     */
    getRefreshToken(): string | null {
       if (typeof window === 'undefined') return null

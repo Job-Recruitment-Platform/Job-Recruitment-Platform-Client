@@ -6,7 +6,7 @@ import EmailFormField from '@/components/shared/EmailFormField'
 import FormWrapper from '@/components/shared/FormWrapper'
 import { useAuth } from '@/contexts/AuthContext'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
-import type { LoginType } from '@/types/auth.type'
+import type { LoginRequest } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -30,7 +30,7 @@ export default function LoginForm({ className }: LoginFormProps) {
    const { login: authLogin } = useAuth()
    const [isLoading, setIsLoading] = useState(false)
 
-   const form = useForm<LoginType>({
+   const form = useForm<LoginRequest>({
       resolver: zodResolver(loginSchema),
       defaultValues: {
          email: '',
@@ -38,7 +38,7 @@ export default function LoginForm({ className }: LoginFormProps) {
       }
    })
 
-   const onSubmit = async (data: LoginType) => {
+   const onSubmit = async (data: LoginRequest) => {
       try {
          setIsLoading(true)
 
@@ -46,7 +46,7 @@ export default function LoginForm({ className }: LoginFormProps) {
 
          showSuccessToast('Đăng nhập thành công!')
 
-         // Reset form
+         // Clear form after successful login
          form.reset()
 
          // Redirect to home after 1.5 seconds
@@ -67,13 +67,13 @@ export default function LoginForm({ className }: LoginFormProps) {
    return (
       <div className={`${className} w-full`}>
          <FormWrapper form={form} onSubmit={onSubmit} className='space-y-1'>
-            {/* Email Field */}
+            {/* Email input field */}
             <EmailFormField control={form.control} name='email' placeholder='Nhập email' />
 
-            {/* Password Field */}
+            {/* Password input field */}
             <PasswordFormField control={form.control} name='password' placeholder='Nhập mật khẩu' />
 
-            {/* Submit Button */}
+            {/* Login submit button */}
             <Button type='submit' variant='primary' className='w-full py-2.5' disabled={isLoading}>
                {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </Button>
