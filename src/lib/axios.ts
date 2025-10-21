@@ -19,14 +19,26 @@ export class ApiError extends Error {
    }
 }
 
-// Create axios instance
-const apiClient: AxiosInstance = axios.create({
+// Create axios instance for default API (port 8080) - used by all services except search
+const defaultApiClient: AxiosInstance = axios.create({
    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
    timeout: 30000, // 30 seconds
    headers: {
       'Content-Type': 'application/json'
    }
 })
+
+// Create axios instance for Search Service (port 8000)
+const searchApiClient: AxiosInstance = axios.create({
+   baseURL: process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:8000/api',
+   timeout: 30000, // 30 seconds
+   headers: {
+      'Content-Type': 'application/json'
+   }
+})
+
+// Legacy: default apiClient (for backward compatibility)
+const apiClient: AxiosInstance = defaultApiClient
 
 // Flag to prevent multiple refresh token calls
 let isRefreshing = false
@@ -47,127 +59,135 @@ const processQueue = (error: Error | null = null) => {
    failedQueue = []
 }
 
-// Request interceptor
-apiClient.interceptors.request.use(
-   (config: InternalAxiosRequestConfig) => {
-      // Get token from localStorage (nếu có)
-      if (typeof window !== 'undefined') {
-         const token = localStorage.getItem('accessToken')
-         if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`
-         }
-      }
-
-      return config
-   },
-   (error) => {
-      return Promise.reject(error)
-   }
-)
-
-// Response interceptor
-apiClient.interceptors.response.use(
-   (response) => {
-      return response
-   },
-   async (error: AxiosError<ApiResponse>) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
-
-      // Handle 401 - Unauthorized
-      if (error.response?.status === 401 && !originalRequest._retry) {
-         // Skip refresh for login and refresh endpoints
-         if (
-            originalRequest.url?.includes('/auth/login') ||
-            originalRequest.url?.includes('/auth/refresh')
-         ) {
-            // Clear tokens and redirect to login
-            if (typeof window !== 'undefined') {
-               localStorage.removeItem('accessToken')
-               localStorage.removeItem('refreshToken')
-               window.location.href = '/auth/login'
+// Setup interceptors for auth client
+const setupInterceptors = (client: AxiosInstance) => {
+   // Request interceptor
+   client.interceptors.request.use(
+      (config: InternalAxiosRequestConfig) => {
+         // Get token from localStorage (nếu có)
+         if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('accessToken')
+            if (token && config.headers) {
+               config.headers.Authorization = `Bearer ${token}`
             }
-            throw new ApiError(401, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
          }
 
-         if (isRefreshing) {
-            // Wait for refresh to complete
-            return new Promise((resolve, reject) => {
-               failedQueue.push({ resolve, reject })
-            })
-               .then(() => {
-                  return apiClient(originalRequest)
+         return config
+      },
+      (error) => {
+         return Promise.reject(error)
+      }
+   )
+
+   // Response interceptor
+   client.interceptors.response.use(
+      (response) => {
+         return response
+      },
+      async (error: AxiosError<ApiResponse>) => {
+         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+
+         // Handle 401 - Unauthorized
+         if (error.response?.status === 401 && !originalRequest._retry) {
+            // Skip refresh for login and refresh endpoints
+            if (
+               originalRequest.url?.includes('/auth/login') ||
+               originalRequest.url?.includes('/auth/refresh')
+            ) {
+               // Clear tokens and redirect to login
+               if (typeof window !== 'undefined') {
+                  localStorage.removeItem('accessToken')
+                  localStorage.removeItem('refreshToken')
+                  window.location.href = '/auth/login'
+               }
+               throw new ApiError(401, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
+            }
+
+            if (isRefreshing) {
+               // Wait for refresh to complete
+               return new Promise((resolve, reject) => {
+                  failedQueue.push({ resolve, reject })
                })
-               .catch((err) => {
-                  return Promise.reject(err)
+                  .then(() => {
+                     return client(originalRequest)
+                  })
+                  .catch((err) => {
+                     return Promise.reject(err)
+                  })
+            }
+
+            originalRequest._retry = true
+            isRefreshing = true
+
+            try {
+               const refreshToken = localStorage.getItem('refreshToken')
+
+               if (!refreshToken) {
+                  throw new Error('No refresh token')
+               }
+
+               // Call refresh token API
+               const response = await axios.post<
+                  ApiResponse<{ accessToken: string; refreshToken: string }>
+               >(`${defaultApiClient.defaults.baseURL}/auth/refresh`, {
+                  refreshToken
                })
+
+               const { accessToken, refreshToken: newRefreshToken } = response.data.data
+
+               // Save new tokens
+               localStorage.setItem('accessToken', accessToken)
+               localStorage.setItem('refreshToken', newRefreshToken)
+
+               // Update authorization header
+               if (originalRequest.headers) {
+                  originalRequest.headers.Authorization = `Bearer ${accessToken}`
+               }
+
+               processQueue(null)
+               return client(originalRequest)
+            } catch {
+               processQueue(new Error('Token refresh failed'))
+
+               // Clear tokens and redirect to login
+               if (typeof window !== 'undefined') {
+                  localStorage.removeItem('accessToken')
+                  localStorage.removeItem('refreshToken')
+                  window.location.href = '/auth/login'
+               }
+
+               throw new ApiError(401, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
+            } finally {
+               isRefreshing = false
+            }
          }
 
-         originalRequest._retry = true
-         isRefreshing = true
+         // Handle other errors
+         if (error.response) {
+            const { code, message, data } = error.response.data || {}
 
-         try {
-            const refreshToken = localStorage.getItem('refreshToken')
-
-            if (!refreshToken) {
-               throw new Error('No refresh token')
-            }
-
-            // Call refresh token API
-            const response = await axios.post<
-               ApiResponse<{ accessToken: string; refreshToken: string }>
-            >(`${apiClient.defaults.baseURL}/auth/refresh`, {
-               refreshToken
-            })
-
-            const { accessToken, refreshToken: newRefreshToken } = response.data.data
-
-            // Save new tokens
-            localStorage.setItem('accessToken', accessToken)
-            localStorage.setItem('refreshToken', newRefreshToken)
-
-            // Update authorization header
-            if (originalRequest.headers) {
-               originalRequest.headers.Authorization = `Bearer ${accessToken}`
-            }
-
-            processQueue(null)
-            return apiClient(originalRequest)
-         } catch {
-            processQueue(new Error('Token refresh failed'))
-
-            // Clear tokens and redirect to login
-            if (typeof window !== 'undefined') {
-               localStorage.removeItem('accessToken')
-               localStorage.removeItem('refreshToken')
-               window.location.href = '/auth/login'
-            }
-
-            throw new ApiError(401, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
-         } finally {
-            isRefreshing = false
+            // Throw custom ApiError
+            throw new ApiError(
+               code || error.response.status,
+               message || error.response.statusText || 'Đã có lỗi xảy ra',
+               data
+            )
          }
+
+         // Network error
+         if (error.request) {
+            throw new ApiError(0, 'Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng.')
+         }
+
+         // Other errors
+         throw new ApiError(0, error.message || 'Đã có lỗi không xác định')
       }
+   )
+}
 
-      // Handle other errors
-      if (error.response) {
-         const { code, message, data } = error.response.data || {}
-
-         // Throw custom ApiError
-         throw new ApiError(
-            code || error.response.status,
-            message || error.response.statusText || 'Đã có lỗi xảy ra',
-            data
-         )
-      }
-
-      // Network error
-      if (error.request) {
-         throw new ApiError(0, 'Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng.')
-      }
-
-      // Other errors
-      throw new ApiError(0, error.message || 'Đã có lỗi không xác định')
-   }
-)
+// Setup interceptors for both clients
+setupInterceptors(defaultApiClient)
+setupInterceptors(searchApiClient)
 
 export default apiClient
+export { defaultApiClient, searchApiClient }

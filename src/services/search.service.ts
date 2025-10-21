@@ -1,3 +1,4 @@
+import { searchApiClient } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
 import type { JobSearchRequest, JobSearchResponse } from '@/types/job.type'
 
@@ -7,7 +8,7 @@ import type { JobSearchRequest, JobSearchResponse } from '@/types/job.type'
  */
 class SearchService extends BaseService {
    constructor() {
-      super('')
+      super('', searchApiClient)
    }
 
    /**

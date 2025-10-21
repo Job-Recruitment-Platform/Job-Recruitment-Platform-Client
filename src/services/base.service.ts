@@ -1,5 +1,5 @@
 import apiClient, { type ApiResponse } from '@/lib/axios'
-import type { AxiosRequestConfig } from 'axios'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 
 /**
  * Generic base service class for all API services
@@ -7,16 +7,21 @@ import type { AxiosRequestConfig } from 'axios'
  */
 export abstract class BaseService {
    protected readonly basePath: string
+   protected readonly httpClient: AxiosInstance
 
-   constructor(basePath: string) {
+   constructor(basePath: string, httpClient: AxiosInstance = apiClient) {
       this.basePath = basePath
+      this.httpClient = httpClient
    }
 
    /**
     * Generic GET request
     */
    protected async get<T>(endpoint: string, config?: AxiosRequestConfig) {
-      const response = await apiClient.get<ApiResponse<T>>(`${this.basePath}${endpoint}`, config)
+      const response = await this.httpClient.get<ApiResponse<T>>(
+         `${this.basePath}${endpoint}`,
+         config
+      )
       return response.data
    }
 
@@ -24,7 +29,7 @@ export abstract class BaseService {
     * Generic POST request
     */
    protected async post<T, D = unknown>(endpoint: string, data?: D, config?: AxiosRequestConfig) {
-      const response = await apiClient.post<ApiResponse<T>>(
+      const response = await this.httpClient.post<ApiResponse<T>>(
          `${this.basePath}${endpoint}`,
          data,
          config
@@ -36,7 +41,7 @@ export abstract class BaseService {
     * Generic PUT request
     */
    protected async put<T, D = unknown>(endpoint: string, data?: D, config?: AxiosRequestConfig) {
-      const response = await apiClient.put<ApiResponse<T>>(
+      const response = await this.httpClient.put<ApiResponse<T>>(
          `${this.basePath}${endpoint}`,
          data,
          config
@@ -48,7 +53,7 @@ export abstract class BaseService {
     * Generic PATCH request
     */
    protected async patch<T, D = unknown>(endpoint: string, data?: D, config?: AxiosRequestConfig) {
-      const response = await apiClient.patch<ApiResponse<T>>(
+      const response = await this.httpClient.patch<ApiResponse<T>>(
          `${this.basePath}${endpoint}`,
          data,
          config
@@ -60,7 +65,10 @@ export abstract class BaseService {
     * Generic DELETE request
     */
    protected async delete<T>(endpoint: string, config?: AxiosRequestConfig) {
-      const response = await apiClient.delete<ApiResponse<T>>(`${this.basePath}${endpoint}`, config)
+      const response = await this.httpClient.delete<ApiResponse<T>>(
+         `${this.basePath}${endpoint}`,
+         config
+      )
       return response.data
    }
 }
