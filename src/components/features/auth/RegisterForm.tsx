@@ -1,11 +1,11 @@
 'use client'
 
-import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
 import EmailFormField from '@/components/shared/EmailFormField'
 import FormWrapper from '@/components/shared/FormWrapper'
 import FullNameFormField from '@/components/shared/FullNameFormField'
-import { useAuth } from '@/contexts/AuthContext'
+import PasswordFormField from '@/components/shared/PasswordFormField'
+import { useAuth } from '@/hooks/useAuth'
 import { ApiError } from '@/lib/axios'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
 import type { RegisterFormRequest } from '@/types/auth.type'

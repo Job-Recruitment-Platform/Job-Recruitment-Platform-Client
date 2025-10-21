@@ -1,5 +1,5 @@
-import Footer from '@/components/shared/Footer'
-import Header from '@/components/shared/Header'
+import Footer from '@/components/layouts/Footer'
+import Header from '@/components/layouts/Header'
 import { AuthProvider } from '@/contexts/AuthContext'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'

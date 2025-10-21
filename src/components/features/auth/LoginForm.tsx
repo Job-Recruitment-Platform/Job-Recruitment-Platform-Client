@@ -1,10 +1,10 @@
 'use client'
 
-import PasswordFormField from '@/components/features/auth/PasswordFormField'
 import Button from '@/components/shared/Button'
 import EmailFormField from '@/components/shared/EmailFormField'
 import FormWrapper from '@/components/shared/FormWrapper'
-import { useAuth } from '@/contexts/AuthContext'
+import PasswordFormField from '@/components/shared/PasswordFormField'
+import { useAuth } from '@/hooks/useAuth'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
 import type { LoginRequest } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'

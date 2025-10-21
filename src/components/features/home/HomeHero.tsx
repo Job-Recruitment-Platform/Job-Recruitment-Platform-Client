@@ -10,18 +10,20 @@ export default function HomeHero() {
                'linear-gradient(180deg, #002b33, rgba(0, 43, 51, 0.25)), linear-gradient(90deg, #008060 21.86%, #2bab60 78.13%)'
          }}
       >
-         {/*  container  */}
+         {/*  Container  */}
          <div className='container px-3.5'>
             <div className='text-primary w-full text-center text-[26px] font-bold'>
                Tìm việc làm nhanh 24h, việc làm mới nhất trên toàn quốc
             </div>
-            <div className='w-full mt-1 text-center text-sm text-white'>
+            <div className='mt-1 w-full text-center text-sm text-white'>
                Tiếp cận 60.000+ tin tuyển dụng việc làm mỗi ngày từ hàng nghìn doanh nghiệp uy tín
                tại Việt Nam
             </div>
-            {/*  search bar  */}
+
+            {/*  Search bar  */}
             <SearchBar />
-            {/*  category & category list  */}
+
+            {/*  Category & Category list  */}
             <div className='flex h-[288px] items-stretch gap-x-2'>
                <div className='flex-1/3'>
                   <CategoryMenu />
