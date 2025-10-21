@@ -10,7 +10,7 @@ export default function SearchResultsPage() {
    const searchParams = useSearchParams()
    const keyword = searchParams.get('key_word') || ''
 
-   const { data, isLoading, isError, error } = useSearchJobs({
+   const { data, isLoading, isError } = useSearchJobs({
       query: keyword,
       limit: 20,
       offset: 0
