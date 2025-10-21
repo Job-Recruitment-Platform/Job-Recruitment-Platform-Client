@@ -2,7 +2,7 @@
 
 import { authService } from '@/services/auth.service'
 import type { LoginRequest, RegisterRequest } from '@/types/auth.type'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useEffect, useState, type ReactNode } from 'react'
 
 interface AuthContextType {
    isLogin: boolean
@@ -60,5 +60,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-
-
