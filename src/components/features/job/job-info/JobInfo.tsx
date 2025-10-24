@@ -1,5 +1,6 @@
 import BasicInfoBox from '@/components/features/job/job-info/BasicInfoBox'
 import Button from '@/components/shared/Button'
+import { JobDetail } from '@/types/job.type'
 import {
    CheckIcon,
    CircleDollarSignIcon,
@@ -10,15 +11,15 @@ import {
 } from 'lucide-react'
 
 type JobInfoProps = {
-   jobInfo: JobBasicInfoType
+   job: JobDetail
 }
 
-export default function JobInfo({ jobInfo }: JobInfoProps) {
+export default function JobInfo({ job }: JobInfoProps) {
    return (
       <div className='flex w-full flex-col gap-y-5 rounded-lg bg-white px-6 py-5'>
          {/*  Job Title  */}
          <div className='flex w-full items-baseline gap-x-2 text-[20px] font-bold text-black/80'>
-            <div>{jobInfo.title}</div>
+            <div>{job.title}</div>
             <div className='bg-primary-green flex h-4 w-4 items-center justify-center rounded-full'>
                <CheckIcon size={12} color='white' className='font-bold' />
             </div>
@@ -29,7 +30,7 @@ export default function JobInfo({ jobInfo }: JobInfoProps) {
                <BasicInfoBox
                   type='secondary'
                   label='Mức lương'
-                  value={jobInfo.salary}
+                  value={job.salaryMin + ' - ' + job.salaryMax + ' ' + job.currency}
                   icon={CircleDollarSignIcon}
                />
             </div>
@@ -37,7 +38,7 @@ export default function JobInfo({ jobInfo }: JobInfoProps) {
                <BasicInfoBox
                   type='secondary'
                   label='Địa điểm'
-                  value={jobInfo.location}
+                  value={job.location}
                   icon={MapPinIcon}
                />
             </div>
@@ -45,7 +46,7 @@ export default function JobInfo({ jobInfo }: JobInfoProps) {
                <BasicInfoBox
                   type='secondary'
                   label='Kinh nghiệm'
-                  value={jobInfo.experience.toString()}
+                  value={job.minExperienceYears.toString()}
                   icon={ClockIcon}
                />
             </div>
@@ -53,7 +54,7 @@ export default function JobInfo({ jobInfo }: JobInfoProps) {
          {/*  Deadline  */}
          <div className='flex w-fit items-center gap-x-2 rounded bg-gray-200 px-1 py-0.5 text-sm'>
             <ClockIcon size={16} strokeWidth={2} color='gray' />
-            <div>Hạn nộp hồ sơ: {jobInfo.deadline.toLocaleDateString('en-GB')}</div>
+            <div>Hạn nộp hồ sơ: {job.dateExpires}</div>
          </div>
          {/*  Apply Button  */}
          <div className='flex items-stretch gap-x-2'>

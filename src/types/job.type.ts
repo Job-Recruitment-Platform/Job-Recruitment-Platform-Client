@@ -45,6 +45,44 @@ export interface JobSearchResponse {
 }
 
 /**
+ * Job Detail Types
+ */
+
+export interface JobDetail {
+   id: number
+   title: string
+   company: string
+   jobRole: string
+   seniority: 'INTERN' | 'JUNIOR' | 'SENIOR' | 'LEAD' | 'MANAGER'
+   minExperienceYears: number
+   location: string
+   workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'
+   salaryMin: number
+   salaryMax: number
+   currency: string
+   maxCandidates: number | null
+   datePosted: string
+   dateExpires: string
+   status: 'PUBLISHED' | 'DRAFT' | 'EXPIRED'
+   summary: string
+   responsibilities: string
+   requirements: string
+   niceToHave: string
+   benefits: string
+   hiringProcess: string
+   notes: string
+}
+
+export interface GetJobDetailRequest {
+   jobId: number
+}
+
+export interface JobDetailResponse {
+   code: number
+   data: JobDetail
+}
+
+/**
  * Job display type for UI (simplified)
  */
 export interface JobResponse {
@@ -72,15 +110,3 @@ export interface JobType {
    location: string
    salary: string
 }
-
-export interface JobDetailType extends JobType {
-   description: string
-   requirements: string[]
-   benefits: string[]
-   employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'TEMPORARY' | 'INTERN'
-   experienceLevel: 'ENTRY_LEVEL' | 'MID_LEVEL' | 'SENIOR_LEVEL' | 'MANAGER' | 'DIRECTOR'
-   postedDate: string
-   expiryDate: string
-}
-
-

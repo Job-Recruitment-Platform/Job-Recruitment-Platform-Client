@@ -16,14 +16,21 @@ import {
 import { formatExperience, formatSalary } from '@/lib/formatters/job.formatter'
 import type { JobSearchResult } from '@/types/job.type'
 import { EyeOffIcon, HeartIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type JobSearchItemProps = {
    job: JobSearchResult
 }
 
 export default function JobSearchItem({ job }: JobSearchItemProps) {
+   const router = useRouter()
+
+   const handleCardClick = () => {
+      router.push(`/job/${job.id}/detail`)
+   }
+
    return (
-      <JobCard>
+      <JobCard jobId={job.id} onCardClick={handleCardClick}>
          <Body>
             <Logo
                src='https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/fxfYyqrL7o9EbbD42aXNySpJPtohIu15_1745398913____bae212c6e41ad23ff4b62d244094bd41.jpg'

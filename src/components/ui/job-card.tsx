@@ -5,7 +5,7 @@ import React, { createContext, useContext } from 'react'
 /** small cx helper (tránh cài clsx) */
 const cx = (...a: (string | undefined | false)[]) => a.filter(Boolean).join(' ')
 
-type Ctx = { asLink?: string; onApply?: () => void }
+type Ctx = { asLink?: string; onApply?: () => void; jobId?: number; onCardClick?: () => void }
 const JobCtx = createContext<Ctx | null>(null)
 const useJob = () => {
    const v = useContext(JobCtx)
@@ -16,18 +16,35 @@ const useJob = () => {
 type WithChildren = { children?: React.ReactNode; className?: string }
 
 /* ---------------- Root ---------------- */
-type JobCardProps = WithChildren & { asLink?: string; onApply?: () => void }
-export function JobCard({ children, asLink, onApply, className }: JobCardProps) {
+type JobCardProps = WithChildren & {
+   asLink?: string
+   onApply?: () => void
+   jobId?: number
+   onCardClick?: () => void
+}
+export function JobCard({
+   children,
+   asLink,
+   onApply,
+   jobId,
+   onCardClick,
+   className
+}: JobCardProps) {
+   const handleCardClick = () => {
+      onCardClick?.()
+   }
+
    return (
-      <JobCtx.Provider value={{ asLink, onApply }}>
+      <JobCtx.Provider value={{ asLink, onApply, jobId, onCardClick }}>
          <article
             className={cx(
                'border-primary/40 group relative flex min-h-[171px] w-full flex-col justify-between rounded-xl border bg-[#f2faf6] p-4',
-               'hover:border-primary hover:bg-white',
+               'hover:border-primary cursor-pointer hover:bg-white',
                className
             )}
             role='region'
             aria-label='Job card'
+            onClick={handleCardClick}
          >
             {children}
          </article>
