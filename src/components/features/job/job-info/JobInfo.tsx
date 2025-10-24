@@ -38,7 +38,7 @@ export default function JobInfo({ job }: JobInfoProps) {
                <BasicInfoBox
                   type='secondary'
                   label='Địa điểm'
-                  value={job.location}
+                  value={'Hồ Chí Minh'}
                   icon={MapPinIcon}
                />
             </div>
@@ -54,7 +54,14 @@ export default function JobInfo({ job }: JobInfoProps) {
          {/*  Deadline  */}
          <div className='flex w-fit items-center gap-x-2 rounded bg-gray-200 px-1 py-0.5 text-sm'>
             <ClockIcon size={16} strokeWidth={2} color='gray' />
-            <div>Hạn nộp hồ sơ: {job.dateExpires}</div>
+            Hạn nộp hồ sơ:{' '}
+            {new Date(job.dateExpires).toLocaleString('vi-VN', {
+               hour: '2-digit',
+               minute: '2-digit',
+               day: '2-digit',
+               month: '2-digit',
+               year: 'numeric'
+            })}
          </div>
          {/*  Apply Button  */}
          <div className='flex items-stretch gap-x-2'>

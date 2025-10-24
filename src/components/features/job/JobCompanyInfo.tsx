@@ -11,22 +11,28 @@ export default function JobCompanyInfo({ job }: JobCompanyInfoProps) {
          <div className='flex items-start gap-3'>
             <div className='h-[88px] w-[88px] shrink-0 overflow-hidden rounded-md border border-gray-200 bg-white p-2'>
                {/* eslint-disable-next-line @next/next/no-img-element */}
-               <img src={''} alt={`Logo ${''}`} className='h-full w-full object-contain' />
+               <img
+                  src={
+                     'https://cdn-new.topcv.vn/unsafe/80x/https://static.topcv.vn/company_logos/cong-ty-tai-chinh-tnhh-mtv-mirae-asset-57d9002332f00_rs.jpg'
+                  }
+                  alt={`Logo ${''}`}
+                  className='h-full w-full object-contain'
+               />
             </div>
-            <div className='line-clamp-2 text-[16px] leading-6 font-semibold text-black/90'>{}</div>
+            <div className='line-clamp-2 text-[16px] leading-6 font-semibold text-black/90'>{job.company}</div>
          </div>
 
          <div className='mt-3 space-y-3.5 text-sm'>
             <div className='flex items-center gap-2 text-gray-600'>
                <UsersIcon size={16} fill='gray' />
                <span>Quy mô:</span>
-               <span className='truncate font-medium text-black'>{'100'}</span>
+               <span className='truncate font-medium text-black'>{'100+ nhân viên'}</span>
             </div>
 
             <div className='flex items-center gap-2 text-gray-600'>
                <BoxIcon size={16} />
                <div>Lĩnh vực:</div>
-               <div className='truncate font-medium text-black'>{''}</div>
+               <div className='truncate font-medium text-black'>{'Tài chính'}</div>
             </div>
 
             <div className='flex items-start gap-2 text-gray-600'>

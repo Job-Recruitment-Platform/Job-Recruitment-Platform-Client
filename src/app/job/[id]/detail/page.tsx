@@ -7,24 +7,12 @@ import JobDetailInfo from '@/components/features/job/JobDetailInfo'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
 import { useJob } from '@/hooks/useJob'
 import { useParams } from 'next/navigation'
-import { useEffect } from 'react'
 
 export default function JobDetailPage() {
    const params = useParams()
    const jobId = params.id ? parseInt(params.id as string) : null
 
    const { data: job, isLoading, isError, error } = useJob(jobId)
-
-   // Log to console for debugging
-   // useEffect(() => {
-   //    console.log('📋 Job Detail Page:', {
-   //       jobId,
-   //       isLoading,
-   //       isError,
-   //       error: error?.message,
-   //       job
-   //    })
-   // }, [jobId, isLoading, isError, error, job])
 
    if (isLoading) {
       return (
