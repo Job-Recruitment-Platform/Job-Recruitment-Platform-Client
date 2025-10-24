@@ -24,7 +24,7 @@ export default function SearchResultsPage() {
             </div>
          </div>
 
-         <div className='container flex gap-x-2 px-2 mt-5'>
+         <div className='container mt-5 flex gap-x-2 px-2'>
             {/* Sidebar Filters */}
             <SidebarFilter />
 
