@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@/components/shared/Button'
 import CategorySelection from '@/components/shared/CategorySelection'
 import MultiLocationSelection from '@/components/shared/MultiLocationSelection'

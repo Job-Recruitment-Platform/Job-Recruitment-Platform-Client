@@ -72,3 +72,15 @@ export interface JobType {
    location: string
    salary: string
 }
+
+export interface JobDetailType extends JobType {
+   description: string
+   requirements: string[]
+   benefits: string[]
+   employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'TEMPORARY' | 'INTERN'
+   experienceLevel: 'ENTRY_LEVEL' | 'MID_LEVEL' | 'SENIOR_LEVEL' | 'MANAGER' | 'DIRECTOR'
+   postedDate: string
+   expiryDate: string
+}
+
+
