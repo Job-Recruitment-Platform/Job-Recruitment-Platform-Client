@@ -25,7 +25,11 @@ export default function JobSearchItem({ job }: JobSearchItemProps) {
    return (
       <JobCard>
          <Body>
-            <Logo src='/logo512.png' alt={job.company} className='h-12 w-12' />
+            <Logo
+               src='https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/fxfYyqrL7o9EbbD42aXNySpJPtohIu15_1745398913____bae212c6e41ad23ff4b62d244094bd41.jpg'
+               alt={job.company}
+               className='h-[120px] w-[120px]'
+            />
             <Content>
                <TitleBlock>
                   <TitleContent>

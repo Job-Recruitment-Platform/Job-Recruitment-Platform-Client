@@ -26,7 +26,14 @@ export const useSearchJobs = (
 ): UseSearchJobsState => {
    const query = useQuery({
       queryKey: ['searchJobs', params.query, params.limit, params.offset],
-      queryFn: () => searchService.searchJobs(params),
+      queryFn: async () => {
+         const result = await searchService.searchJobs(params)
+         // Ensure we always return a defined value
+         if (!result) {
+            return { results: [], total: 0 }
+         }
+         return result
+      },
       enabled: enabled && !!params.query?.trim(),
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes (previously cacheTime)

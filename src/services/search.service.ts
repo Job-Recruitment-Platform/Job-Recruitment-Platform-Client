@@ -17,7 +17,7 @@ class SearchService extends BaseService {
     */
    async searchJobs(payload: JobSearchRequest): Promise<JobSearchResponse> {
       const response = await this.post<JobSearchResponse>('/search', payload)
-      return response.data
+      return response.data || response
    }
 
    /**

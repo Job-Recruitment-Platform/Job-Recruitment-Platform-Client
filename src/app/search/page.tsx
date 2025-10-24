@@ -1,9 +1,9 @@
 'use client'
 
 import JobSearchItem from '@/components/features/job/JobSearchItem'
-import RadioFilter from '@/components/ui/radio-filter'
+import OptionSearchJob from '@/components/features/search/OptionSearchJob'
+import SidebarFilter from '@/components/layouts/SidebarFilter'
 import { useSearchJobs } from '@/hooks/useSearchJobs'
-import { experienceOptions } from '@/types/data'
 import { useSearchParams } from 'next/navigation'
 
 export default function SearchResultsPage() {
@@ -17,17 +17,16 @@ export default function SearchResultsPage() {
    })
 
    return (
-      <div className='bg-smoke p-5'>
-         <div className='container flex gap-x-2 px-2'>
-            {/* Sidebar Filters */}
-            <div className='w-[295px]'>
-               <div className='w-full text-center'>Lọc nâng cao</div>
-               <div>
-                  <RadioFilter header='Kinh nghiệm' columns={2} options={experienceOptions} />
-                  <RadioFilter header='Kinh nghiệm' columns={2} options={experienceOptions} />
-                  <RadioFilter header='Kinh nghiệm' columns={2} options={experienceOptions} />
-               </div>
+      <div className='bg-smoke w-full'>
+         <div className='w-full bg-[#19734e]'>
+            <div className='container py-4.5'>
+               <OptionSearchJob />
             </div>
+         </div>
+
+         <div className='container flex gap-x-2 px-2 mt-5'>
+            {/* Sidebar Filters */}
+            <SidebarFilter />
 
             {/* Search Results */}
             <div className='flex-1 space-y-3'>
@@ -52,8 +51,9 @@ export default function SearchResultsPage() {
                {/* Results */}
                {!isLoading && !isError && data?.results && data.results.length > 0 && (
                   <>
-                     <p className='text-sm text-gray-600'>
-                        Tìm thấy <strong>{data.results.length}</strong> công việc
+                     <p className='text-sm font-normal text-gray-600'>
+                        Tìm thấy <strong className='text-primary'>{data.results.length}</strong>{' '}
+                        công việc
                      </p>
                      {data.results.map((job) => (
                         <JobSearchItem key={job.id} job={job} />

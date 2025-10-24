@@ -28,7 +28,7 @@ export default function RadioFilter({ className, columns = 1, options, header }:
    const [col1, col2] = columns === 2 ? splitOptions(options) : [options, []]
 
    return (
-      <div className={cx('py-3', className)}>
+      <div className={cx(className)}>
          <div className='py-3 text-sm font-semibold'>{header}</div>
          <RadioGroup>
             <div className={columns === 2 ? 'grid w-fit grid-cols-2 space-x-10' : 'space-y-1'}>
