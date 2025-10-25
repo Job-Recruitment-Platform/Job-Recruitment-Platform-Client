@@ -51,7 +51,7 @@ export default function LoginForm({ className }: LoginFormProps) {
 
          // Redirect to home after 1.5 seconds
          setTimeout(() => {
-            router.push('/home')
+            router.push('/')
          }, 1500)
       } catch (error) {
          if (error instanceof Error) {

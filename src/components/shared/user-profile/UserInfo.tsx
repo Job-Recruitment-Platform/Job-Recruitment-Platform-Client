@@ -11,7 +11,7 @@ export default function UserInfo() {
          </div>
          <div className='space-y-2 text-sm'>
             <div className='text-[15px] font-semibold'>Nguyen Van A</div>
-            <div>Tai khoan da xac thuc</div>
+            <div>Tài khoản đã xác thực</div>
             <div className='line-clamp-1'>
                <span className='pr-2'>ID 123456789</span>
                <span className='border-l pl-2'>test@gmail.com</span>

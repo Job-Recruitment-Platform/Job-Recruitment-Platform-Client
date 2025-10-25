@@ -129,6 +129,10 @@
    h2 {
       @apply text-2xl font-bold;
    }
+
+   button {
+      @apply cursor-pointer;
+   }
 }
 
 @layer utilities {

@@ -3,6 +3,7 @@
 import Button from '@/components/shared/Button'
 import UserInfo from '@/components/shared/user-profile/UserInfo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 
 type UserProfileDialogProps = {
@@ -11,6 +12,7 @@ type UserProfileDialogProps = {
 
 export default function UserProfilePopover({ children }: UserProfileDialogProps) {
    const [open, setOpen] = useState(false)
+   const { logout } = useAuth()
 
    return (
       <Popover open={open} onOpenChange={setOpen}>
@@ -34,6 +36,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                <Button
                   variant='outline'
                   className='w-full rounded-full !border-none bg-gray-300 py-2'
+                  onClick={() => logout()}
                >
                   Đăng xuất
                </Button>
