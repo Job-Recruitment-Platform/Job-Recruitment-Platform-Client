@@ -168,8 +168,10 @@ const setupInterceptors = (client: AxiosInstance) => {
 
             // Throw custom ApiError
             throw new ApiError(
-               code || error.response.status,
-               message || error.response.statusText || 'Đã có lỗi xảy ra',
+               typeof code === 'number' ? code : error.response.status,
+               typeof message === 'string'
+                  ? message
+                  : error.response.statusText || 'Đã có lỗi xảy ra',
                data
             )
          }

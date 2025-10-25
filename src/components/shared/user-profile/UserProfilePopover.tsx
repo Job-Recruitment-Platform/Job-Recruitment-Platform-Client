@@ -14,6 +14,15 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
    const [open, setOpen] = useState(false)
    const { logout } = useAuth()
 
+   const handleLogout = async () => {
+      try {
+         await logout()
+         setOpen(false)
+      } catch (error) {
+         console.error('Logout failed:', error)
+      }
+   }
+
    return (
       <Popover open={open} onOpenChange={setOpen}>
          <PopoverTrigger
@@ -36,7 +45,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                <Button
                   variant='outline'
                   className='w-full rounded-full !border-none bg-gray-300 py-2'
-                  onClick={() => logout()}
+                  onClick={handleLogout}
                >
                   Đăng xuất
                </Button>

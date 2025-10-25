@@ -40,8 +40,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
    }
 
    const logout = async () => {
-      await authService.logout()
-      setIsLogin(false)
+      try {
+         await authService.logout()
+      } catch (error) {
+         // Even if logout API fails, clear local state
+         console.error('Logout error:', error)
+      } finally {
+         setIsLogin(false)
+      }
    }
 
    const register = async (data: RegisterRequest) => {
