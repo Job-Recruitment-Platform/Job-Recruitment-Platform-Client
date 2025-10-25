@@ -16,6 +16,13 @@ export interface RegisterFormRequest extends RegisterRequest {
    confirmPassword: string
 }
 
+export interface RecruiterRegisterRequest {
+   fullName: string
+   email: string
+   password: string
+   companyName: string
+}
+
 export interface RefreshTokenRequest {
    refreshToken: string
 }
