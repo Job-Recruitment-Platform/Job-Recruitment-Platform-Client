@@ -22,7 +22,7 @@ export default function JobDetailPage() {
                   <OptionSearchJob />
                </div>
             </div>
-            <div className='flex w-full justify-center bg-[#f4f5f5] pt-6'>
+            <div className='flex w-full justify-center bg-[#f4f5f5] py-6'>
                <div className='py-8 text-center'>
                   <p className='text-gray-600'>Đang tải thông tin công việc...</p>
                </div>
@@ -57,7 +57,7 @@ export default function JobDetailPage() {
                <OptionSearchJob />
             </div>
          </div>
-         <div className='flex w-full justify-center bg-[#f4f5f5] pt-6'>
+         <div className='flex w-full justify-center bg-[#f4f5f5] py-6'>
             <div className='grid w-[1140px] grid-cols-3 gap-x-6'>
                <div className='col-span-2 space-y-6'>
                   <JobInfo job={job} />

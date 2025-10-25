@@ -10,7 +10,7 @@ export default function JobDetailInfo({ job }: JobDetailInfoProps) {
    return (
       <div className='w-full space-y-4 rounded-lg bg-white px-6 py-5'>
          <div className='flex items-center justify-between'>
-            <div className='border-primary-green border-l-7 pl-3 text-[20px] font-bold text-black/80'>
+            <div className='border-primary border-l-7 pl-3 text-[20px] font-bold text-black/80'>
                Chi tiết tuyển dụng
             </div>
             <Button variant='outline'>
@@ -45,7 +45,7 @@ export default function JobDetailInfo({ job }: JobDetailInfoProps) {
             <span>
                Báo cáo tin tuyển dụng: Nếu bạn thấy rằng tin tuyển dụng này không đúng hoặc có dấu
                hiệu lừa <br /> đảo,{' '}
-               <a className='text-primary-green font-normal'>hãy phản ánh với chúng tôi.</a>
+               <a className='text-primary font-normal'>hãy phản ánh với chúng tôi.</a>
             </span>
          </div>
       </div>
