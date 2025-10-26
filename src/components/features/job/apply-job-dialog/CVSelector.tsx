@@ -15,7 +15,7 @@ interface CVSelectorProps {
    selectedCV: string | null
    onModeChange: (mode: SelectionMode) => void
    onCVSelect: (cvId: string) => void
-   onUploadSubmit: (data: { fullName: string; email: string; phone: string; file: File }) => void
+   onUploadSubmit: (data: { file: File }) => void
    cvList?: CV[]
 }
 
@@ -89,38 +89,40 @@ export default function CVSelector({
 
             {/* Upload Selection */}
             <div
-               className={`flex cursor-pointer items-start gap-3 rounded-lg border bg-white p-3 transition ${
+               className={`rounded-lg border bg-white transition ${
                   selectedMode === 'upload' ? 'border-green-500' : 'border-gray-200'
                }`}
-               onClick={() => onModeChange('upload')}
             >
-               <input
-                  type='radio'
-                  name='cv-mode'
-                  checked={selectedMode === 'upload'}
-                  onChange={() => onModeChange('upload')}
-                  className='mt-1 cursor-pointer'
-               />
-               <div className='flex-1'>
-                  <div className='flex items-center gap-2'>
-                     <Upload size={18} className='text-gray-600' />
-                     <p className='text-sm font-medium text-gray-700'>
-                        Tải lên CV từ máy tính, chọn hoặc kéo thả
+               <div className='flex cursor-pointer items-start gap-3 p-3'>
+                  <input
+                     type='radio'
+                     name='cv-mode'
+                     checked={selectedMode === 'upload'}
+                     onChange={() => onModeChange('upload')}
+                     className='mt-1 flex-shrink-0 cursor-pointer'
+                     onClick={(e) => e.stopPropagation()}
+                  />
+                  <div className='flex-1'>
+                     <div
+                        className='flex cursor-pointer items-center gap-2'
+                        onClick={() => onModeChange('upload')}
+                     >
+                        <Upload size={18} className='text-gray-600' />
+                        <p className='text-sm font-medium text-gray-700'>
+                           Tải lên CV từ máy tính, chọn hoặc kéo thả
+                        </p>
+                     </div>
+                     <p className='mt-1 text-xs text-gray-600'>
+                        Hỗ trợ định dạng .doc, .docx, .pdf có kích thước dưới 5MB
                      </p>
                   </div>
-                  <p className='mt-1 text-xs text-gray-600'>
-                     Hỗ trợ định dạng .doc, .docx, .pdf có kích thước dưới 5MB
-                  </p>
-
-                  {selectedMode === 'upload' && (
-                     <div className='mt-4'>
-                        <UploadCVForm
-                           onSubmit={onUploadSubmit}
-                           onCancel={() => onModeChange('library')}
-                        />
-                     </div>
-                  )}
                </div>
+
+               {selectedMode === 'upload' && (
+                  <div className='w-full px-3 pb-3'>
+                     <UploadCVForm onSubmit={onUploadSubmit} />
+                  </div>
+               )}
             </div>
          </div>
       </div>

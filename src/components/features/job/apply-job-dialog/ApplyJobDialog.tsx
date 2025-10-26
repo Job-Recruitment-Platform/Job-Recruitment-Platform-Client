@@ -22,39 +22,20 @@ interface ApplyJobDialogProps {
       maxSalary: number
       currency: string
    }
-   onApply?: (data: {
-      cvId?: string
-      coverLetter: string
-      uploadData?: {
-         file: File
-         fullName: string
-         email: string
-         phone: string
-      }
-   }) => Promise<void>
+   onApply?: (data: { cvId?: string; coverLetter: string; uploadedFile?: File }) => Promise<void>
    children?: React.ReactNode
 }
 
 export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialogProps) {
    const [selectionMode, setSelectionMode] = useState<SelectionMode>('library')
    const [selectedCV, setSelectedCV] = useState<string | null>(null)
-   const [uploadData, setUploadData] = useState<{
-      file: File
-      fullName: string
-      email: string
-      phone: string
-   } | null>(null)
+   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
    const [coverLetter, setCoverLetter] = useState('')
    const [isLoading, setIsLoading] = useState(false)
    const [open, setOpen] = useState(false)
 
-   const handleUploadSubmit = (data: {
-      fullName: string
-      email: string
-      phone: string
-      file: File
-   }) => {
-      setUploadData(data)
+   const handleUploadSubmit = (data: { file: File }) => {
+      setUploadedFile(data.file)
    }
 
    const handleSubmit = async () => {
@@ -64,8 +45,8 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
          return
       }
 
-      if (selectionMode === 'upload' && !uploadData) {
-         alert('Vui lòng tải lên CV và điền đầy đủ thông tin')
+      if (selectionMode === 'upload' && !uploadedFile) {
+         alert('Vui lòng tải lên CV')
          return
       }
 
@@ -75,12 +56,12 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
             await onApply({
                cvId: selectionMode === 'library' ? selectedCV! : undefined,
                coverLetter,
-               uploadData: selectionMode === 'upload' ? uploadData! : undefined
+               uploadedFile: selectionMode === 'upload' ? uploadedFile! : undefined
             })
          }
          // Reset form
          setSelectedCV(null)
-         setUploadData(null)
+         setUploadedFile(null)
          setCoverLetter('')
          setSelectionMode('library')
          setOpen(false)
@@ -93,7 +74,7 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
    }
 
    const isFormValid =
-      (selectionMode === 'library' && selectedCV) || (selectionMode === 'upload' && uploadData)
+      (selectionMode === 'library' && selectedCV) || (selectionMode === 'upload' && uploadedFile)
 
    return (
       <Dialog open={open} onOpenChange={setOpen}>
@@ -121,7 +102,7 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
                      setSelectionMode(mode)
                      // Reset states when changing mode
                      if (mode === 'library') {
-                        setUploadData(null)
+                        setUploadedFile(null)
                      } else {
                         setSelectedCV(null)
                      }

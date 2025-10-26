@@ -20,7 +20,7 @@ export default function DialogActions({
          <Button variant='ghost' onClick={onCancel} className='flex-1' disabled={isLoading}>
             Hủy
          </Button>
-         <Button onClick={onSubmit} disabled={isDisabled || isLoading} className='flex-1'>
+         <Button onClick={onSubmit} disabled={isDisabled || isLoading} className='flex-1 !text-white'>
             {isLoading ? 'Đang xử lý...' : 'Nộp hồ sơ ứng tuyển'}
          </Button>
       </div>
