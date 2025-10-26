@@ -1,5 +1,5 @@
 import BasicInfoBox from '@/components/features/job/job-info/BasicInfoBox'
-import { JobDetail } from '@/types/job-detail.type'
+import { JobDetail } from '@/types/job.type'
 import { BriefcaseBusinessIcon, CircleStarIcon, GraduationCapIcon, UsersIcon } from 'lucide-react'
 
 type JobCommonInfoType = {

@@ -1,3 +1,4 @@
+import ApplyJobDialog from '@/components/features/job/apply-job-dialog/ApplyJobDialog'
 import BasicInfoBox from '@/components/features/job/job-info/BasicInfoBox'
 import Button from '@/components/shared/Button'
 import { JobDetail } from '@/types/job.type'
@@ -58,10 +59,20 @@ export default function JobInfo({ job }: JobInfoProps) {
          </div>
          {/*  Apply Button  */}
          <div className='flex items-stretch gap-x-2'>
-            <Button variant='primary' className='flex-1 py-2'>
-               <SendIcon size={16} strokeWidth={2.5} color='white' />
-               <div>Ứng tuyển ngay</div>
-            </Button>
+            <ApplyJobDialog
+               job={{
+                  id: job.id,
+                  title: job.title,
+                  minSalary: job.salaryMin,
+                  maxSalary: job.salaryMax,
+                  currency: job.currency
+               }}
+            >
+               <Button variant='primary' className='flex-1 py-2'>
+                  <SendIcon size={16} strokeWidth={2.5} color='white' />
+                  <div>Ứng tuyển ngay</div>
+               </Button>
+            </ApplyJobDialog>
 
             <Button variant='outline' className='!px-7'>
                <HeartIcon size={16} strokeWidth={2.5} className='text-primary-green' />
