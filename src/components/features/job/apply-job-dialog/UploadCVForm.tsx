@@ -1,59 +1,71 @@
 'use client'
 
 import Button from '@/components/shared/Button'
-// import EmailFormField from '@/components/shared/EmailFormField'
-// import FullNameFormField from '@/components/shared/FullNameFormField'
-// import PhoneFormField from '@/components/shared/PhoneFormField'
-// import { Form } from '@/components/ui/form'
-// import { zodResolver } from '@hookform/resolvers/zod'
-import { Upload } from 'lucide-react'
-import { useState } from 'react'
-// import { useForm } from 'react-hook-form'
-// import * as z from 'zod'
-
-// const uploadFormSchema = z.object({
-//    fullName: z.string().min(2, 'Họ tên phải có ít nhất 2 ký tự'),
-//    email: z.string().email('Email không hợp lệ'),
-//    phone: z.string().min(10, 'Số điện thoại phải có ít nhất 10 số')
-// })
-
-// type UploadFormData = z.infer<typeof uploadFormSchema>
+import { useFileUploader } from '@/hooks/useFileUploader'
+import { Upload, X } from 'lucide-react'
 
 interface UploadCVFormProps {
-   onSubmit: (data: { file: File }) => void
+   onFileSelected?: (file: File | null) => void
 }
 
-export default function UploadCVForm({ onSubmit }: UploadCVFormProps) {
-   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+export default function UploadCVForm({ onFileSelected }: UploadCVFormProps) {
+   const {
+      inputRef,
+      dragActive,
+      items,
+      onBrowseClick,
+      onInputChange,
+      onDrop,
+      onDragOver,
+      onDragLeave,
+      removeItem
+   } = useFileUploader({
+      accept: ['.doc', '.docx', '.pdf'],
+      maxSizeMB: 5,
+      multiple: false,
+      fieldName: 'cv'
+   })
 
-   // const form = useForm<UploadFormData>({
-   //    resolver: zodResolver(uploadFormSchema),
-   //    defaultValues: {
-   //       fullName: '',
-   //       email: '',
-   //       phone: ''
-   //    }
-   // })
+   const selectedFile = items.length > 0 ? items[0] : null
 
-   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (file) {
-         const maxSize = 5 * 1024 * 1024 // 5MB
-         if (file.size > maxSize) {
-            alert('File quá lớn. Vui lòng chọn file dưới 5MB')
-            return
-         }
-         setSelectedFile(file)
-         // Auto submit when file is selected
-         onSubmit({ file })
-      }
+   // Notify parent when file changes
+   const handleRemoveFile = (id: string) => {
+      removeItem(id)
+      onFileSelected?.(null)
+   }
+
+   // Watch for file selection changes
+   if (selectedFile && selectedFile.state !== 'error') {
+      onFileSelected?.(selectedFile.file)
+   } else if (!selectedFile) {
+      onFileSelected?.(null)
    }
 
    return (
       <div className='space-y-4'>
-         {/* File Upload */}
-         <div className='rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-gray-400'>
-            <Upload size={24} className='mx-auto mb-2 text-gray-400' />
+         {/* Hidden Input */}
+         <input
+            ref={inputRef}
+            type='file'
+            accept='.doc,.docx,.pdf'
+            className='hidden'
+            onChange={onInputChange}
+         />
+
+         {/* File Upload Area */}
+         <div
+            className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition ${
+               dragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-gray-400'
+            }`}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onClick={onBrowseClick}
+         >
+            <Upload
+               size={24}
+               className={`mx-auto mb-2 ${dragActive ? 'text-green-500' : 'text-gray-400'}`}
+            />
             <p className='text-sm font-medium text-gray-700'>
                Tải lên CV từ máy tính, chọn hoặc kéo thả
             </p>
@@ -61,23 +73,39 @@ export default function UploadCVForm({ onSubmit }: UploadCVFormProps) {
                Hỗ trợ định dạng .doc, .docx, .pdf có kích thước dưới 5MB
             </p>
 
-            <input
-               type='file'
-               accept='.doc,.docx,.pdf'
-               className='hidden'
-               id='cv-upload'
-               onChange={handleFileSelect}
-            />
-            <div className='flex justify-center'>
-               <label htmlFor='cv-upload' className='inline-block'>
-                  <Button variant='primary' className='cursor-pointer' type='button'>
-                     Chọn CV
-                  </Button>
-               </label>
+            <div className='flex justify-center' onClick={(e) => e.stopPropagation()}>
+               <Button
+                  variant='primary'
+                  className='cursor-pointer'
+                  type='button'
+                  onClick={onBrowseClick}
+               >
+                  Chọn CV
+               </Button>
             </div>
 
             {selectedFile && (
-               <p className='mt-3 text-sm text-green-600'>✓ Đã chọn: {selectedFile.name}</p>
+               <div className='mt-3 flex items-center justify-center gap-2'>
+                  {selectedFile.state === 'error' ? (
+                     <p className='text-sm text-red-600'>✗ {selectedFile.error}</p>
+                  ) : (
+                     <>
+                        <p className='text-sm text-green-600'>
+                           ✓ Đã chọn: {selectedFile.file.name}
+                        </p>
+                        <button
+                           onClick={(e) => {
+                              e.stopPropagation()
+                              handleRemoveFile(selectedFile.id)
+                           }}
+                           className='text-xs text-red-500 underline hover:text-red-700'
+                           type='button'
+                        >
+                           <X size={14} className='inline' /> Xóa
+                        </button>
+                     </>
+                  )}
+               </div>
             )}
          </div>
 

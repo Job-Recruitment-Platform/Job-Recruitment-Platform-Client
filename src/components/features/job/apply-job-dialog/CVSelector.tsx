@@ -15,7 +15,7 @@ interface CVSelectorProps {
    selectedCV: string | null
    onModeChange: (mode: SelectionMode) => void
    onCVSelect: (cvId: string) => void
-   onUploadSubmit: (data: { file: File }) => void
+   onFileSelected: (file: File | null) => void
    cvList?: CV[]
 }
 
@@ -24,7 +24,7 @@ export default function CVSelector({
    selectedCV,
    onModeChange,
    onCVSelect,
-   onUploadSubmit,
+   onFileSelected,
    cvList = []
 }: CVSelectorProps) {
    return (
@@ -120,7 +120,7 @@ export default function CVSelector({
 
                {selectedMode === 'upload' && (
                   <div className='w-full px-3 pb-3'>
-                     <UploadCVForm onSubmit={onUploadSubmit} />
+                     <UploadCVForm onFileSelected={onFileSelected} />
                   </div>
                )}
             </div>

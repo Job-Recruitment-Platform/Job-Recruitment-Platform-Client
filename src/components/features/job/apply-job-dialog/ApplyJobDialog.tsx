@@ -7,10 +7,12 @@ import {
    DialogTitle,
    DialogTrigger
 } from '@/components/ui/dialog'
+import { useApplyJob } from '@/hooks/useCandidate'
 import { useState } from 'react'
 import CVSelector from './CVSelector'
 import CoverLetterInput from './CoverLetterInput'
 import DialogActions from './DialogActions'
+import toast from 'react-hot-toast'
 
 type SelectionMode = 'library' | 'upload'
 
@@ -22,20 +24,52 @@ interface ApplyJobDialogProps {
       maxSalary: number
       currency: string
    }
-   onApply?: (data: { cvId?: string; coverLetter: string; uploadedFile?: File }) => Promise<void>
+   onSuccess?: () => void
    children?: React.ReactNode
 }
 
-export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialogProps) {
+export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDialogProps) {
    const [selectionMode, setSelectionMode] = useState<SelectionMode>('library')
    const [selectedCV, setSelectedCV] = useState<string | null>(null)
    const [uploadedFile, setUploadedFile] = useState<File | null>(null)
    const [coverLetter, setCoverLetter] = useState('')
-   const [isLoading, setIsLoading] = useState(false)
    const [open, setOpen] = useState(false)
 
-   const handleUploadSubmit = (data: { file: File }) => {
-      setUploadedFile(data.file)
+   // Use TanStack Query mutation
+   const { mutate: applyJob, isPending } = useApplyJob({
+      onSuccess: (data) => {
+         console.log('✅ Apply job success data:', data)
+         toast.success('Ứng tuyển thành công!')
+
+         // Reset form
+         setSelectedCV(null)
+         setUploadedFile(null)
+         setCoverLetter('')
+         setSelectionMode('library')
+         setOpen(false)
+
+         onSuccess?.()
+      },
+      onError: (error) => {
+         console.error('❌ Lỗi khi ứng tuyển:', error)
+         console.log('❌ Error details:', {
+            message: error.message,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            response: (error as any)?.response,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            responseData: (error as any)?.response?.data
+         })
+         const errorMessage =
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (error as any)?.response?.data?.message ||
+            error.message ||
+            'Có lỗi xảy ra, vui lòng thử lại'
+         alert(errorMessage)
+      }
+   })
+
+   const handleFileSelected = (file: File | null) => {
+      setUploadedFile(file)
    }
 
    const handleSubmit = async () => {
@@ -50,26 +84,14 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
          return
       }
 
-      setIsLoading(true)
-      try {
-         if (onApply) {
-            await onApply({
-               cvId: selectionMode === 'library' ? selectedCV! : undefined,
-               coverLetter,
-               uploadedFile: selectionMode === 'upload' ? uploadedFile! : undefined
-            })
-         }
-         // Reset form
-         setSelectedCV(null)
-         setUploadedFile(null)
-         setCoverLetter('')
-         setSelectionMode('library')
-         setOpen(false)
-      } catch (error) {
-         console.error('Lỗi khi ứng tuyển:', error)
-         alert('Có lỗi xảy ra, vui lòng thử lại')
-      } finally {
-         setIsLoading(false)
+      // TODO: Handle library CV selection
+      // For now, only handle file upload
+      if (selectionMode === 'upload' && uploadedFile) {
+         applyJob({
+            jobId: job.id,
+            file: uploadedFile,
+            coverLetter: coverLetter || undefined
+         })
       }
    }
 
@@ -108,7 +130,7 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
                      }
                   }}
                   onCVSelect={setSelectedCV}
-                  onUploadSubmit={handleUploadSubmit}
+                  onFileSelected={handleFileSelected}
                />
 
                {/* Cover Letter */}
@@ -118,7 +140,7 @@ export default function ApplyJobDialog({ job, onApply, children }: ApplyJobDialo
                <DialogActions
                   onCancel={() => setOpen(false)}
                   onSubmit={handleSubmit}
-                  isLoading={isLoading}
+                  isLoading={isPending}
                   isDisabled={!isFormValid}
                />
             </div>
