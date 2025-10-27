@@ -1,4 +1,12 @@
+'use client'
+
+import SavedJobItem from '@/components/features/job/SavedJobItem'
+import { cn } from '@/lib/utils'
+import { useSavedJobsStore } from '@/store/useSavedJobStore'
+
 export default function JobSavePage() {
+   const { jobs } = useSavedJobsStore()
+
    return (
       <div className='container my-7 grid min-h-screen !max-w-[1130px] grid-cols-3 gap-x-7 px-5'>
          <div className='col-span-2 rounded-lg'>
@@ -20,8 +28,23 @@ export default function JobSavePage() {
             </div>
 
             {/*  Saved Jobs List  */}
-            <div className='flex min-h-[316px] justify-center bg-white'>
-               <div></div>
+            <div
+               className={cn('flex rounded-b-lg bg-white p-5', {
+                  'min-h-[316px]': jobs.length === 0
+               })}
+            >
+               {jobs.length === 0 ? (
+                  <div className='my-20 text-center text-gray-500'>
+                     Bạn chưa lưu việc làm nào. Hãy duyệt qua các việc làm và lưu những việc làm phù
+                     hợp với bạn.
+                  </div>
+               ) : (
+                  <div className='flex w-full flex-col gap-y-5'>
+                     {jobs.map((job) => (
+                        <SavedJobItem key={job.id} job={job} />
+                     ))}
+                  </div>
+               )}
             </div>
          </div>
       </div>

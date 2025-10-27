@@ -3,20 +3,31 @@
 import Button from '@/components/shared/Button'
 import { useSavedJobsStore } from '@/store/useSavedJobStore'
 import { HeadsetIcon, HeartIcon, ShieldCheckIcon, UserRoundPlusIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function HelperSidebar() {
+   const router = useRouter()
+   const [mounted, setMounted] = useState(false)
    const { jobs } = useSavedJobsStore()
+
+   useEffect(() => {
+      setMounted(true)
+   }, [])
 
    return (
       <div className='flex flex-col items-center space-y-2'>
          <Button
             variant='outline'
             className='relative h-[40px] w-[40px] !rounded-full border-0 bg-white !p-0'
+            onClick={() => router.push('/job/save')}
          >
             <HeartIcon size={20} fill='#00b14f' />
-            <div className='bg-primary absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 rounded-full text-center h-[15px] w-[15px] text-[10px] text-white'>
-               {jobs.length}
-            </div>
+            {mounted && jobs.length > 0 && (
+               <div className='bg-primary absolute top-0 right-0 h-[15px] w-[15px] translate-x-1/3 -translate-y-1/3 rounded-full text-center text-[10px] text-white'>
+                  {jobs.length}
+               </div>
+            )}
          </Button>
 
          <Button
