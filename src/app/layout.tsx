@@ -1,6 +1,7 @@
 import Footer from '@/components/layouts/Footer'
 import Header from '@/components/layouts/Header'
 import HelperSidebar from '@/components/layouts/HelperSidebar'
+import Init from '@/components/layouts/Init'
 import QueryProvider from '@/lib/query-client'
 import { AuthProvider } from '@/store/AuthContext'
 import '@/styles/globals.css'
@@ -33,6 +34,7 @@ export default function RootLayout({
          <body className={`${geistSans.variable} ${geistMono.variable} bg-smoke antialiased`}>
             <QueryProvider>
                <AuthProvider>
+                  <Init />
                   <Header />
                   {children}
                   <div className='fixed right-3 bottom-15 z-50'>

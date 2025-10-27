@@ -1,4 +1,5 @@
 import Button from '@/components/shared/Button'
+import SavedJobButton from '@/components/shared/SavedJobButton'
 import { Badge } from '@/components/ui/badge'
 import {
    Actions,
@@ -15,7 +16,7 @@ import {
 } from '@/components/ui/job-card'
 import { formatExperience, formatSalary } from '@/lib/formatters/job.formatter'
 import type { JobSearchResult } from '@/types/job.type'
-import { EyeOffIcon, HeartIcon } from 'lucide-react'
+import { EyeOffIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 type JobSearchItemProps = {
@@ -30,7 +31,7 @@ export default function JobSearchItem({ job }: JobSearchItemProps) {
    }
 
    return (
-      <JobCard jobId={job.id} onCardClick={handleCardClick}>
+      <JobCard jobId={job.id}>
          <Body>
             <Logo
                src='https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/fxfYyqrL7o9EbbD42aXNySpJPtohIu15_1745398913____bae212c6e41ad23ff4b62d244094bd41.jpg'
@@ -40,7 +41,7 @@ export default function JobSearchItem({ job }: JobSearchItemProps) {
             <Content>
                <TitleBlock>
                   <TitleContent>
-                     <JobTitle>{job.title}</JobTitle>
+                     <JobTitle onClick={handleCardClick}>{job.title}</JobTitle>
                      <Company>{job.company}</Company>
                      <Meta>
                         <Badge variant='outline'>{job.location}</Badge>
@@ -67,9 +68,7 @@ export default function JobSearchItem({ job }: JobSearchItemProps) {
                      >
                         <EyeOffIcon color='gray' size={16} />
                      </Button>
-                     <Button variant='outline' className='rounded-full !p-1.5'>
-                        <HeartIcon size={16} />
-                     </Button>
+                     <SavedJobButton jobId={job.id} className='rounded-full !p-1.5' />
                   </div>
                </Actions>
             </Content>

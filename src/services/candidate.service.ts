@@ -1,4 +1,6 @@
-import { PaginatedResponse } from '@/types/api.type.'
+import { useSavedJobsStore } from '@/store/useSavedJobStore'
+import { PaginationResponse } from '@/types/api.type.'
+import { SavedJobType } from '@/types/job.type'
 import { BaseService } from './base.service'
 
 export interface ApplyJobRequest {
@@ -45,9 +47,28 @@ class CandidateService extends BaseService {
       return response.data
    }
 
-   async getSavedJobs(): Promise<PaginatedResponse<any>> {
-      const response = await this.get(`/saved-jobs`)
-      return response.data
+   async getSavedJobs(): Promise<void> {
+      const response = await this.get<PaginationResponse<SavedJobType[]>>(`/saved-jobs`)
+
+      if (response.data) {
+         useSavedJobsStore.getState().setJobs(response.data.content)
+      }
+   }
+
+   async saveJob(jobId: number): Promise<void> {
+      const response = await this.post<SavedJobType>(`/save/${jobId}`)
+
+      if (response.data.id) {
+         useSavedJobsStore.getState().addJob(response.data)
+      }
+   }
+
+   async removeSavedJob(jobId: number): Promise<void> {
+      const response = await this.delete(`/save/${jobId}`)
+
+      if (response.code === 1000) {
+         useSavedJobsStore.getState().removeJob(jobId)
+      }
    }
 }
 const candidateService = new CandidateService()
