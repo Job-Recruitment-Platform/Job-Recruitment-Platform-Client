@@ -6,13 +6,15 @@ export interface ApiResponse<T = unknown> {
 }
 
 // Pagination Response
-export interface PaginationMeta {
-   currentPage: number
-   pageSize: number
+export interface PaginationResponse<T> {
+   page: number
+   size: number
+   totalElements: number
    totalPages: number
-   totalItems: number
+   first: boolean
+   last: boolean
+   hasNext: boolean
+   hasPrevious: boolean
+   content: T
 }
-
-export interface PaginatedResponse<T> extends ApiResponse<T> {
-   meta: PaginationMeta
-}
+  

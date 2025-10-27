@@ -1,3 +1,4 @@
+import { PaginatedResponse } from '@/types/api.type.'
 import { BaseService } from './base.service'
 
 export interface ApplyJobRequest {
@@ -41,6 +42,11 @@ class CandidateService extends BaseService {
          }
       })
 
+      return response.data
+   }
+
+   async getSavedJobs(): Promise<PaginatedResponse<any>> {
+      const response = await this.get(`/saved-jobs`)
       return response.data
    }
 }
