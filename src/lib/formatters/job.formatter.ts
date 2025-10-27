@@ -56,3 +56,25 @@ export const formatDate = (timestamp: number): string => {
       day: 'numeric'
    })
 }
+
+/**
+ * Format date and time for saved job display
+ * @param date - Date object or date string
+ * @returns Formatted date and time string (e.g., "27/10/2025 - 14:30")
+ */
+export const formatSavedDateTime = (date: Date | string): string => {
+   const dateObj = typeof date === 'string' ? new Date(date) : date
+
+   const dateStr = dateObj.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+   })
+
+   const timeStr = dateObj.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit'
+   })
+
+   return `${dateStr} - ${timeStr}`
+}

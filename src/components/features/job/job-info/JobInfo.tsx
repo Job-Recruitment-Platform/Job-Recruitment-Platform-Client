@@ -1,14 +1,9 @@
+import ApplyJobDialog from '@/components/features/job/apply-job-dialog/ApplyJobDialog'
 import BasicInfoBox from '@/components/features/job/job-info/BasicInfoBox'
 import Button from '@/components/shared/Button'
+import SavedJobButton from '@/components/shared/SavedJobButton'
 import { JobDetail } from '@/types/job.type'
-import {
-   CheckIcon,
-   CircleDollarSignIcon,
-   ClockIcon,
-   HeartIcon,
-   MapPinIcon,
-   SendIcon
-} from 'lucide-react'
+import { CheckIcon, CircleDollarSignIcon, ClockIcon, MapPinIcon, SendIcon } from 'lucide-react'
 
 type JobInfoProps = {
    job: JobDetail
@@ -58,15 +53,24 @@ export default function JobInfo({ job }: JobInfoProps) {
          </div>
          {/*  Apply Button  */}
          <div className='flex items-stretch gap-x-2'>
-            <Button variant='primary' className='flex-1 py-2'>
-               <SendIcon size={16} strokeWidth={2.5} color='white' />
-               <div>Ứng tuyển ngay</div>
-            </Button>
+            <ApplyJobDialog
+               job={{
+                  id: job.id,
+                  title: job.title,
+                  minSalary: job.salaryMin,
+                  maxSalary: job.salaryMax,
+                  currency: job.currency
+               }}
+            >
+               <Button variant='primary' className='flex-1 py-2'>
+                  <SendIcon size={16} strokeWidth={2.5} color='white' />
+                  <div>Ứng tuyển ngay</div>
+               </Button>
+            </ApplyJobDialog>
 
-            <Button variant='outline' className='!px-7'>
-               <HeartIcon size={16} strokeWidth={2.5} className='text-primary-green' />
+            <SavedJobButton jobId={job.id} className='!px-7'>
                <div>Lưu tin</div>
-            </Button>
+            </SavedJobButton>
          </div>
       </div>
    )

@@ -13,7 +13,7 @@ const useJob = () => {
    return v
 }
 
-type WithChildren = { children?: React.ReactNode; className?: string }
+type WithChildren = { children?: React.ReactNode; className?: string; onClick?: () => void }
 
 /* ---------------- Root ---------------- */
 type JobCardProps = WithChildren & {
@@ -88,9 +88,10 @@ export const TitleContent = ({ children, className }: WithChildren) => (
    <div className={cx('flex-1 space-y-3', className)}>{children}</div>
 )
 
-export const JobTitle = ({ children, className }: WithChildren) => (
+export const JobTitle = ({ children, className, onClick }: WithChildren) => (
    <div
       className={cx('group-hover:text-primary text-[15px] font-semibold text-black/80', className)}
+      onClick={onClick}
    >
       {children}
    </div>

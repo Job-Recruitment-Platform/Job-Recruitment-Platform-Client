@@ -1,7 +1,9 @@
 import Footer from '@/components/layouts/Footer'
 import Header from '@/components/layouts/Header'
-import { AuthProvider } from '@/contexts/AuthContext'
+import HelperSidebar from '@/components/layouts/HelperSidebar'
+import Init from '@/components/layouts/Init'
 import QueryProvider from '@/lib/query-client'
+import { AuthProvider } from '@/store/AuthContext'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
@@ -29,11 +31,15 @@ export default function RootLayout({
 }>) {
    return (
       <html lang='en'>
-         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+         <body className={`${geistSans.variable} ${geistMono.variable} bg-smoke antialiased`}>
             <QueryProvider>
                <AuthProvider>
+                  <Init />
                   <Header />
                   {children}
+                  <div className='fixed right-3 bottom-15 z-50'>
+                     <HelperSidebar />
+                  </div>
                   <Footer />
 
                   {/* Toast Configuration - Anti-spam via Map-based tracking system */}

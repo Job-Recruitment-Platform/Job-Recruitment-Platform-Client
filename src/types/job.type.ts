@@ -110,3 +110,9 @@ export interface JobType {
    location: string
    salary: string
 }
+
+export interface SavedJobType {
+   id: number
+   job: JobDetail
+   savedAt: Date
+}

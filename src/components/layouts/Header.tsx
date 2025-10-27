@@ -1,6 +1,7 @@
 'use client'
 
 import Button from '@/components/shared/Button'
+import SavedJobButton from '@/components/shared/SavedJobButton'
 import UserProfile from '@/components/shared/user-profile/UserProfile'
 import { useAuth } from '@/hooks/useAuth'
 import { BellRingIcon, ChevronsRight, MessageCircleMoreIcon } from 'lucide-react'
