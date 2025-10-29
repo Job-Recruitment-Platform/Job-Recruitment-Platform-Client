@@ -5,19 +5,49 @@ import SavedJobButton from '@/components/shared/SavedJobButton'
 import UserProfile from '@/components/shared/user-profile/UserProfile'
 import { useAuth } from '@/hooks/useAuth'
 import { BellRingIcon, ChevronsRight, MessageCircleMoreIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { Briefcase } from 'lucide-react'
 
 export default function Header() {
    const { isLogin } = useAuth()
    const router = useRouter()
+   const pathname = usePathname()
+
+   const navLinks = [
+      { href: '/', label: 'Trang chủ' },
+      { href: '/search', label: 'Việc làm' },
+      { href: '#', label: 'Cẩm nang nghề nghiệp' }
+   ]
+   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname?.startsWith(href))
 
    return (
-      <header className='flex items-center justify-between gap-x-3 bg-white px-5 py-4'>
-         <div className='space-x-3'>
-            <span>Việc làm</span>
-            <span>Cẩm nang nghề nghiệp</span>
-         </div>
-         <div className='flex space-x-3'>
+      <header className='bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b'>
+         <div className='container mx-auto flex items-center justify-between gap-4 px-5 py-3'>
+            <div className='flex min-w-0 items-center gap-6'>
+               <Link href='/' className='flex items-center gap-2 rounded-md px-2 py-1 text-primary hover:opacity-90'>
+                  <span className='flex h-7 w-7 items-center justify-center rounded-md bg-primary/10'>
+                     <Briefcase size={16} />
+                  </span>
+                  <span className='text-base font-semibold'>JobFinder</span>
+               </Link>
+               <nav className='hidden items-center gap-1 md:flex'>
+                  {navLinks.map((link) => (
+                     <Link
+                        key={link.href}
+                        href={link.href}
+                        className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+                           isActive(link.href)
+                              ? 'bg-primary/10 text-primary'
+                              : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                     >
+                        {link.label}
+                     </Link>
+                  ))}
+               </nav>
+            </div>
+            <div className='flex items-center gap-x-3'>
             {isLogin ? (
                <div className='flex items-center gap-x-4'>
                   <Button variant='ghost' className='rounded-full !p-3'>
@@ -31,7 +61,10 @@ export default function Header() {
 
                   <div className='space-y-1 border-l pl-4 text-start'>
                      <div className='text-xs text-gray-400'>Bạn là nhà tuyển dụng</div>
-                     <button className='hover:text-primary flex items-center gap-x-1 text-sm font-semibold'>
+                     <button
+                        className='hover:text-primary flex items-center gap-x-1 text-sm font-semibold'
+                        onClick={() => router.push('/job/save')}
+                     >
                         <span>Đăng tuyển ngay</span> <ChevronsRight size={16} />
                      </button>
                   </div>
@@ -52,11 +85,15 @@ export default function Header() {
                   >
                      Đăng nhập
                   </Button>
-                  <Button variant='ghost' className='rounded-full px-5 py-2'>
+                  <Button variant='ghost'
+                  className='rounded-full px-5 py-2'
+                  onClick={() => router.push('/recruiter/register')}
+                  >
                      Đăng tuyển và tìm hồ sơ
                   </Button>
                </>
             )}
+            </div>
          </div>
       </header>
    )
