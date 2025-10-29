@@ -29,7 +29,7 @@ export default function Header() {
                   <span className='flex h-7 w-7 items-center justify-center rounded-md bg-primary/10'>
                      <Briefcase size={16} />
                   </span>
-                  <span className='text-base font-semibold'>JobFinder</span>
+                  <span className='text-base font-semibold'>BotCV</span>
                </Link>
                <nav className='hidden items-center gap-1 md:flex'>
                   {navLinks.map((link) => (

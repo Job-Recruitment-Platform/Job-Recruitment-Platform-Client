@@ -7,7 +7,7 @@ export default function Footer() {
 			<div className='container mx-auto py-10'>
 				<div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-4'>
 					<div className='space-y-3'>
-						<div className='text-base font-semibold'>JobFinder</div>
+						<div className='text-base font-semibold'>BotCV</div>
 						<p className='text-sm text-gray-600'>
 							Nền tảng kết nối ứng viên và nhà tuyển dụng, giúp bạn tìm kiếm cơ hội
 							nghề nghiệp phù hợp nhanh chóng.
@@ -19,7 +19,7 @@ export default function Footer() {
 							<Link href='#' className='rounded-full border p-2 text-gray-600 hover:text-primary'>
 								<Linkedin size={16} />
 							</Link>
-							<Link href='mailto:contact@jobfinder.vn' className='rounded-full border p-2 text-gray-600 hover:text-primary'>
+							<Link href='mailto:contact@BotCV.vn' className='rounded-full border p-2 text-gray-600 hover:text-primary'>
 								<Mail size={16} />
 							</Link>
 						</div>
@@ -54,7 +54,7 @@ export default function Footer() {
 				</div>
 
 				<div className='mt-10 border-t pt-6 text-center text-xs text-gray-500'>
-					© {new Date().getFullYear()} JobFinder. All rights reserved.
+					© {new Date().getFullYear()} BotCV. All rights reserved.
 				</div>
 			</div>
 		</footer>
