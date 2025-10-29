@@ -3,3 +3,5 @@ import RecruiterRegisterForm from '@/components/features/auth/RecruiterRegisterF
 export default function RecruiterRegisterPage() {
    return <RecruiterRegisterForm />
 }
+
+

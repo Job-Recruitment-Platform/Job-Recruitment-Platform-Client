@@ -14,12 +14,11 @@ export default function RecruiterRegisterLayout({
                <div className='text-primary text-xl font-semibold'>Đăng ký tài khoản nhà tuyển dụng</div>
             </div>
 
-            {/*  Show Form Here  */}
             {children}
 
             <div className='text-center text-sm'>
                Đã có tài khoản?{' '}
-               <Link href='/(auth)/login' className='text-primary hover:underline'>
+               <Link href='/auth/login' className='text-primary hover:underline'>
                   Đăng nhập ngay
                </Link>
             </div>
@@ -27,3 +26,5 @@ export default function RecruiterRegisterLayout({
       </div>
    )
 }
+
+
