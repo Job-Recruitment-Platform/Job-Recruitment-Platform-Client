@@ -6,9 +6,13 @@ type PaginationProps = {
    className?: string
    children?: React.ReactNode
    size?: 'sm' | 'md' | 'lg'
+   onPrev?: () => void
+   onNext?: () => void
+   disabledPrev?: boolean
+   disabledNext?: boolean
 }
 
-export default function Pagination({ className, children, size = 'sm' }: PaginationProps) {
+export default function Pagination({ className, children, size = 'sm', onPrev, onNext, disabledPrev, disabledNext }: PaginationProps) {
    return (
       <div className={cx('flex items-center gap-x-3', className)}>
          <Button
@@ -17,6 +21,8 @@ export default function Pagination({ className, children, size = 'sm' }: Paginat
                '!p-1.5': size === 'sm',
                '!p-2': size === 'md'
             })}
+            onClick={onPrev}
+            disabled={disabledPrev}
          >
             <ChevronLeft size={13} />
          </Button>
@@ -27,6 +33,8 @@ export default function Pagination({ className, children, size = 'sm' }: Paginat
                '!p-1.5': size === 'sm',
                '!p-2': size === 'md'
             })}
+            onClick={onNext}
+            disabled={disabledNext}
          >
             <ChevronRight size={13} />
          </Button>
