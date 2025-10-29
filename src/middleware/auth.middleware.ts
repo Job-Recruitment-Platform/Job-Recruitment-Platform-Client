@@ -1,5 +1,5 @@
 import { ApiError, type ApiResponse } from '@/lib/axios'
-import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
+import { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
 
 // Flag to prevent multiple refresh token calls
 let isRefreshing = false
@@ -29,10 +29,18 @@ const clearAuthAndRedirect = () => {
 }
 
 /**
+ * Get auth service lazily to avoid circular dependency
+ */
+const getAuthService = async () => {
+   const { authService } = await import('@/services/auth.service')
+   return authService
+}
+
+/**
  * Setup authentication interceptors for axios instance
  * Handles token injection and auto-refresh on 401
  */
-export const setupAuthInterceptors = (client: AxiosInstance, baseURL: string) => {
+export const setupAuthInterceptors = (client: AxiosInstance) => {
    // Request interceptor - inject access token
    client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
@@ -84,20 +92,16 @@ export const setupAuthInterceptors = (client: AxiosInstance, baseURL: string) =>
                   throw new Error('No refresh token')
                }
 
-               // Call refresh token API
-               const response = await axios.post<
-                  ApiResponse<{ accessToken: string; refreshToken: string }>
-               >(`${baseURL}/auth/refresh`, { refreshToken })
+               // Use authService to refresh token
+               const authService = await getAuthService()
+               await authService.refreshToken()
 
-               const { accessToken, refreshToken: newRefreshToken } = response.data.data
-
-               // Save new tokens
-               localStorage.setItem('accessToken', accessToken)
-               localStorage.setItem('refreshToken', newRefreshToken)
+               // Get new access token from localStorage (already saved by authService)
+               const newAccessToken = localStorage.getItem('accessToken')
 
                // Update authorization header
-               if (originalRequest.headers) {
-                  originalRequest.headers.Authorization = `Bearer ${accessToken}`
+               if (originalRequest.headers && newAccessToken) {
+                  originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
                }
 
                processQueue(null)
