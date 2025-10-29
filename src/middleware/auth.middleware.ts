@@ -1,14 +1,47 @@
 import { ApiError, type ApiResponse } from '@/lib/axios'
 import { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
 
-// Flag to prevent multiple refresh token calls
+// ==================== Token Management ====================
+
+function getAccessToken(): string | null {
+   if (typeof window === 'undefined') return null
+   return localStorage.getItem('accessToken')
+}
+
+function getRefreshToken(): string | null {
+   if (typeof window === 'undefined') return null
+   return localStorage.getItem('refreshToken')
+}
+
+function clearTokens(): void {
+   if (typeof window === 'undefined') return
+   localStorage.removeItem('accessToken')
+   localStorage.removeItem('refreshToken')
+}
+
+// ==================== Auth Handlers ====================
+
+async function handleUnauthorized(): Promise<void> {
+   clearTokens()
+   if (typeof window !== 'undefined') {
+      window.location.href = '/auth/login'
+   }
+}
+
+async function getAuthService() {
+   const { authService } = await import('@/services/auth.service')
+   return authService
+}
+
+// ==================== Token Refresh Queue ====================
+
 let isRefreshing = false
 let failedQueue: Array<{
    resolve: (value?: unknown) => void
    reject: (reason?: unknown) => void
 }> = []
 
-const processQueue = (error: Error | null = null) => {
+function processQueue(error: Error | null = null): void {
    failedQueue.forEach((prom) => {
       if (error) {
          prom.reject(error)
@@ -16,61 +49,63 @@ const processQueue = (error: Error | null = null) => {
          prom.resolve()
       }
    })
-
    failedQueue = []
 }
 
-const clearAuthAndRedirect = () => {
-   if (typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      window.location.href = '/auth/login'
+// ==================== Error Handling ====================
+
+function createApiError(error: AxiosError<ApiResponse>): ApiError {
+   if (error.response) {
+      const { code, message, data } = error.response.data || {}
+      return new ApiError(
+         typeof code === 'number' ? code : error.response.status,
+         typeof message === 'string' ? message : error.response.statusText || 'Đã có lỗi xảy ra',
+         data
+      )
    }
+
+   if (error.request) {
+      return new ApiError(0, 'Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng.')
+   }
+
+   return new ApiError(0, error.message || 'Đã có lỗi không xác định')
 }
 
-/**
- * Get auth service lazily to avoid circular dependency
- */
-const getAuthService = async () => {
-   const { authService } = await import('@/services/auth.service')
-   return authService
-}
+// ==================== Interceptor Setup ====================
 
 /**
  * Setup authentication interceptors for axios instance
  * Handles token injection and auto-refresh on 401
  */
-export const setupAuthInterceptors = (client: AxiosInstance) => {
+export function setupAuthInterceptors(client: AxiosInstance): void {
    // Request interceptor - inject access token
    client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-         if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('accessToken')
-            if (token && config.headers) {
-               config.headers.Authorization = `Bearer ${token}`
-            }
+         const token = getAccessToken()
+         if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`
          }
          return config
       },
-      (error) => {
-         return Promise.reject(error)
-      }
+      (error) => Promise.reject(error)
    )
 
-   // Response interceptor - handle 401 and auto-refresh token
+   // Response interceptor - handle errors and auto-refresh
    client.interceptors.response.use(
       (response) => response,
       async (error: AxiosError<ApiResponse>) => {
          const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+         const status = error.response?.status
 
          // Handle 401 - Unauthorized
-         if (error.response?.status === 401 && !originalRequest._retry) {
+         if (status === 401 && !originalRequest._retry) {
             // Skip refresh for auth endpoints
-            if (
+            const isAuthEndpoint =
                originalRequest.url?.includes('/auth/login') ||
                originalRequest.url?.includes('/auth/refresh')
-            ) {
-               clearAuthAndRedirect()
+
+            if (isAuthEndpoint) {
+               await handleUnauthorized()
                throw new ApiError(401, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
             }
 
@@ -87,19 +122,17 @@ export const setupAuthInterceptors = (client: AxiosInstance) => {
             isRefreshing = true
 
             try {
-               const refreshToken = localStorage.getItem('refreshToken')
+               const refreshToken = getRefreshToken()
                if (!refreshToken) {
-                  throw new Error('No refresh token')
+                  throw new Error('No refresh token available')
                }
 
                // Use authService to refresh token
                const authService = await getAuthService()
                await authService.refreshToken()
 
-               // Get new access token from localStorage (already saved by authService)
-               const newAccessToken = localStorage.getItem('accessToken')
-
-               // Update authorization header
+               // Update authorization header with new token
+               const newAccessToken = getAccessToken()
                if (originalRequest.headers && newAccessToken) {
                   originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
                }
@@ -108,32 +141,15 @@ export const setupAuthInterceptors = (client: AxiosInstance) => {
                return client(originalRequest)
             } catch {
                processQueue(new Error('Token refresh failed'))
-               clearAuthAndRedirect()
+               await handleUnauthorized()
                throw new ApiError(401, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
             } finally {
                isRefreshing = false
             }
          }
 
-         // Handle other errors
-         if (error.response) {
-            const { code, message, data } = error.response.data || {}
-            throw new ApiError(
-               typeof code === 'number' ? code : error.response.status,
-               typeof message === 'string'
-                  ? message
-                  : error.response.statusText || 'Đã có lỗi xảy ra',
-               data
-            )
-         }
-
-         // Network error
-         if (error.request) {
-            throw new ApiError(0, 'Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng.')
-         }
-
-         // Other errors
-         throw new ApiError(0, error.message || 'Đã có lỗi không xác định')
+         // Throw structured ApiError for all cases
+         throw createApiError(error)
       }
    )
 }
