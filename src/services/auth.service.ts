@@ -1,6 +1,6 @@
 import type { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
-import type { LoginRequest, RegisterRequest, TokenResponse, UserResponse } from '@/types/auth.type'
+import type { LoginRequest, LogoutRequest, RegisterRequest, TokenResponse, UserResponse } from '@/types/auth.type'
 
 /**
  * Authentication Service
@@ -30,9 +30,9 @@ class AuthService extends BaseService {
    /**
     * Logout user
     */
-   async logout(): Promise<void> {
+   async logout(payload: LogoutRequest): Promise<void> {
       try {
-         await this.post('/logout')
+         await this.post('/logout', payload)
       } finally {
          this.clearTokens()
       }

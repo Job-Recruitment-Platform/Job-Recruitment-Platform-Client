@@ -8,11 +8,21 @@ import { BellRingIcon, ChevronsRight, MessageCircleMoreIcon } from 'lucide-react
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Briefcase } from 'lucide-react'
+import { jwtDecode } from 'jwt-decode'
 
 export default function Header() {
    const { isLogin } = useAuth()
    const router = useRouter()
    const pathname = usePathname()
+
+   const userRole = (() => {
+      try {
+         const decoded: { role: string } = jwtDecode(localStorage.getItem('accessToken') || '')
+         return decoded.role
+      } catch {
+         return null
+      }
+   })()
 
    const navLinks = [
       { href: '/', label: 'Trang chủ' },
@@ -63,7 +73,14 @@ export default function Header() {
                      <div className='text-xs text-gray-400'>Bạn là nhà tuyển dụng</div>
                      <button
                         className='hover:text-primary flex items-center gap-x-1 text-sm font-semibold'
-                        onClick={() => router.push('/job/save')}
+                        onClick={() => { 
+                           if (userRole === 'RECRUITER') { 
+                              router.push('/recruiter/dashboard')
+                           }
+                           else if (userRole === 'CANDIDATE') {
+                              router.push('/recruiter/register')
+                           }
+                        }}
                      >
                         <span>Đăng tuyển ngay</span> <ChevronsRight size={16} />
                      </button>

@@ -6,6 +6,10 @@ export interface LoginRequest {
    password: string
 }
 
+export interface LogoutRequest {
+   refreshToken: string
+}
+
 export interface RegisterRequest {
    email: string
    fullName: string
@@ -33,6 +37,15 @@ export interface RefreshTokenRequest {
 export interface TokenResponse {
    accessToken: string
    refreshToken: string
+}
+
+export interface TokenPayload {
+   iss: string
+   sub: string
+   role: string
+   exp: number
+   iat: number
+   tokenType: string
 }
 
 export interface UserResponse {

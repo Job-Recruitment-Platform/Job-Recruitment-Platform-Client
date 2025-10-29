@@ -4,7 +4,9 @@ import Button from '@/components/shared/Button'
 import UserInfo from '@/components/shared/user-profile/UserInfo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useAuth } from '@/hooks/useAuth'
+import { jwtDecode } from 'jwt-decode'
 import { Building2, LogOut, Settings, User } from 'lucide-react'
+import { useRouter } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -15,11 +17,22 @@ type UserProfileDialogProps = {
 export default function UserProfilePopover({ children }: UserProfileDialogProps) {
    const [open, setOpen] = useState(false)
    const { logout } = useAuth()
+   const router = useRouter()
+
+   const isRecruiter = (() => {
+      try {
+         const decoded: { role: string } = jwtDecode(localStorage.getItem('accessToken') || '')
+         return decoded.role === 'RECRUITER'
+      } catch {
+         return false
+      }
+   })()
 
    const handleLogout = async () => {
       try {
          await logout()
          setOpen(false)
+         router.push('/')
       } catch (error) {
          console.error('Logout failed:', error)
       }
@@ -61,7 +74,8 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                   <Settings size={16} />
                   Chỉnh sửa hồ sơ
                </Link>
-               <Link
+               {isRecruiter && (
+                  <Link
                   href='/recruiter/dashboard'
                   className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                   onClick={() => setOpen(false)}
@@ -69,7 +83,9 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                   <Building2 size={16} />
                   Khu vực nhà tuyển dụng
                </Link>
-               <Link
+               )}
+               {isRecruiter && (
+                  <Link
                   href='/recruiter/settings/company'
                   className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                   onClick={() => setOpen(false)}
@@ -77,6 +93,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                   <Settings size={16} />
                   Cài đặt công ty
                </Link>
+               )}
             </div>
 
             <div className='border-t p-3'>
