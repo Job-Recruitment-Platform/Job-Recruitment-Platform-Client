@@ -1,7 +1,69 @@
-import { Briefcase, FileText, Users } from 'lucide-react'
+'use client'
+
+import { Briefcase, FileText, Users, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
+import { statisticService } from '@/services/statistic.service'
+import { useMemo } from 'react'
+
+function formatRelativeTime(dateString: string): string {
+   const date = new Date(dateString)
+   const now = new Date()
+   const diffMs = now.getTime() - date.getTime()
+   const diffMins = Math.floor(diffMs / 60000)
+   const diffHours = Math.floor(diffMs / 3600000)
+   const diffDays = Math.floor(diffMs / 86400000)
+
+   if (diffMins < 1) return 'Vừa xong'
+   if (diffMins < 60) return `${diffMins} phút trước`
+   if (diffHours < 24) return `${diffHours} giờ trước`
+   if (diffDays === 1) return 'Hôm qua'
+   if (diffDays < 7) return `${diffDays} ngày trước`
+   if (diffDays < 30) return `${Math.floor(diffDays / 7)} tuần trước`
+   return date.toLocaleDateString('vi-VN')
+}
 
 export default function RecruiterDashboardPage() {
+   const { data, isLoading, isError } = useQuery({
+      queryKey: ['recruiter-statistics'],
+      queryFn: () => statisticService.getStatistics(),
+      refetchOnWindowFocus: false
+   })
+
+   const statistics = data?.data
+
+   const weeklyData = useMemo(() => {
+      if (!statistics?.weeklyApplicationCount) return { data: [], labels: [] }
+      
+      const entries = Object.entries(statistics.weeklyApplicationCount)
+         .sort(([a], [b]) => Number(a) - Number(b))
+         .slice(-8)
+      
+      return {
+         data: entries.map(([_, count]) => count),
+         labels: entries.map(([week]) => `W${week}`)
+      }
+   }, [statistics?.weeklyApplicationCount])
+
+   if (isLoading) {
+      return (
+         <div className='flex min-h-[400px] items-center justify-center'>
+            <Loader2 className='h-8 w-8 animate-spin text-primary' />
+         </div>
+      )
+   }
+
+   if (isError) {
+      return (
+         <div className='flex min-h-[400px] items-center justify-center'>
+            <div className='text-center'>
+               <p className='text-gray-500'>Không thể tải dữ liệu thống kê</p>
+               <p className='mt-2 text-sm text-gray-400'>Vui lòng thử lại sau</p>
+            </div>
+         </div>
+      )
+   }
+
    return (
       <div className='space-y-6'>
          <div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-center'>
@@ -21,42 +83,77 @@ export default function RecruiterDashboardPage() {
          <div className='rounded-md border bg-white p-4'>
             <div className='mb-4 flex items-center justify-between'>
                <div className='text-sm font-semibold'>Ứng tuyển theo tuần</div>
-               <div className='text-xs text-gray-500'>8 tuần gần nhất</div>
+               <div className='text-xs text-gray-500'>{weeklyData.labels.length} tuần gần nhất</div>
             </div>
-            <ApplicationsChart />
+            <ApplicationsChart data={weeklyData.data} labels={weeklyData.labels} />
          </div>
 
          <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-            <StatCard icon={Briefcase} label='Tin đang đăng' value='4' delta='+1 tuần này' />
-            <StatCard icon={Users} label='Ứng viên mới' value='23' delta='+5 tuần này' />
-            <StatCard icon={FileText} label='Hồ sơ chờ duyệt' value='8' delta='-2 tuần này' />
+            <StatCard 
+               icon={Briefcase} 
+               label='Tin đang đăng' 
+               value={statistics?.currentPublishJobCount?.toString() || '0'} 
+            />
+            <StatCard 
+               icon={Users} 
+               label='Ứng viên mới' 
+               value={statistics?.totalNewApplicationCount?.toString() || '0'} 
+            />
+            <StatCard 
+               icon={FileText} 
+               label='Hồ sơ chờ duyệt' 
+               value={statistics?.totalPendingApplicationCount?.toString() || '0'} 
+            />
          </div>
 
          <div className='grid gap-4 lg:grid-cols-2'>
             <div className='rounded-md border bg-white'>
                <div className='border-b p-4 text-sm font-semibold'>Tin tuyển dụng gần đây</div>
                <div className='divide-y'>
-                  {[
-                     { title: 'Frontend Engineer', date: 'Hôm qua', status: 'Đang hiển thị' },
-                     { title: 'Backend Engineer', date: '2 ngày trước', status: 'Tạm ẩn' },
-                     { title: 'QA Engineer', date: '3 ngày trước', status: 'Đang hiển thị' }
-                  ].map((job, idx) => (
-                     <div key={idx} className='flex items-center justify-between p-4 text-sm'>
-                        <div className='min-w-0'>
-                           <div className='truncate font-medium'>{job.title}</div>
-                           <div className='text-gray-500'>{job.date}</div>
-                        </div>
-                        <div className={`rounded-full px-2 py-1 text-xs ${
-                           job.status === 'Đang hiển thị' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                        }`}>
-                           {job.status}
-                        </div>
+                  {statistics?.newestJobs && statistics.newestJobs.length > 0 ? (
+                     statistics.newestJobs.slice(0, 3).map((job, idx) => (
+                        <Link 
+                           key={idx} 
+                           href={`/job/${job.id}/detail`}
+                           className='block p-4 transition-colors hover:bg-gray-50'
+                        >
+                           <div className='mb-2'>
+                              <div className='mb-1 font-medium text-gray-900'>{job.title}</div>
+                              <div className='text-sm text-gray-600'>{job.company}</div>
+                           </div>
+                           <div className='flex flex-wrap items-center gap-2'>
+                              <div className='flex items-center gap-1.5 text-xs text-gray-500'>
+                                 <svg className='h-3.5 w-3.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' />
+                                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 11a3 3 0 11-6 0 3 3 0 016 0z' />
+                                 </svg>
+                                 {job.location}
+                              </div>
+                              <span className='text-gray-300'>•</span>
+                              <div className='rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700'>
+                                 {job.work_mode}
+                              </div>
+                              <span className='text-gray-300'>•</span>
+                              {job.salary_min && job.salary_max && (
+                                 <>
+                                    <span className='text-gray-300'>•</span>
+                                    <div className='text-xs font-medium text-green-600'>
+                                       {job.salary_min.toLocaleString()} - {job.salary_max.toLocaleString()} {job.currency}
+                                    </div>
+                                 </>
+                              )}
+                           </div>
+                        </Link>
+                     ))
+                  ) : (
+                     <div className='flex h-32 items-center justify-center text-sm text-gray-400'>
+                        Chưa có tin tuyển dụng
                      </div>
-                  ))}
+                  )}
                </div>
-               <div className='p-4'>
-                  <Link href='/job/save' className='text-sm text-primary hover:underline'>
-                     Xem tất cả tin tuyển dụng
+               <div className='border-t p-4'>
+                  <Link href='/recruiter/job' className='text-sm font-medium text-primary hover:underline'>
+                     Xem tất cả tin tuyển dụng →
                   </Link>
                </div>
             </div>
@@ -64,22 +161,26 @@ export default function RecruiterDashboardPage() {
             <div className='rounded-md border bg-white'>
                <div className='border-b p-4 text-sm font-semibold'>Ứng viên mới</div>
                <div className='divide-y'>
-                  {[
-                     { name: 'Nguyễn Văn A', position: 'Frontend Engineer', time: '2 giờ trước' },
-                     { name: 'Trần Thị B', position: 'Backend Engineer', time: 'Hôm qua' },
-                     { name: 'Lê Văn C', position: 'QA Engineer', time: '2 ngày trước' }
-                  ].map((cv, idx) => (
-                     <div key={idx} className='flex items-center justify-between p-4 text-sm'>
-                        <div className='min-w-0'>
-                           <div className='truncate font-medium'>{cv.name}</div>
-                           <div className='truncate text-gray-500'>{cv.position}</div>
+                  {statistics?.newestJobApplications && statistics.newestJobApplications.length > 0 ? (
+                     statistics.newestJobApplications.slice(0, 3).map((application, idx) => (
+                        <div key={idx} className='flex items-center justify-between p-4 text-sm'>
+                           <div className='min-w-0 flex-1'>
+                              <div className='truncate font-medium'>{application.candidateName}</div>
+                              <div className='truncate text-gray-500'>{application.jobTitle}</div>
+                           </div>
+                           <div className='ml-3 text-xs text-gray-500'>
+                              {formatRelativeTime(application.appliedAt)}
+                           </div>
                         </div>
-                        <div className='text-gray-500'>{cv.time}</div>
+                     ))
+                  ) : (
+                     <div className='flex h-32 items-center justify-center text-sm text-gray-400'>
+                        Chưa có ứng viên mới
                      </div>
-                  ))}
+                  )}
                </div>
                <div className='p-4'>
-                  <Link href='/job/save' className='text-sm text-primary hover:underline'>
+                  <Link href='/recruiter/job' className='text-sm text-primary hover:underline'>
                      Xem tất cả ứng viên
                   </Link>
                </div>
@@ -89,26 +190,26 @@ export default function RecruiterDashboardPage() {
    )
 }
 
-function StatCard({ icon: Icon, label, value, delta }: { icon: any; label: string; value: string; delta: string }) {
+function StatCard({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
    return (
       <div className='rounded-md border bg-white p-4'>
-         <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-2 text-sm text-gray-500'>
-               <Icon size={16} />
-               {label}
-            </div>
-            <div className='text-xs text-gray-500'>
-               {delta}
-            </div>
+         <div className='flex items-center gap-2 text-sm text-gray-500'>
+            <Icon size={16} />
+            {label}
          </div>
          <div className='mt-2 text-2xl font-bold'>{value}</div>
       </div>
    )
 }
 
-function ApplicationsChart() {
-   const data = [6, 10, 8, 14, 12, 18, 16, 22]
-   const labels = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8']
+function ApplicationsChart({ data, labels }: { data: number[]; labels: string[] }) {
+   if (!data || data.length === 0) {
+      return (
+         <div className='flex h-[240px] items-center justify-center text-sm text-gray-400'>
+            Chưa có dữ liệu ứng tuyển
+         </div>
+      )
+   }
 
    const width = 800
    const height = 240
@@ -116,7 +217,7 @@ function ApplicationsChart() {
    const paddingY = 24
    const innerWidth = width - paddingX * 2
    const innerHeight = height - paddingY * 2
-   const maxY = Math.max(...data) * 1.2
+   const maxY = Math.max(...data, 1) * 1.2
 
    const points = data
       .map((value, index) => {

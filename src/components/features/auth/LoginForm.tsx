@@ -6,12 +6,14 @@ import FormWrapper from '@/components/shared/FormWrapper'
 import PasswordFormField from '@/components/shared/PasswordFormField'
 import { useAuth } from '@/hooks/useAuth'
 import { showErrorToast, showSuccessToast } from '@/lib/toast'
-import type { LoginRequest } from '@/types/auth.type'
+import type { LoginRequest, TokenPayload } from '@/types/auth.type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { jwtDecode } from 'jwt-decode'
+
 
 const loginSchema = z.object({
    email: z
@@ -49,10 +51,16 @@ export default function LoginForm({ className }: LoginFormProps) {
          // Clear form after successful login
          form.reset()
 
+         const decoded: TokenPayload = jwtDecode<
+         { iss: string, sub: string, role: string, exp: number, iat: number, tokenType: string }>
+         (localStorage.getItem('accessToken') || '')
+
          // Redirect to home after 1.5 seconds
-         setTimeout(() => {
+         if (decoded.role === 'RECRUITER') {
+            router.push('/recruiter/dashboard')
+         } else {
             router.push('/')
-         }, 1500)
+         }
       } catch (error) {
          if (error instanceof Error) {
             showErrorToast(error.message)

@@ -24,9 +24,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
    const [isLoading, setIsLoading] = useState(true)
 
    // Check authentication status on mount
-   const checkAuth = () => {
-      const authenticated = authService.isAuthenticated()
-      setIsLogin(authenticated)
+   const checkAuth = async () => {
+      setIsLoading(true)
+      try {
+         const authenticated = authService.isAuthenticated()
+         setIsLogin(authenticated)
+      }
+      catch (error) {
+         setIsLogin(false)
+      } finally {
+         setIsLoading(false)
+      }
    }
 
    useEffect(() => {
@@ -41,7 +49,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
    const logout = async () => {
       try {
-         await authService.logout()
+         const refreshToken = authService.getRefreshToken() || ''
+         await authService.logout({ refreshToken })
       } catch (error) {
          // Even if logout API fails, clear local state
          console.error('Logout error:', error)
