@@ -52,6 +52,6 @@ export interface UpdateCandidateProfileRequest {
    bio: string
    skills: Array<{
       skillName: string
-      level: string
+      level: number
    }>
 }

@@ -44,7 +44,7 @@ const formSchema = z.object({
       .array(
          z.object({
             skillName: z.string().min(1, 'Bắt buộc'),
-            level: z.string()
+            level: z.number().min(1).max(5)
          })
       )
       .min(1, 'Thêm ít nhất 1 kỹ năng')
@@ -74,7 +74,7 @@ export default function EditProfilePage() {
       bio: p.bio || '',
       skills: (p.skills || []).map((cs: CandidateSkill) => ({
          skillName: cs.skill?.name || '',
-         level: String(cs.level || 1)
+         level: Number(cs.level || 1)
       }))
    })
 
