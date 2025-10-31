@@ -2,6 +2,7 @@ import { JobType } from '@/types/job.type'
 import { OptionType } from '@/types/option.type'
 
 export const experienceOptions: OptionType[] = [
+   { label: 'Tất cả', value: '' },
    { label: '1 Năm', value: '1' },
    { label: '2 Năm', value: '2' },
    { label: '3 Năm', value: '3' },
@@ -12,6 +13,24 @@ export const experienceOptions: OptionType[] = [
    { label: '8 Năm', value: '8' },
    { label: '9 Năm', value: '9' },
    { label: '10 Năm', value: '10' }
+]
+
+export const levelOptions: OptionType[] = [
+   { label: 'Tất cả', value: '' },
+   { label: 'Intern', value: 'INTERN' },
+   { label: 'Fresher', value: 'FRESHER' },
+   { label: 'Junior', value: 'JUNIOR' },
+   { label: 'Middle', value: 'MIDDLE' },
+   { label: 'Senior', value: 'SENIOR' },
+   { label: 'Leader', value: 'LEADER' }
+]
+
+export const workModeOptions: OptionType[] = [
+   { label: 'Tất cả', value: '' },
+   { label: 'Toàn thời gian', value: 'FULL-TIME' },
+   { label: 'Bán thời gian', value: 'PART-TIME' },
+   { label: 'Làm việc từ xa', value: 'REMOTE' },
+   { label: 'Thực tập', value: 'INTERNSHIP' }
 ]
 
 export const jobMockData: JobType = {
