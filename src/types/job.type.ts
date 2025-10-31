@@ -1,3 +1,5 @@
+import { SkillResponse } from "./skill.type"
+
 /**
  * Job Search Request Types
  */
@@ -71,6 +73,7 @@ export interface JobDetail {
    benefits: string
    hiringProcess: string
    notes: string
+   skills: SkillResponse[]
 }
 
 export interface GetJobDetailRequest {
@@ -86,18 +89,24 @@ export interface JobDetailResponse {
  * Job display type for UI (simplified)
  */
 export interface JobResponse {
-   id: number
-   title: string
-   company: string
-   location: string
-   salary_min: number
-   salary_max: number
-   currency: string
-   seniority: string
-   work_mode: string
-   skills: string[]
-   score?: number
+  id: number;
+  title: string;
+  company: string;
+  jobRole: string;
+  seniority: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER';
+  minExperienceYears: number;
+  location: string;
+  workMode: 'ONSITE' | 'REMOTE' | 'HYBRID';
+  salaryMin?: number;
+  salaryMax?: number;
+  currency: string;
+  maxCandidates?: number;
+  datePosted: string; // ISO 8601 format
+  dateExpires: string; // ISO 8601 format
+  status: 'PENDING' | 'PUBLISHED' | 'EXPIRED' | 'DRAFT' | 'CANCELED';
+  skills: SkillResponse[];
 }
+
 
 /**
  * Legacy job type (for backward compatibility)
@@ -115,4 +124,60 @@ export interface SavedJobType {
    id: number
    job: JobDetail
    savedAt: Date
+}
+
+export enum JobStatus {
+   DRAFT = 'DRAFT',
+   PENDING = 'PENDING',
+   PUBLISHED = 'PUBLISHED',
+   EXPIRED = 'EXPIRED',
+   CANCELED = 'CANCELED'
+}
+
+// Job action type
+
+export interface CreateJobRequest {
+  title: string;
+  jobRoleId: number;
+  seniorityLevel: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER'; // adjust as needed
+  employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'FREELANCE' | 'INTERNSHIP'; // adjust as needed
+  minExperienceYears: number;
+  locationId: number;
+  workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'; // adjust as needed
+  salaryMin?: number;
+  salaryMax?: number;
+  currency: string;
+  maxCandidates?: number;
+  dateExpires: string; // ISO 8601 format
+  summary: string;
+  responsibilities: string;
+  requirements: string;
+  niceToHave: string;
+  benefits: string;
+  hiringProcess: string;
+  notes: string;
+  saveAsDraft: boolean;
+  skills: string[];
+}
+
+export interface UpdateJobRequest {
+  title: string;
+  jobRoleId: number;
+  seniorityLevel: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER';
+  employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'VOLUNTEER' | 'TEMPORARY'; // adjust as needed
+  minExperienceYears: number;
+  locationId: number;
+  workMode: 'ONSITE' | 'REMOTE' | 'HYBRID';
+  salaryMin: number;
+  salaryMax: number;
+  currency: 'USD' | 'VND' | string; // extend as needed
+  dateExpires: string;
+  summary: string;
+  responsibilities: string;
+  requirements: string;
+  niceToHave: string;
+  benefits: string;
+  hiringProcess: string;
+  notes: string;
+  skills: string[];
 }

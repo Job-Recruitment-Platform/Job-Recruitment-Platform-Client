@@ -7,6 +7,7 @@ import JobDetailInfo from '@/components/features/job/JobDetailInfo'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
 import { useJob } from '@/hooks/useJob'
 import { useParams } from 'next/navigation'
+import type { JobDetail } from '@/types/job.type'
 
 export default function JobDetailPage() {
    const params = useParams()
@@ -66,6 +67,18 @@ export default function JobDetailPage() {
                <div className='col-span-1 space-y-6'>
                   <JobCompanyInfo job={job} />
                   <JobCommonInfo job={job} />
+                  {Array.isArray((job as JobDetail).skills) && (job as JobDetail).skills.length > 0 && (
+                     <div className='rounded-lg bg-white p-4 shadow-sm'>
+                        <div className='mb-2 text-sm font-semibold text-gray-700'>Kỹ năng yêu cầu</div>
+                        <div className='flex flex-wrap gap-2'>
+                           {(job as JobDetail).skills.map((s) => (
+                              <span key={s.id} className='rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700'>
+                                 {s.name}
+                              </span>
+                           ))}
+                        </div>
+                     </div>
+                  )}
                </div>
             </div>
          </div>

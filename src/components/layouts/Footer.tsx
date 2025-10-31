@@ -38,7 +38,7 @@ export default function Footer() {
 						<div className='text-base font-semibold'>Dành cho nhà tuyển dụng</div>
 						<ul className='space-y-2 text-sm text-gray-600'>
 							<li><Link href='/recruiter/dashboard' className='hover:text-primary'>Bảng điều khiển</Link></li>
-							<li><Link href='/job/save' className='hover:text-primary'>Đăng tin tuyển dụng</Link></li>
+							<li><Link href='/recruiter/job/create' className='hover:text-primary'>Đăng tin tuyển dụng</Link></li>
 							<li><Link href='/recruiter/register' className='hover:text-primary'>Đăng ký nhà tuyển dụng</Link></li>
 						</ul>
 					</div>

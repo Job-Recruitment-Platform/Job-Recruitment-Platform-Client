@@ -72,7 +72,7 @@ export default function RecruiterDashboardPage() {
                <div className='text-sm text-gray-500'>Theo dõi hiệu quả tuyển dụng và quản lý tin đăng</div>
             </div>
             <Link
-               href='/job/save'
+               href='/recruiter/job/create'
                className='inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-white hover:opacity-90'
             >
                <Briefcase size={16} />
@@ -131,14 +131,14 @@ export default function RecruiterDashboardPage() {
                               </div>
                               <span className='text-gray-300'>•</span>
                               <div className='rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700'>
-                                 {job.work_mode}
+                                 {job.workMode}
                               </div>
                               <span className='text-gray-300'>•</span>
-                              {job.salary_min && job.salary_max && (
+                              {job.salaryMin && job.salaryMax && (
                                  <>
                                     <span className='text-gray-300'>•</span>
                                     <div className='text-xs font-medium text-green-600'>
-                                       {job.salary_min.toLocaleString()} - {job.salary_max.toLocaleString()} {job.currency}
+                                       {job.salaryMin.toLocaleString()} - {job.salaryMax.toLocaleString()} {job.currency}
                                     </div>
                                  </>
                               )}
