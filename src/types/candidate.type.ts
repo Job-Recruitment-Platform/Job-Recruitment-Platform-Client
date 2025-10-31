@@ -26,6 +26,7 @@ export interface CandidateProfileResponse {
    id: number
    accountId: number
    fullName: string
+   email?: string
    location: Location
    seniority: Seniority
    salaryExpectMin: number

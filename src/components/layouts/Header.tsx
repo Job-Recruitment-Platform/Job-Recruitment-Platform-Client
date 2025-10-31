@@ -9,6 +9,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Briefcase } from 'lucide-react'
 import { jwtDecode } from 'jwt-decode'
+import { useQuery } from '@tanstack/react-query'
+import { recruiterService } from '@/services/recruiter.service'
+import candidateService from '@/services/candidate.service'
 
 export default function Header() {
    const { isLogin } = useAuth()
@@ -23,6 +26,25 @@ export default function Header() {
          return null
       }
    })()
+
+   const isRecruiter = userRole === 'RECRUITER'
+
+   // Fetch user profile for avatar
+   const { data: recruiterData } = useQuery({
+      queryKey: ['recruiter-profile'],
+      queryFn: () => recruiterService.getProfile(),
+      enabled: isLogin && isRecruiter,
+      staleTime: 5 * 60 * 1000
+   })
+
+   const { data: candidateData } = useQuery({
+      queryKey: ['candidate-profile'],
+      queryFn: () => candidateService.getProfile(),
+      enabled: isLogin && !isRecruiter,
+      staleTime: 5 * 60 * 1000
+   })
+
+   const userData = isRecruiter ? recruiterData?.data : candidateData?.data
 
    const navLinks = [
       { href: '/', label: 'Trang chủ' },
@@ -67,7 +89,10 @@ export default function Header() {
                      <MessageCircleMoreIcon size={18} />
                   </Button>
 
-                  <UserProfile />
+                  <UserProfile 
+                     avatarUrl={userData?.resource?.url}
+                     fullName={userData?.fullName}
+                  />
 
                   <div className='space-y-1 border-l pl-4 text-start'>
                      <div className='text-xs text-gray-400'>Bạn là nhà tuyển dụng</div>

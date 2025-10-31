@@ -6,6 +6,7 @@ export interface RecruiterResponse {
   accountId: number;
   fullName: string;
   phone: string;
+  email?: string;
   resource: ResourceResponse | null;
   company: CompanyResponse;
   dateCreated: string;

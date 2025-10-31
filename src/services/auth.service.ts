@@ -39,13 +39,6 @@ class AuthService extends BaseService {
    }
 
    /**
-    * Get current authenticated user
-    */
-   async getCurrentUser(): Promise<ApiResponse<UserResponse>> {
-      return this.get<UserResponse>('/me')
-   }
-
-   /**
     * Refresh access token
     */
    async refreshToken(): Promise<ApiResponse<TokenResponse>> {

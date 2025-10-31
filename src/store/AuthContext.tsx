@@ -3,6 +3,7 @@
 import { authService } from '@/services/auth.service'
 import type { LoginRequest, RegisterRequest } from '@/types/auth.type'
 import { createContext, useEffect, useState, type ReactNode } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface AuthContextType {
    isLogin: boolean
@@ -20,6 +21,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+   const queryClient = useQueryClient()
    const [isLogin, setIsLogin] = useState(false)
    const [isLoading, setIsLoading] = useState(true)
 
@@ -43,6 +45,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
    }, [])
 
    const login = async (data: LoginRequest) => {
+      // Clear all cached queries before login to prevent stale data
+      queryClient.clear()
       await authService.login(data)
       setIsLogin(true)
    }
@@ -55,6 +59,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
          // Even if logout API fails, clear local state
          console.error('Logout error:', error)
       } finally {
+         // Clear all cached queries on logout
+         queryClient.clear()
          setIsLogin(false)
       }
    }
