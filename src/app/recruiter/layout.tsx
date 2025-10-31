@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Building2, Briefcase, LayoutDashboard, PlusCircle, Settings } from 'lucide-react'
+import { Building2, Briefcase, LayoutDashboard, PlusCircle, Settings, User } from 'lucide-react'
 
 export default function RecruiterLayout({
    children
@@ -14,8 +14,8 @@ export default function RecruiterLayout({
    const navItems = [
       { href: '/recruiter/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/recruiter/job', label: 'Tin tuyển dụng', icon: Briefcase },
+      { href: '/recruiter/settings/profile', label: 'Hồ sơ cá nhân', icon: User },
       { href: '/recruiter/settings/company', label: 'Hồ sơ công ty', icon: Settings }
-      // { href: '/recruiter/register', label: 'Tạo tài khoản', icon: Building2 }
    ]
 
    const hideSidebar = pathname?.startsWith('/recruiter/register')

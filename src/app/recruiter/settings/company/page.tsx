@@ -9,6 +9,8 @@ import { Building2, Camera, MapPin, Plus, X, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { companyService } from '@/services/company.service'
+import { resourceService } from '@/services/resource.service'
+import { recruiterService } from '@/services/recruiter.service'
 import type { CompanyRequest, LocationRequest } from '@/types/company.type'
 
 export default function RecruiterCompanySettingsPage() {
@@ -33,14 +35,23 @@ export default function RecruiterCompanySettingsPage() {
       industry: ''
    })
 
+   // Fetch recruiter profile to get company ID
+   const { data: recruiterData, isLoading: recruiterLoading } = useQuery({
+      queryKey: ['recruiter-profile'],
+      queryFn: () => recruiterService.getProfile(),
+      refetchOnWindowFocus: false
+   })
+
+   const companyId = recruiterData?.data?.company?.id
+
    // Fetch company profile
    const { data, isLoading } = useQuery({
-      queryKey: ['company-profile'],
+      queryKey: ['company-profile', companyId],
       queryFn: async () => {
-         // TODO: Get actual companyId from auth context
-         const companyId = 1
-         return companyService.getCompanyProfile(companyId)
+         if (!companyId) throw new Error('No company ID found')
+         return await companyService.getCompanyProfile(companyId)
       },
+      enabled: !!companyId,
       refetchOnWindowFocus: false
    })
 
@@ -83,6 +94,18 @@ export default function RecruiterCompanySettingsPage() {
       }
    }, [companyData])
 
+   // Upload company logo mutation
+   const uploadLogoMutation = useMutation({
+      mutationFn: (file: File) => resourceService.uploadCompanyLogo(file),
+      onSuccess: (response) => {
+         setAvatarPreview(response.data.url)
+         showSuccessToast('Tải logo thành công')
+      },
+      onError: (error: any) => {
+         showErrorToast(error?.message || 'Không thể tải logo lên')
+      }
+   })
+
    // Update company mutation
    const updateMutation = useMutation({
       mutationFn: (data: CompanyRequest) => companyService.updateCompanyProfile(data),
@@ -95,15 +118,32 @@ export default function RecruiterCompanySettingsPage() {
       }
    })
 
-   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (file) {
+         // Validate file size (5MB)
+         if (file.size > 5 * 1024 * 1024) {
+            showErrorToast('Kích thước file không được vượt quá 5MB')
+            return
+         }
+
+         // Validate file type
+         if (!file.type.startsWith('image/')) {
+            showErrorToast('Vui lòng chọn file ảnh')
+            return
+         }
+
          setAvatarFile(file)
+         
+         // Show preview immediately
          const reader = new FileReader()
          reader.onloadend = () => {
             setAvatarPreview(reader.result as string)
          }
          reader.readAsDataURL(file)
+
+         // Upload to server
+         uploadLogoMutation.mutate(file)
       }
    }
 
@@ -159,10 +199,21 @@ export default function RecruiterCompanySettingsPage() {
    updateMutation.mutate(submitData)
 }
 
-   if (isLoading) {
+   if (recruiterLoading || isLoading) {
       return (
          <div className='flex min-h-[400px] items-center justify-center'>
             <Loader2 className='h-8 w-8 animate-spin text-primary' />
+         </div>
+      )
+   }
+
+   if (!companyId) {
+      return (
+         <div className='flex min-h-[400px] items-center justify-center'>
+            <div className='text-center'>
+               <p className='text-gray-500'>Không tìm thấy công ty</p>
+               <p className='mt-2 text-sm text-gray-400'>Vui lòng liên hệ quản trị viên</p>
+            </div>
          </div>
       )
    }
@@ -191,18 +242,25 @@ export default function RecruiterCompanySettingsPage() {
                            <Building2 size={32} className='text-gray-400' />
                         </AvatarFallback>
                      </Avatar>
-                     <label
-                        htmlFor='company-avatar-upload'
-                        className='absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-md hover:opacity-90'
-                     >
-                        <Camera size={14} />
-                     </label>
+                     {uploadLogoMutation.isPending ? (
+                        <div className='absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-md'>
+                           <Loader2 size={14} className='animate-spin' />
+                        </div>
+                     ) : (
+                        <label
+                           htmlFor='company-avatar-upload'
+                           className='absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-md hover:opacity-90'
+                        >
+                           <Camera size={14} />
+                        </label>
+                     )}
                      <input
                         id='company-avatar-upload'
                         type='file'
                         accept='image/*'
                         className='hidden'
                         onChange={handleAvatarChange}
+                        disabled={uploadLogoMutation.isPending}
                      />
                   </div>
                   <div className='flex-1'>
@@ -210,6 +268,9 @@ export default function RecruiterCompanySettingsPage() {
                      <p className='text-xs text-gray-500'>
                         JPG, PNG hoặc SVG. Kích thước tối đa 5MB. Khuyến nghị: 400x400px
                      </p>
+                     {uploadLogoMutation.isPending && (
+                        <p className='mt-2 text-xs text-primary'>Đang tải lên...</p>
+                     )}
                   </div>
                </div>
             </section>

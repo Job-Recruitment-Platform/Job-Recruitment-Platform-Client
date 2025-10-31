@@ -12,4 +12,5 @@ export enum ResourceType {
     AVATAR = 'AVATAR',
     COMPANY_LOGO = 'COMPANY_LOGO',
     CV = 'CV',
+    JOB_ATTACHMENT = 'JOB_ATTACHMENT'
 }

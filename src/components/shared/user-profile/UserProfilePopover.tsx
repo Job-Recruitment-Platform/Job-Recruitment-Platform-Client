@@ -58,41 +58,53 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
             <UserInfo />
 
             <div className='border-t py-2'>
-               <Link
-                  href='/profile'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <User size={16} />
-                  Hồ sơ của tôi
-               </Link>
-               <Link
-                  href='/profile/edit'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <Settings size={16} />
-                  Chỉnh sửa hồ sơ
-               </Link>
-               {isRecruiter && (
-                  <Link
-                  href='/recruiter/dashboard'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <Building2 size={16} />
-                  Khu vực nhà tuyển dụng
-               </Link>
+               {!isRecruiter && (
+                  <>
+                     <Link
+                        href='/profile/edit'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <User size={16} />
+                        Hồ sơ của tôi
+                     </Link>
+                     <Link
+                        href='/profile/edit'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <Settings size={16} />
+                        Chỉnh sửa hồ sơ
+                     </Link>
+                  </>
                )}
                {isRecruiter && (
-                  <Link
-                  href='/recruiter/settings/company'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <Settings size={16} />
-                  Cài đặt công ty
-               </Link>
+                  <>
+                     <Link
+                        href='/recruiter/dashboard'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <Building2 size={16} />
+                        Khu vực nhà tuyển dụng
+                     </Link>
+                     <Link
+                        href='/recruiter/settings/profile'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <User size={16} />
+                        Hồ sơ cá nhân
+                     </Link>
+                     <Link
+                        href='/recruiter/settings/company'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <Settings size={16} />
+                        Cài đặt công ty
+                     </Link>
+                  </>
                )}
             </div>
 
