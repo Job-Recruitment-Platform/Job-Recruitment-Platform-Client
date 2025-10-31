@@ -50,3 +50,10 @@ export type UseApplyJobResult = UseMutationResult<ApplyJobResponse, Error, Apply
  * Re-export for convenience
  */
 export type { ApplyJobRequest, ApplyJobResponse }
+
+export const useCandidate = () => {
+   const applyJob = useApplyJob()
+   return {
+      applyJob
+   }
+}

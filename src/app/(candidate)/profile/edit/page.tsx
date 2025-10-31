@@ -1,42 +1,167 @@
 'use client'
 
+import AddressFields from '@/components/shared/AddressFields'
 import Button from '@/components/shared/Button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+import FormWrapper from '@/components/shared/FormWrapper'
+import FullNameFormField from '@/components/shared/FullNameFormField'
+import PreferencesFields from '@/components/shared/PreferencesFields'
+import SalaryRangeFields from '@/components/shared/SalaryRangeFields'
+import SenioritySelect from '@/components/shared/SenioritySelect'
+import SkillsFieldArray from '@/components/shared/SkillsFieldArray'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { showSuccessToast } from '@/lib/toast'
-import { Camera, User, Mail, Phone, MapPin, Briefcase, Upload } from 'lucide-react'
-import { useState } from 'react'
+import BioFormField from '@/components/shared/BioFormField'
+import { showErrorToast, showSuccessToast } from '@/lib/toast'
+import candidateService from '@/services/candidate.service'
+import {
+   CandidateProfileResponse,
+   CandidateSkill,
+   UpdateCandidateProfileRequest
+} from '@/types/candidate.type'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Camera } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const formSchema = z.object({
+   fullName: z.string().min(1, 'Bắt buộc'),
+   location: z.object({
+      streetAddress: z.string().min(1, 'Bắt buộc'),
+      ward: z.string().min(1, 'Bắt buộc'),
+      provinceCity: z.string().min(1, 'Bắt buộc')
+   }),
+   seniority: z.enum(['INTERN', 'JUNIOR', 'SENIOR', 'LEAD']),
+   salaryExpectMin: z.string(),
+   salaryExpectMax: z.string(),
+   currency: z.string().min(1, 'Bắt buộc'),
+   remotePref: z.boolean(),
+   relocationPref: z.boolean(),
+   bio: z.string(),
+   skills: z
+      .array(
+         z.object({
+            skillName: z.string().min(1, 'Bắt buộc'),
+            level: z.string()
+         })
+      )
+      .min(1, 'Thêm ít nhất 1 kỹ năng')
+})
 
 export default function EditProfilePage() {
    const [saving, setSaving] = useState(false)
-   const [avatarPreview, setAvatarPreview] = useState('https://www.topcv.vn/images/avatar-default.jpg')
+   const [uploadingAvatar, setUploadingAvatar] = useState(false)
+   const [avatarPreview, setAvatarPreview] = useState(
+      'https://www.topcv.vn/images/avatar-default.jpg'
+   )
+   const [defaultValues, setDefaultValues] = useState<UpdateCandidateProfileRequest | null>(null)
 
-   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const mapProfileToForm = (p: CandidateProfileResponse): UpdateCandidateProfileRequest => ({
+      fullName: p.fullName,
+      location: {
+         streetAddress: p.location?.streetAddress || '',
+         ward: p.location?.ward || '',
+         provinceCity: p.location?.provinceCity || ''
+      },
+      seniority: p.seniority || 'JUNIOR',
+      salaryExpectMin: String(p.salaryExpectMin || ''),
+      salaryExpectMax: String(p.salaryExpectMax || ''),
+      currency: p.currency || 'VND',
+      remotePref: !!p.remotePref,
+      relocationPref: !!p.relocationPref,
+      bio: p.bio || '',
+      skills: (p.skills || []).map((cs: CandidateSkill) => ({
+         skillName: cs.skill?.name || '',
+         level: String(cs.level || 1)
+      }))
+   })
+
+   const form = useForm<UpdateCandidateProfileRequest>({
+      resolver: zodResolver(formSchema),
+      defaultValues: defaultValues || {
+         remotePref: false,
+         relocationPref: false,
+         bio: '',
+         salaryExpectMin: '',
+         salaryExpectMax: ''
+      }
+   })
+
+   useEffect(() => {
+      let mounted = true
+      ;(async () => {
+         try {
+            const res = await candidateService.getProfile()
+            if (res?.data && mounted) {
+               const p = res.data
+               const formValues = mapProfileToForm(p)
+               setDefaultValues(formValues)
+               form.reset(formValues)
+               const avatarUrl =
+                  p.resource?.resourceType === 'AVATAR' ? p.resource.url : p.resource?.url
+               if (avatarUrl) setAvatarPreview(avatarUrl)
+            }
+         } catch (err) {
+            console.error('Load profile error:', err)
+            showErrorToast('Không tải được hồ sơ')
+         }
+      })()
+      return () => {
+         mounted = false
+      }
+   }, [form])
+
+   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (file) {
-         const reader = new FileReader()
-         reader.onloadend = () => {
-            setAvatarPreview(reader.result as string)
+         setUploadingAvatar(true)
+         try {
+            const reader = new FileReader()
+            reader.onloadend = () => setAvatarPreview(reader.result as string)
+            reader.readAsDataURL(file)
+
+            const res = await candidateService.uploadAvatar(file)
+            if (res?.code === 1000) {
+               showSuccessToast('Cập nhật ảnh đại diện thành công')
+            } else {
+               showErrorToast(res?.message || 'Cập nhật ảnh đại diện thất bại')
+            }
+         } catch (err: unknown) {
+            console.error('Upload avatar error:', err)
+            const message =
+               typeof err === 'object' && err && 'message' in err
+                  ? String((err as { message?: string }).message)
+                  : undefined
+            showErrorToast(message || 'Có lỗi khi tải ảnh đại diện')
+         } finally {
+            setUploadingAvatar(false)
          }
-         reader.readAsDataURL(file)
       }
    }
 
-   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
+   const onSubmit = async (data: UpdateCandidateProfileRequest) => {
       setSaving(true)
       try {
-         await new Promise((r) => setTimeout(r, 1000))
-         showSuccessToast('Cập nhật hồ sơ thành công')
+         const res = await candidateService.updateProfile(data)
+         if (res?.code === 1000) {
+            showSuccessToast('Cập nhật hồ sơ thành công')
+         } else {
+            showErrorToast(res?.message || 'Cập nhật hồ sơ thất bại')
+         }
+      } catch (err: unknown) {
+         console.error('Update profile error:', err)
+         const message =
+            typeof err === 'object' && err && 'message' in err
+               ? String((err as { message?: string }).message)
+               : undefined
+         showErrorToast(message || 'Có lỗi khi cập nhật hồ sơ')
       } finally {
          setSaving(false)
       }
    }
 
    return (
-      <div className='min-h-screen bg-smoke py-6'>
+      <div className='bg-smoke min-h-screen py-6'>
          <div className='container mx-auto px-4'>
             <div className='mx-auto max-w-4xl'>
                <div className='mb-6 flex items-center justify-between'>
@@ -49,7 +174,7 @@ export default function EditProfilePage() {
                   </Link>
                </div>
 
-               <form onSubmit={handleSubmit} className='space-y-6'>
+               <FormWrapper form={form} onSubmit={onSubmit} className='space-y-6'>
                   {/* Avatar Section */}
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Ảnh đại diện</h2>
@@ -61,7 +186,7 @@ export default function EditProfilePage() {
                            </Avatar>
                            <label
                               htmlFor='avatar-upload'
-                              className='absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:opacity-90'
+                              className='bg-primary absolute right-0 bottom-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-white hover:opacity-90 disabled:opacity-50'
                            >
                               <Camera size={16} />
                            </label>
@@ -71,6 +196,7 @@ export default function EditProfilePage() {
                               accept='image/*'
                               className='hidden'
                               onChange={handleAvatarChange}
+                              disabled={uploadingAvatar}
                            />
                         </div>
                         <div className='flex-1'>
@@ -86,48 +212,8 @@ export default function EditProfilePage() {
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Thông tin cơ bản</h2>
                      <div className='grid gap-4 sm:grid-cols-2'>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <User size={16} />
-                              Họ và tên <span className='text-red-500'>*</span>
-                           </label>
-                           <Input
-                              placeholder='Nguyễn Văn A'
-                              defaultValue='Nguyễn Văn A'
-                              required
-                           />
-                        </div>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <Mail size={16} />
-                              Email <span className='text-red-500'>*</span>
-                           </label>
-                           <Input
-                              type='email'
-                              placeholder='nguyenvana@email.com'
-                              defaultValue='nguyenvana@email.com'
-                              required
-                           />
-                        </div>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <Phone size={16} />
-                              Số điện thoại <span className='text-red-500'>*</span>
-                           </label>
-                           <Input
-                              type='tel'
-                              placeholder='0912345678'
-                              defaultValue='0912345678'
-                              required
-                           />
-                        </div>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <MapPin size={16} />
-                              Địa chỉ
-                           </label>
-                           <Input placeholder='TP. Hồ Chí Minh' />
-                        </div>
+                        <FullNameFormField control={form.control} name={'fullName'} />
+                        <AddressFields />
                      </div>
                   </section>
 
@@ -135,78 +221,21 @@ export default function EditProfilePage() {
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Thông tin nghề nghiệp</h2>
                      <div className='space-y-4'>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <Briefcase size={16} />
-                              Chức danh hiện tại
-                           </label>
-                           <Input placeholder='Frontend Developer' />
-                        </div>
-                        <div className='grid gap-4 sm:grid-cols-2'>
-                           <div>
-                              <label className='mb-1.5 block text-sm font-medium'>
-                                 Kinh nghiệm
-                              </label>
-                              <select className='h-9 w-full rounded-md border bg-white px-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20'>
-                                 <option value=''>Chọn số năm kinh nghiệm</option>
-                                 <option value='0'>Chưa có kinh nghiệm</option>
-                                 <option value='1'>1 năm</option>
-                                 <option value='2'>2 năm</option>
-                                 <option value='3'>3 năm</option>
-                                 <option value='4'>4 năm</option>
-                                 <option value='5'>5+ năm</option>
-                              </select>
-                           </div>
-                           <div>
-                              <label className='mb-1.5 block text-sm font-medium'>
-                                 Mức lương mong muốn
-                              </label>
-                              <Input type='number' placeholder='15000000' />
-                           </div>
-                        </div>
-                        <div>
-                           <label className='mb-1.5 block text-sm font-medium'>Kỹ năng</label>
-                           <Input placeholder='React, Node.js, TypeScript...' />
-                           <p className='mt-1 text-xs text-gray-500'>
-                              Nhập các kỹ năng, cách nhau bằng dấu phẩy
-                           </p>
-                        </div>
+                        <SenioritySelect control={form.control} name={'seniority'} />
+                        <SalaryRangeFields control={form.control} />
+                        <PreferencesFields
+                           control={form.control}
+                           remoteName={'remotePref'}
+                           relocateName={'relocationPref'}
+                        />
+                        <SkillsFieldArray name={'skills'} />
                      </div>
                   </section>
 
                   {/* About Me */}
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Giới thiệu bản thân</h2>
-                     <Textarea
-                        placeholder='Viết một đoạn giới thiệu ngắn về bản thân, kinh nghiệm và mục tiêu nghề nghiệp của bạn...'
-                        rows={6}
-                     />
-                  </section>
-
-                  {/* Resume Upload */}
-                  <section className='rounded-lg border bg-white p-6'>
-                     <h2 className='mb-4 text-lg font-semibold'>CV / Resume</h2>
-                     <div className='flex items-center gap-4'>
-                        <label
-                           htmlFor='resume-upload'
-                           className='flex cursor-pointer items-center gap-2 rounded-md border border-primary bg-primary/5 px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/10'
-                        >
-                           <Upload size={16} />
-                           Tải lên CV
-                        </label>
-                        <input
-                           id='resume-upload'
-                           type='file'
-                           accept='.pdf,.doc,.docx'
-                           className='hidden'
-                        />
-                        <span className='text-sm text-gray-500'>
-                           Chưa có file nào được chọn
-                        </span>
-                     </div>
-                     <p className='mt-2 text-xs text-gray-500'>
-                        Chấp nhận file PDF, DOC, DOCX. Kích thước tối đa 10MB.
-                     </p>
+                     <BioFormField control={form.control} name={'bio'} />
                   </section>
 
                   {/* Action Buttons */}
@@ -220,10 +249,9 @@ export default function EditProfilePage() {
                         {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                      </Button>
                   </div>
-               </form>
+               </FormWrapper>
             </div>
          </div>
       </div>
    )
 }
-

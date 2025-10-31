@@ -8,6 +8,7 @@ type SavedJobsState = {
    removeJob: (jobId: number) => void
 }
 
+// test test
 export const useSavedJobsStore = create<SavedJobsState>((set) => ({
    jobs: [],
    setJobs: (jobs) => set({ jobs }),
