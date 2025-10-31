@@ -1,19 +1,20 @@
 import { Form } from '@/components/ui/form'
 import type { FieldValues, UseFormReturn } from 'react-hook-form'
 
-type FormWrapperProps<TFieldValues extends FieldValues> = {
-   form: UseFormReturn<TFieldValues>
-   onSubmit: (data: TFieldValues) => void
+type FormWrapperProps<
+   TFieldValues extends FieldValues,
+   TTransformedValues extends FieldValues = TFieldValues
+> = {
+   form: UseFormReturn<TFieldValues, unknown, TTransformedValues>
+   onSubmit: (data: TTransformedValues) => void
    children: React.ReactNode
    className?: string
 }
 
-export default function FormWrapper<TFieldValues extends FieldValues>({
-   form,
-   onSubmit,
-   children,
-   className
-}: FormWrapperProps<TFieldValues>) {
+export default function FormWrapper<
+   TFieldValues extends FieldValues,
+   TTransformedValues extends FieldValues = TFieldValues
+>({ form, onSubmit, children, className }: FormWrapperProps<TFieldValues, TTransformedValues>) {
    return (
       <div className='w-full'>
          <Form {...form}>

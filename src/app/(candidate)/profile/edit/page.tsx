@@ -1,13 +1,47 @@
 'use client'
 
+import AddressFields from '@/components/shared/AddressFields'
 import Button from '@/components/shared/Button'
+import FormWrapper from '@/components/shared/FormWrapper'
+import PreferencesFields from '@/components/shared/PreferencesFields'
+import SalaryRangeFields from '@/components/shared/SalaryRangeFields'
+import SenioritySelect from '@/components/shared/SenioritySelect'
+import SkillsFieldArray from '@/components/shared/SkillsFieldArray'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { showSuccessToast } from '@/lib/toast'
-import { Briefcase, Camera, Mail, MapPin, Phone, Upload, User } from 'lucide-react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Camera, Upload } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const skillSchema = z.object({
+   skillName: z.string().min(1, 'Bắt buộc'),
+   level: z.number().min(1).max(5)
+})
+
+const formSchema = z.object({
+   fullName: z.string().min(1, 'Bắt buộc'),
+   location: z.object({
+      streetAddress: z.string().min(1, 'Bắt buộc'),
+      ward: z.string().min(1, 'Bắt buộc'),
+      provinceCity: z.string().min(1, 'Bắt buộc')
+   }),
+   seniority: z.string().min(1, 'Bắt buộc'),
+   salaryExpectMin: z.number(),
+   salaryExpectMax: z.number(),
+   currency: z.string().min(1, 'Bắt buộc'),
+   remotePref: z.boolean(),
+   relocationPref: z.boolean(),
+   bio: z.string().optional(),
+   skills: z.array(skillSchema).min(1, 'Thêm ít nhất 1 kỹ năng')
+})
+
+type FormValues = z.infer<typeof formSchema>
 
 export default function EditProfilePage() {
    const [saving, setSaving] = useState(false)
@@ -15,22 +49,44 @@ export default function EditProfilePage() {
       'https://www.topcv.vn/images/avatar-default.jpg'
    )
 
+   const form = useForm<FormValues>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+         fullName: 'Hoang Phi Long',
+         location: {
+            streetAddress: 'Nguyen An Ninh',
+            ward: 'Di An',
+            provinceCity: 'Ho Chi Minh City'
+         },
+         seniority: 'INTERN',
+         salaryExpectMin: 100,
+         salaryExpectMax: 9000,
+         currency: 'VND',
+         remotePref: true,
+         relocationPref: false,
+         bio: 'My bio',
+         skills: [
+            { skillName: 'Analyst', level: 4 },
+            { skillName: 'Backend', level: 5 }
+         ]
+      }
+   })
+
    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (file) {
          const reader = new FileReader()
-         reader.onloadend = () => {
-            setAvatarPreview(reader.result as string)
-         }
+         reader.onloadend = () => setAvatarPreview(reader.result as string)
          reader.readAsDataURL(file)
       }
    }
 
-   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
+   const onSubmit = async (data: FormValues) => {
       setSaving(true)
       try {
-         await new Promise((r) => setTimeout(r, 1000))
+         // TODO: call profile update API
+         await new Promise((r) => setTimeout(r, 800))
+         console.log('Submit data:', data)
          showSuccessToast('Cập nhật hồ sơ thành công')
       } finally {
          setSaving(false)
@@ -51,7 +107,11 @@ export default function EditProfilePage() {
                   </Link>
                </div>
 
-               <form onSubmit={handleSubmit} className='space-y-6'>
+               <FormWrapper<FormValues, FormValues>
+                  form={form}
+                  onSubmit={onSubmit}
+                  className='space-y-6'
+               >
                   {/* Avatar Section */}
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Ảnh đại diện</h2>
@@ -88,44 +148,20 @@ export default function EditProfilePage() {
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Thông tin cơ bản</h2>
                      <div className='grid gap-4 sm:grid-cols-2'>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <User size={16} />
-                              Họ và tên <span className='text-red-500'>*</span>
-                           </label>
-                           <Input placeholder='Nguyễn Văn A' defaultValue='Nguyễn Văn A' required />
-                        </div>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <Mail size={16} />
-                              Email <span className='text-red-500'>*</span>
-                           </label>
-                           <Input
-                              type='email'
-                              placeholder='nguyenvana@email.com'
-                              defaultValue='nguyenvana@email.com'
-                              required
-                           />
-                        </div>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <Phone size={16} />
-                              Số điện thoại <span className='text-red-500'>*</span>
-                           </label>
-                           <Input
-                              type='tel'
-                              placeholder='0912345678'
-                              defaultValue='0912345678'
-                              required
-                           />
-                        </div>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <MapPin size={16} />
-                              Địa chỉ
-                           </label>
-                           <Input placeholder='TP. Hồ Chí Minh' />
-                        </div>
+                        <FormField
+                           control={form.control}
+                           name={'fullName'}
+                           render={({ field }) => (
+                              <FormItem>
+                                 <FormLabel>Họ và tên</FormLabel>
+                                 <FormControl>
+                                    <Input placeholder='Nguyễn Văn A' {...field} />
+                                 </FormControl>
+                                 <FormMessage />
+                              </FormItem>
+                           )}
+                        />
+                        <AddressFields />
                      </div>
                   </section>
 
@@ -133,51 +169,35 @@ export default function EditProfilePage() {
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Thông tin nghề nghiệp</h2>
                      <div className='space-y-4'>
-                        <div>
-                           <label className='mb-1.5 flex items-center gap-2 text-sm font-medium'>
-                              <Briefcase size={16} />
-                              Chức danh hiện tại
-                           </label>
-                           <Input placeholder='Frontend Developer' />
-                        </div>
-                        <div className='grid gap-4 sm:grid-cols-2'>
-                           <div>
-                              <label className='mb-1.5 block text-sm font-medium'>
-                                 Kinh nghiệm
-                              </label>
-                              <select className='focus-visible:border-primary focus-visible:ring-primary/20 h-9 w-full rounded-md border bg-white px-3 text-sm outline-none focus-visible:ring-2'>
-                                 <option value=''>Chọn số năm kinh nghiệm</option>
-                                 <option value='0'>Chưa có kinh nghiệm</option>
-                                 <option value='1'>1 năm</option>
-                                 <option value='2'>2 năm</option>
-                                 <option value='3'>3 năm</option>
-                                 <option value='4'>4 năm</option>
-                                 <option value='5'>5+ năm</option>
-                              </select>
-                           </div>
-                           <div>
-                              <label className='mb-1.5 block text-sm font-medium'>
-                                 Mức lương mong muốn
-                              </label>
-                              <Input type='number' placeholder='15000000' />
-                           </div>
-                        </div>
-                        <div>
-                           <label className='mb-1.5 block text-sm font-medium'>Kỹ năng</label>
-                           <Input placeholder='React, Node.js, TypeScript...' />
-                           <p className='mt-1 text-xs text-gray-500'>
-                              Nhập các kỹ năng, cách nhau bằng dấu phẩy
-                           </p>
-                        </div>
+                        <SenioritySelect control={form.control} name={'seniority'} />
+                        <SalaryRangeFields control={form.control} />
+                        <PreferencesFields
+                           control={form.control}
+                           remoteName={'remotePref'}
+                           relocateName={'relocationPref'}
+                        />
+                        <SkillsFieldArray name={'skills'} />
                      </div>
                   </section>
 
                   {/* About Me */}
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Giới thiệu bản thân</h2>
-                     <Textarea
-                        placeholder='Viết một đoạn giới thiệu ngắn về bản thân, kinh nghiệm và mục tiêu nghề nghiệp của bạn...'
-                        rows={6}
+                     <FormField
+                        control={form.control}
+                        name={'bio'}
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormControl>
+                                 <Textarea
+                                    rows={6}
+                                    placeholder='Giới thiệu bản thân...'
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
                      />
                   </section>
 
@@ -216,7 +236,7 @@ export default function EditProfilePage() {
                         {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                      </Button>
                   </div>
-               </form>
+               </FormWrapper>
             </div>
          </div>
       </div>
