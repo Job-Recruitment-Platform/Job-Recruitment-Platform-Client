@@ -9,8 +9,8 @@ import SalaryRangeFields from '@/components/shared/SalaryRangeFields'
 import SenioritySelect from '@/components/shared/SenioritySelect'
 import SkillsFieldArray from '@/components/shared/SkillsFieldArray'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Textarea } from '@/components/ui/textarea'
+// form subcomponents not needed here after extracting BioFormField
+import BioFormField from '@/components/shared/BioFormField'
 import { showSuccessToast } from '@/lib/toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Camera, Upload } from 'lucide-react'
@@ -50,7 +50,11 @@ export default function EditProfilePage() {
    )
 
    const form = useForm<FormValues>({
-      resolver: zodResolver(formSchema)
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+         remotePref: false,
+         relocationPref: false
+      }
    })
 
    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,22 +156,7 @@ export default function EditProfilePage() {
                   {/* About Me */}
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Giới thiệu bản thân</h2>
-                     <FormField
-                        control={form.control}
-                        name={'bio'}
-                        render={({ field }) => (
-                           <FormItem>
-                              <FormControl>
-                                 <Textarea
-                                    rows={6}
-                                    placeholder='Giới thiệu bản thân...'
-                                    {...field}
-                                 />
-                              </FormControl>
-                              <FormMessage />
-                           </FormItem>
-                        )}
-                     />
+                     <BioFormField control={form.control} name={'bio'} />
                   </section>
 
                   {/* Resume Upload */}

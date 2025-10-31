@@ -21,7 +21,10 @@ export default function PreferencesFields<T extends FieldValues>({
             render={({ field }) => (
                <FormItem className='flex flex-row items-center gap-2 space-y-0 rounded-md border p-3'>
                   <FormControl>
-                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                     <Checkbox
+                        checked={!!field.value}
+                        onCheckedChange={(v) => field.onChange(v === true)}
+                     />
                   </FormControl>
                   <FormLabel className='font-normal'>Ưu tiên làm việc từ xa</FormLabel>
                </FormItem>
@@ -33,7 +36,10 @@ export default function PreferencesFields<T extends FieldValues>({
             render={({ field }) => (
                <FormItem className='flex flex-row items-center gap-2 space-y-0 rounded-md border p-3'>
                   <FormControl>
-                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                     <Checkbox
+                        checked={!!field.value}
+                        onCheckedChange={(v) => field.onChange(v === true)}
+                     />
                   </FormControl>
                   <FormLabel className='font-normal'>Sẵn sàng chuyển nơi ở</FormLabel>
                </FormItem>

@@ -51,7 +51,14 @@ export default function SkillsFieldArray<T extends FieldValues>({ name }: Props<
                                  type='number'
                                  min={1}
                                  max={5}
-                                 {...field}
+                                 value={field.value ?? ''}
+                                 onChange={(e) => {
+                                    const v = e.target.value
+                                    field.onChange(v === '' ? undefined : Number(v))
+                                 }}
+                                 onBlur={field.onBlur}
+                                 name={field.name}
+                                 ref={field.ref}
                               />
                            </FormControl>
                            <FormMessage />

@@ -27,7 +27,18 @@ export default function SalaryRangeFields<T extends FieldValues>({
                <FormItem>
                   <FormLabel>Lương mong muốn (min)</FormLabel>
                   <FormControl>
-                     <Input type='number' placeholder='100' {...field} />
+                     <Input
+                        type='number'
+                        placeholder='100'
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                           const v = e.target.value
+                           field.onChange(v === '' ? undefined : Number(v))
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                     />
                   </FormControl>
                   <FormMessage />
                </FormItem>
@@ -40,7 +51,18 @@ export default function SalaryRangeFields<T extends FieldValues>({
                <FormItem>
                   <FormLabel>Lương mong muốn (max)</FormLabel>
                   <FormControl>
-                     <Input type='number' placeholder='9000' {...field} />
+                     <Input
+                        type='number'
+                        placeholder='9000'
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                           const v = e.target.value
+                           field.onChange(v === '' ? undefined : Number(v))
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                     />
                   </FormControl>
                   <FormMessage />
                </FormItem>
