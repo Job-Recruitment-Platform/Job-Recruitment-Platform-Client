@@ -1,3 +1,5 @@
+import { ResourceResponse } from "./resource.type"
+
 export type Seniority = 'INTERN' | 'JUNIOR' | 'SENIOR' | 'LEAD'
 export type ResourceType = 'AVATAR' | 'RESUME' | 'PORTFOLIO'
 
@@ -19,15 +21,6 @@ export interface CandidateSkill {
    level: number
 }
 
-export interface Resource {
-   id: number
-   mimeType: string
-   resourceType: ResourceType
-   url: string
-   publicId: string
-   name: string
-   uploadedAt: string
-}
 
 export interface CandidateProfileResponse {
    id: number
@@ -40,7 +33,7 @@ export interface CandidateProfileResponse {
    currency: string
    remotePref: boolean
    relocationPref: boolean
-   resource: Resource
+   resource: ResourceResponse
    bio: string
    dateCreated: string
    dateUpdated: string

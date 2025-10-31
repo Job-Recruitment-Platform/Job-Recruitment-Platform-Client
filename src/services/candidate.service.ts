@@ -3,7 +3,6 @@ import { useSavedJobsStore } from '@/store/useSavedJobStore'
 import { PaginationResponse } from '@/types/api.type.'
 import {
    CandidateProfileResponse,
-   Resource,
    UpdateCandidateProfileRequest
 } from '@/types/candidate.type'
 import { SavedJobType } from '@/types/job.type'
@@ -83,15 +82,15 @@ class CandidateService extends BaseService {
       return await this.put<CandidateProfileResponse>(`/profile`, data)
    }
 
-   async uploadAvatar(file: File): Promise<ApiResponse<Resource>> {
-      const formData = new FormData()
-      formData.append('file', file, file.name)
-      return await this.post<Resource>(`/avatar`, formData, {
-         headers: {
-            'Content-Type': 'multipart/form-data'
-         }
-      })
-   }
+   // async uploadAvatar(file: File): Promise<ApiResponse<Resource>> {
+   //    const formData = new FormData()
+   //    formData.append('file', file, file.name)
+   //    return await this.post<Resource>(`/avatar`, formData, {
+   //       headers: {
+   //          'Content-Type': 'multipart/form-data'
+   //       }
+   //    })
+   // }
 
    async getProfile(): Promise<ApiResponse<CandidateProfileResponse>> {
       return await this.get<CandidateProfileResponse>(`/profile`)

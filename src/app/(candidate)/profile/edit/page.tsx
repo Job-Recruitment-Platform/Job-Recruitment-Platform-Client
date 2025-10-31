@@ -23,6 +23,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { resourceService } from '@/services/resource.service'
+
 
 const formSchema = z.object({
    fullName: z.string().min(1, 'Bắt buộc'),
@@ -120,7 +122,7 @@ export default function EditProfilePage() {
             reader.onloadend = () => setAvatarPreview(reader.result as string)
             reader.readAsDataURL(file)
 
-            const res = await candidateService.uploadAvatar(file)
+            const res = await resourceService.uploadAvatar(file)
             if (res?.code === 1000) {
                showSuccessToast('Cập nhật ảnh đại diện thành công')
             } else {
