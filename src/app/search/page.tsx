@@ -1,6 +1,7 @@
 'use client'
 
 import JobSearchItem from '@/components/features/job/JobSearchItem'
+import BoxSearch from '@/components/features/search/BoxSort'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
 import SidebarFilter from '@/components/layouts/SidebarFilter'
 import { useSearchJobs } from '@/hooks/useSearchJobs'
@@ -30,6 +31,7 @@ export default function SearchResultsPage() {
 
             {/* Search Results */}
             <div className='flex-1 space-y-3'>
+               <BoxSearch />
                {/* Loading state */}
                {isLoading && (
                   <div className='py-8 text-center'>
