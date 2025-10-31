@@ -43,10 +43,10 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
             onMouseLeave={() => setOpen(false)}
          >
             <UserInfo />
-            
+
             <div className='border-t py-2'>
                <Link
-                  href='/(candidate)/profile'
+                  href='/profile'
                   className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                   onClick={() => setOpen(false)}
                >
@@ -54,7 +54,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                   Hồ sơ của tôi
                </Link>
                <Link
-                  href='/(candidate)/profile/edit'
+                  href='/profile/edit'
                   className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                   onClick={() => setOpen(false)}
                >
