@@ -3,13 +3,13 @@
 import AddressFields from '@/components/shared/AddressFields'
 import Button from '@/components/shared/Button'
 import FormWrapper from '@/components/shared/FormWrapper'
+import FullNameFormField from '@/components/shared/FullNameFormField'
 import PreferencesFields from '@/components/shared/PreferencesFields'
 import SalaryRangeFields from '@/components/shared/SalaryRangeFields'
 import SenioritySelect from '@/components/shared/SenioritySelect'
 import SkillsFieldArray from '@/components/shared/SkillsFieldArray'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { showSuccessToast } from '@/lib/toast'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,26 +50,7 @@ export default function EditProfilePage() {
    )
 
    const form = useForm<FormValues>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-         fullName: 'Hoang Phi Long',
-         location: {
-            streetAddress: 'Nguyen An Ninh',
-            ward: 'Di An',
-            provinceCity: 'Ho Chi Minh City'
-         },
-         seniority: 'INTERN',
-         salaryExpectMin: 100,
-         salaryExpectMax: 9000,
-         currency: 'VND',
-         remotePref: true,
-         relocationPref: false,
-         bio: 'My bio',
-         skills: [
-            { skillName: 'Analyst', level: 4 },
-            { skillName: 'Backend', level: 5 }
-         ]
-      }
+      resolver: zodResolver(formSchema)
    })
 
    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,19 +129,7 @@ export default function EditProfilePage() {
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Thông tin cơ bản</h2>
                      <div className='grid gap-4 sm:grid-cols-2'>
-                        <FormField
-                           control={form.control}
-                           name={'fullName'}
-                           render={({ field }) => (
-                              <FormItem>
-                                 <FormLabel>Họ và tên</FormLabel>
-                                 <FormControl>
-                                    <Input placeholder='Nguyễn Văn A' {...field} />
-                                 </FormControl>
-                                 <FormMessage />
-                              </FormItem>
-                           )}
-                        />
+                        <FullNameFormField control={form.control} name={'fullName'} />
                         <AddressFields />
                      </div>
                   </section>
