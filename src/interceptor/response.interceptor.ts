@@ -1,4 +1,5 @@
-import { handleBusinessErrorCode, handleHttpErrorCode } from '@/utils/error.util'
+import { handleBusinessErrorCode } from '@/constants/businessErrorCode.constant'
+import { handleHttpErrorCode } from '@/constants/httpErrorCode.constant'
 import { AxiosInstance, isAxiosError } from 'axios'
 import { toast } from 'react-hot-toast'
 

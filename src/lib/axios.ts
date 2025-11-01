@@ -43,10 +43,10 @@ const searchApiClient: AxiosInstance = axios.create({
 const apiClient: AxiosInstance = defaultApiClient
 
 // Setup authentication interceptors for both clients
-setupAuthInterceptors(defaultApiClient)
-setupAuthInterceptors(searchApiClient)
 setupResponseInterceptors(defaultApiClient)
 setupResponseInterceptors(searchApiClient)
+setupAuthInterceptors(defaultApiClient)
+setupAuthInterceptors(searchApiClient)
 
 export default apiClient
 export { defaultApiClient, searchApiClient }
