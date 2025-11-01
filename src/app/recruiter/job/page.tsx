@@ -16,7 +16,7 @@ export default function RecruiterJobsPage() {
    const queryClient = useQueryClient()
    const [page, setPage] = useState(1)
    const [search, setSearch] = useState('')
-   const [status, setStatus] = useState<JobStatus | 'all'>('all')
+   const [status, setStatus] = useState<JobStatus | 'all'>(JobStatus.PUBLISHED)
    const pageSize = 10
 
    // Fetch all jobs based on status
@@ -240,7 +240,12 @@ export default function RecruiterJobsPage() {
                      return (
                         <div key={job.id} className='grid grid-cols-12 items-center gap-2 px-4 py-4 text-sm'>
                            <div className='col-span-5 min-w-0'>
-                              <div className='truncate font-medium'>{job.title}</div>
+                              <Link 
+                                 href={`/recruiter/job/${job.id}/applicant`}
+                                 className='truncate font-medium text-gray-900 hover:text-primary transition-colors cursor-pointer'
+                              >
+                                 {job.title}
+                              </Link>
                               <div className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs ${getStatusStyle()}`}>
                                  {getStatusLabel()}
                               </div>

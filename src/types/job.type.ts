@@ -1,4 +1,6 @@
+import App from "next/app"
 import { SkillResponse } from "./skill.type"
+import { ResourceResponse } from "./resource.type"
 
 /**
  * Job Search Request Types
@@ -180,4 +182,24 @@ export interface UpdateJobRequest {
   hiringProcess: string;
   notes: string;
   skills: string[];
+}
+
+// Job applicant type
+export interface JobApplicantResponse {
+  id: number;
+  jobId: number;
+  candidateId: number;
+  candidateName: string;
+  email: string;
+  phone: string;
+  status: ApplicationStatus;
+  resource: ResourceResponse[];
+}
+
+export enum ApplicationStatus {
+  SUBMITTED = "SUBMITTED",
+  REVIEWED = "REVIEWED",
+  INTERVIEW = "INTERVIEW",
+  OFFERED = "OFFERED",
+  REJECTED = "REJECTED"
 }

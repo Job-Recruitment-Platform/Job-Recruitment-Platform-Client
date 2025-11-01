@@ -82,16 +82,6 @@ class CandidateService extends BaseService {
       return await this.put<CandidateProfileResponse>(`/profile`, data)
    }
 
-   // async uploadAvatar(file: File): Promise<ApiResponse<Resource>> {
-   //    const formData = new FormData()
-   //    formData.append('file', file, file.name)
-   //    return await this.post<Resource>(`/avatar`, formData, {
-   //       headers: {
-   //          'Content-Type': 'multipart/form-data'
-   //       }
-   //    })
-   // }
-
    async getProfile(): Promise<ApiResponse<CandidateProfileResponse>> {
       return await this.get<CandidateProfileResponse>(`/profile`)
    }

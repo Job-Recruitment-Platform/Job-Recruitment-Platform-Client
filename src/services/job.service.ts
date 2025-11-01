@@ -1,6 +1,6 @@
 import { BaseService } from '@/services/base.service'
 import { PaginationResponse } from '@/types/api.type.'
-import type { CreateJobRequest, JobDetail, JobResponse, JobStatus, UpdateJobRequest } from '@/types/job.type'
+import type { CreateJobRequest, JobApplicantResponse, JobDetail, JobResponse, JobStatus, UpdateJobRequest } from '@/types/job.type'
 
 /**
  * Job Service
@@ -46,6 +46,16 @@ class JobService extends BaseService {
 
    async cancelJob(jobId: number): Promise<JobResponse> {
       const response = await this.patch<JobResponse>(`/job/cancel/${jobId}`)
+      return response.data
+   }
+
+   async getJobApplicants(jobId: number): Promise<PaginationResponse<JobApplicantResponse[]>> {
+      const response = await this.get<PaginationResponse<any>>(`/recruiters/company/${jobId}/applicants`)
+      return response.data
+   }
+
+   async processJobApplication(applicationId: number, action: 'REVIEWED' | 'REJECTED'): Promise<JobApplicantResponse> {
+      const response = await this.post<JobApplicantResponse>(`/recruiters/company/applicants/${applicationId}?action=${action}`)
       return response.data
    }
 
