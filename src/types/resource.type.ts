@@ -2,6 +2,7 @@ export interface ResourceResponse {
   id: number;
   mimeType: string;
   resourceType: ResourceType;
+  contentType: string;
   url: string;
   publicId: string;
   name: string;

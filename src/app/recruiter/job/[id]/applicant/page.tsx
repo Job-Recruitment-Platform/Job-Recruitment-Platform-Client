@@ -348,17 +348,14 @@ export default function JobApplicantsPage() {
                               return cvResources.length > 0 ? (
                                  <div className='flex flex-wrap items-center justify-center gap-1'>
                                     {cvResources.map((res) => (
-                                       <a
+                                       <div
                                           key={res.id}
-                                          href={res.url}
-                                          target='_blank'
-                                          rel='noopener noreferrer'
-                                          className='inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs text-gray-700 hover:bg-gray-50'
+                                          className='inline-flex items-center gap-1 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-700'
                                           title={res.name}
                                        >
                                           <FileText size={12} />
-                                          <span className='hidden sm:inline'>CV</span>
-                                       </a>
+                                          <span className='truncate max-w-[120px]'>{res.name || 'CV'}</span>
+                                       </div>
                                     ))}
                                  </div>
                               ) : (
