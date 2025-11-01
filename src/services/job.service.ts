@@ -1,6 +1,6 @@
 import { BaseService } from '@/services/base.service'
 import { PaginationResponse } from '@/types/api.type.'
-import type { CreateJobRequest, JobApplicantResponse, JobDetail, JobResponse, JobStatus, UpdateJobRequest } from '@/types/job.type'
+import type { ApplicationStatus, CreateJobRequest, JobApplicantResponse, JobDetail, JobResponse, JobStatus, UpdateJobRequest } from '@/types/job.type'
 
 /**
  * Job Service
@@ -54,7 +54,7 @@ class JobService extends BaseService {
       return response.data
    }
 
-   async processJobApplication(applicationId: number, action: 'REVIEWED' | 'REJECTED'): Promise<JobApplicantResponse> {
+   async processJobApplication(applicationId: number, action: ApplicationStatus): Promise<JobApplicantResponse> {
       const response = await this.post<JobApplicantResponse>(`/recruiters/company/applicants/${applicationId}?action=${action}`)
       return response.data
    }

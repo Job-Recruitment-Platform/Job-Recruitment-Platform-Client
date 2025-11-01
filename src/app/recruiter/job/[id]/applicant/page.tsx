@@ -14,6 +14,7 @@ import Pagination from '@/components/ui/pagination'
 import { ApplicationStatus, type JobApplicantResponse } from '@/types/job.type'
 import { ResourceType } from '@/types/resource.type'
 import { showSuccessToast, showErrorToast } from '@/lib/toast'
+import App from 'next/app'
 
 export default function JobApplicantsPage() {
    const router = useRouter()
@@ -38,15 +39,15 @@ export default function JobApplicantsPage() {
 
    // Process application mutation
    const processMutation = useMutation({
-      mutationFn: ({ applicationId, action }: { applicationId: number; action: 'REVIEWED' | 'REJECTED' }) =>
+      mutationFn: ({ applicationId, action }: { applicationId: number; action: ApplicationStatus.REVIEWED | ApplicationStatus.REJECTED }) =>
          jobService.processJobApplication(applicationId, action),
       onSuccess: (_, variables) => {
          queryClient.invalidateQueries({ queryKey: ['job-applicants', jobId] })
-         const message = variables.action === 'REVIEWED' ? 'Đã đánh dấu đã xem' : 'Đã từ chối ứng viên'
+         const message = variables.action === ApplicationStatus.REVIEWED ? 'Đã đánh dấu đã xem' : 'Đã từ chối ứng viên'
          showSuccessToast(message)
       },
       onError: (_, variables) => {
-         const message = variables.action === 'REVIEWED' ? 'Không thể đánh dấu đã xem' : 'Không thể từ chối ứng viên'
+         const message = variables.action === ApplicationStatus.REVIEWED ? 'Không thể đánh dấu đã xem' : 'Không thể từ chối ứng viên'
          showErrorToast(message)
       }
    })
@@ -313,7 +314,12 @@ export default function JobApplicantsPage() {
                                  )
                               })()}
                               <div className='min-w-0 flex-1'>
-                                 <div className='truncate font-medium'>{applicant.candidateName}</div>
+                                 <Link
+                                    href={`/recruiter/job/${jobId}/applicant/${applicant.id}`}
+                                    className='truncate font-medium text-gray-900 hover:text-primary transition-colors cursor-pointer'
+                                 >
+                                    {applicant.candidateName}
+                                 </Link>
                                  <div className='truncate text-xs text-gray-500'>ID: {applicant.candidateId}</div>
                               </div>
                            </div>
@@ -389,7 +395,7 @@ export default function JobApplicantsPage() {
                                           onClick={() =>
                                              processMutation.mutate({
                                                 applicationId: applicant.id,
-                                                action: 'REVIEWED'
+                                                action: ApplicationStatus.REVIEWED
                                              })
                                           }
                                           disabled={processMutation.isPending}
@@ -404,7 +410,7 @@ export default function JobApplicantsPage() {
                                           onClick={() =>
                                              processMutation.mutate({
                                                 applicationId: applicant.id,
-                                                action: 'REJECTED'
+                                                action: ApplicationStatus.REJECTED
                                              })
                                           }
                                           disabled={processMutation.isPending}

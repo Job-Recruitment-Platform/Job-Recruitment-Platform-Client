@@ -1,5 +1,6 @@
 import { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
+import { PaginationResponse } from '@/types/api.type.'
 import { CreateInterviewRequest, InterviewResponse, UpdateInterviewRequest } from '@/types/interview.type'
 import { RecruiterResponse, UpdateRecruiterProfileRequest } from '@/types/recruiter.type'
 
@@ -40,6 +41,14 @@ class RecruiterService extends BaseService {
 
    async updateInterview(payload: UpdateInterviewRequest): Promise<ApiResponse<InterviewResponse>> {
       return await this.patch<InterviewResponse>('/company/applicants/interview', payload, {
+         headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`
+         }
+      })
+   }
+
+   async getCompanyInterviews(): Promise<ApiResponse<PaginationResponse<InterviewResponse[]>>> {
+      return await this.get<PaginationResponse<InterviewResponse[]>>('/company/applicants/interview', {
          headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`
          }

@@ -10,6 +10,7 @@ export interface InterviewResponse {
   id: number;                  // Long -> number
   applicationId: number;       // Long -> number
   candidateName: string;
+  jobTitle: string;
   scheduledAt: string;         // OffsetDateTime -> ISO 8601 string
   status: InterviewStatus;     // enum
   location: Location;
