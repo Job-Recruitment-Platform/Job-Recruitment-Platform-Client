@@ -1,4 +1,5 @@
-import { setupAuthInterceptors } from '@/middleware/auth.middleware'
+import { setupAuthInterceptors } from '@/interceptor/auth.interceptor'
+import { setupResponseInterceptors } from '@/interceptor/response.interceptor'
 import axios, { type AxiosInstance } from 'axios'
 
 // Base API response structure
@@ -44,6 +45,8 @@ const apiClient: AxiosInstance = defaultApiClient
 // Setup authentication interceptors for both clients
 setupAuthInterceptors(defaultApiClient)
 setupAuthInterceptors(searchApiClient)
+setupResponseInterceptors(defaultApiClient)
+setupResponseInterceptors(searchApiClient)
 
 export default apiClient
 export { defaultApiClient, searchApiClient }
