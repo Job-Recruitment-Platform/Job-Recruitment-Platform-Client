@@ -1,34 +1,18 @@
 import { handleBusinessErrorCode } from '@/constants/businessErrorCode.constant'
-import { handleHttpErrorCode } from '@/constants/httpErrorCode.constant'
 import { AxiosInstance, isAxiosError } from 'axios'
 import { toast } from 'react-hot-toast'
 
 export function setupResponseInterceptors(client: AxiosInstance): void {
    client.interceptors.response.use(
-      (response) => {
-         const { code, data } = response.data ?? {}
-
-         if (typeof code === 'number' && code === 1000) {
-            // unwrap API response data
-            return data
-         }
-
-         // handle business error code
-         if (typeof code === 'number') {
-            handleBusinessErrorCode(code)
-         }
-
-         return response
-      },
+      (response) => response,
 
       // (HTTP 4xx, 5xx, network, timeout, etc.)
       (error) => {
+         console.log('❌ Response Error:', error)
          if (isAxiosError(error)) {
             if (error.response) {
-               const { status } = error.response
-
-               // handle HTTP error code
-               handleHttpErrorCode(status)
+               console.log('❌ Error Response:', error.response.data)
+               handleBusinessErrorCode(error.response.data?.code)
 
                return Promise.reject(error)
             }

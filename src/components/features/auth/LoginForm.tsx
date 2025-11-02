@@ -62,11 +62,11 @@ export default function LoginForm({ className }: LoginFormProps) {
             router.push('/')
          }
       } catch (error) {
-         if (error instanceof Error) {
-            showErrorToast(error.message)
-         } else {
-            showErrorToast('Đăng nhập thất bại. Vui lòng thử lại!')
-         }
+         // if (error instanceof Error) {
+         //    showErrorToast(error.message)
+         // } else {
+         //    showErrorToast('Đăng nhập thất bại. Vui lòng thử lại!')
+         // }
       } finally {
          setIsLoading(false)
       }
