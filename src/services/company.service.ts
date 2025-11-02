@@ -12,7 +12,7 @@ class CompanyService extends BaseService {
    }
 
    async getCompanyProfile(companyId: number): Promise<ApiResponse<CompanyResponse>> {
-      const tmp = await this.get<CompanyResponse>(`/public/${companyId}`)
+      const tmp = await this.get<CompanyResponse>(`/${companyId}`)
       console.log('Company profile response:', tmp)
       return tmp
    }
