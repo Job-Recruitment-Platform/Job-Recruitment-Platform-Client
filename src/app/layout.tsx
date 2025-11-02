@@ -5,7 +5,6 @@ import Init from '@/components/layouts/Init'
 import QueryProvider from '@/lib/query-client'
 import { AuthProvider } from '@/store/AuthContext'
 import '@/styles/globals.css'
-import { ComponentIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
@@ -22,11 +21,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
    title: 'BotCV',
-   description: 'Automate your recruitment process with BotCV - AI-powered job application management and candidate tracking system.',
+   description:
+      'Automate your recruitment process with BotCV - AI-powered job application management and candidate tracking system.',
    viewport: {
       width: 'device-width',
       initialScale: 1
-   },
+   }
    // icons: {
    //    icon: ComponentIcon,
    //    shortcut: ComponentIcon,
@@ -54,15 +54,15 @@ export default function RootLayout({
 
                   {/* Toast Configuration - Anti-spam via Map-based tracking system */}
                   <Toaster
-                     position='top-right'
+                     position='top-center'
                      reverseOrder={false}
                      gutter={8}
                      toastOptions={{
                         // Default options
                         duration: 4000,
                         style: {
-                           background: '#363636',
-                           color: '#fff',
+                           background: '#fff',
+                           color: '#000',
                            padding: '16px',
                            borderRadius: '8px',
                            fontSize: '14px',
