@@ -1,18 +1,21 @@
 'use client'
 
-import candidateService from '@/services/candidate.service'
 import { useAuth } from '@/hooks/useAuth'
-import { useEffect } from 'react'
+import candidateService from '@/services/candidate.service'
+import { useQuery } from '@tanstack/react-query'
 
 export default function Init() {
    const { isLogin, isLoading } = useAuth()
 
-   useEffect(() => {
-      // Only fetch saved jobs if user is authenticated and not loading
-      if (isLogin && !isLoading) {
-         candidateService.getSavedJobs()
-      }
-   }, [isLogin, isLoading])
+   // Fetch saved jobs only once per session when user is logged in
+   useQuery({
+      queryKey: ['savedJobs'],
+      queryFn: () => candidateService.getSavedJobs(),
+      enabled: isLogin && !isLoading,
+      staleTime: Infinity, // Never refetch automatically
+      gcTime: Infinity, // Keep data in cache indefinitely
+      retry: false // Don't retry on failure
+   })
 
    return <></>
 }
