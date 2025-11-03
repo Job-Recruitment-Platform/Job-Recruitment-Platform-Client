@@ -25,18 +25,17 @@ export interface JobSearchResult {
    title: string
    company: string
    location: string
-   salary_min: number
-   salary_max: number
+   salaryMax: number
+   salaryMin: number
    currency: string
-   job_role: string
-   min_experience_years: number
-   seniority: 'JUNIOR' | 'SENIOR' | 'LEAD'
-   work_mode: 'ONSITE' | 'REMOTE' | 'HYBRID'
-   status: 'PUBLISHED' | 'DRAFT'
-   skills: string[]
-   date_posted: number
-   date_expires: number
-   score: number
+   jobRole: string
+   minExperienceYears: number
+   seniority: 'INTERN' | 'FRESHER' | 'JUNIOR' | 'MID' | 'SENIOR' | 'MANAGER'
+   workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'
+   status: 'PUBLISHED' | 'DRAFT' | 'EXPIRED' | 'PENDING' | 'CANCELED'
+   skills: SkillResponse[]
+   datePosted: number
+   dateExpires: number
 }
 
 export interface JobSearchResponse {
