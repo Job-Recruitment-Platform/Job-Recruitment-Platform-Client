@@ -4,14 +4,15 @@ import Button from '@/components/shared/Button'
 import UserInfo from '@/components/shared/user-profile/UserInfo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useAuth } from '@/hooks/useAuth'
+import candidateService from '@/services/candidate.service'
+import { recruiterService } from '@/services/recruiter.service'
+import { useSavedJobsStore } from '@/store/useSavedJobStore'
+import { useQuery } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
-import { Building2, LogOut, Settings, User, Loader2 } from 'lucide-react'
+import { Building2, Loader2, LogOut, Settings, User } from 'lucide-react'
 import { useRouter } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { recruiterService } from '@/services/recruiter.service'
-import candidateService from '@/services/candidate.service'
 
 type UserProfileDialogProps = {
    children?: React.ReactNode
@@ -21,6 +22,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
    const [open, setOpen] = useState(false)
    const { logout } = useAuth()
    const router = useRouter()
+   const { setJobs } = useSavedJobsStore()
 
    const isRecruiter = (() => {
       try {
@@ -52,6 +54,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
    const handleLogout = async () => {
       try {
          await logout()
+         setJobs([])
          setOpen(false)
          router.push('/')
       } catch (error) {
@@ -78,7 +81,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
          >
             {isLoading ? (
                <div className='flex items-center justify-center border-b p-8'>
-                  <Loader2 className='h-6 w-6 animate-spin text-primary' />
+                  <Loader2 className='text-primary h-6 w-6 animate-spin' />
                </div>
             ) : userData ? (
                <UserInfo

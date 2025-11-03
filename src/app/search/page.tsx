@@ -5,16 +5,24 @@ import BoxSearch from '@/components/features/search/BoxSort'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
 import SidebarFilter from '@/components/layouts/SidebarFilter'
 import { useSearchJobs } from '@/hooks/useSearchJobs'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 
 export default function SearchResultsPage() {
    const searchParams = useSearchParams()
    const keyword = searchParams.get('key_word') || ''
 
-   const { data, isLoading, isError } = useSearchJobs({
-      query: keyword,
-      limit: 20,
-      offset: 0
+   const {
+      results,
+      isLoading,
+      hasNextPage,
+      hasPreviousPage,
+      currentPage,
+      totalResults,
+      handleNextPage,
+      handlePreviousPage
+   } = useSearchJobs({
+      query: keyword
    })
 
    return (
@@ -32,34 +40,62 @@ export default function SearchResultsPage() {
             {/* Search Results */}
             <div className='flex-1 space-y-3'>
                <BoxSearch />
-               {/* Loading state */}
+
+               {/* State 1: Loading state */}
                {isLoading && (
                   <div className='py-8 text-center'>
                      <p className='text-gray-600'>Đang tìm kiếm công việc...</p>
                   </div>
                )}
 
-               {/* Empty state */}
-               {!isLoading && !isError && (!data?.results || data.results.length === 0) && (
+               {/* State 2: No keyword entered */}
+               {!isLoading && keyword === '' && (
+                  <div className='py-8 text-center'>
+                     <p className='text-gray-600'>Nhập từ khoá để tìm kiếm</p>
+                  </div>
+               )}
+
+               {/* State 3: Empty results */}
+               {!isLoading && keyword !== '' && results.length === 0 && (
                   <div className='py-8 text-center'>
                      <p className='text-gray-600'>
-                        {keyword
-                           ? `Không tìm thấy công việc cho từ khóa "${keyword}"`
-                           : 'Nhập từ khóa để tìm kiếm'}
+                        Không tìm thấy công việc cho từ khoá &quot;{keyword}&quot;
                      </p>
                   </div>
                )}
 
-               {/* Results */}
-               {!isLoading && !isError && data?.results && data.results.length > 0 && (
+               {/* Results with pagination */}
+               {!isLoading && keyword !== '' && results.length > 0 && (
                   <>
-                     <p className='text-sm font-normal text-gray-600'>
-                        Tìm thấy <strong className='text-primary'>{data.results.length}</strong>{' '}
-                        công việc
-                     </p>
-                     {data.results.map((job) => (
-                        <JobSearchItem key={job.id} job={job} />
-                     ))}
+                     {/* Job list */}
+                     <div className='space-y-3'>
+                        {results.map((job) => (
+                           <JobSearchItem key={job.id} job={job} />
+                        ))}
+                     </div>
+
+                     {/* Pagination controls */}
+                     <div className='flex items-center justify-center gap-4 py-6'>
+                        <button
+                           onClick={handlePreviousPage}
+                           disabled={!hasPreviousPage}
+                           className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+                        >
+                           <ChevronLeftIcon size={16} />
+                        </button>
+
+                        <span className='text-sm font-medium text-gray-600'>
+                           Trang {currentPage}
+                        </span>
+
+                        <button
+                           onClick={handleNextPage}
+                           disabled={!hasNextPage}
+                           className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+                        >
+                           <ChevronRightIcon size={16} />
+                        </button>
+                     </div>
                   </>
                )}
             </div>
