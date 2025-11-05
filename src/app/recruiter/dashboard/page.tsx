@@ -72,7 +72,7 @@ export default function RecruiterDashboardPage() {
                <div className='text-sm text-gray-500'>Theo dõi hiệu quả tuyển dụng và quản lý tin đăng</div>
             </div>
             <Link
-               href='/job/save'
+               href='/recruiter/job/create'
                className='inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-white hover:opacity-90'
             >
                <Briefcase size={16} />
@@ -112,19 +112,38 @@ export default function RecruiterDashboardPage() {
                <div className='divide-y'>
                   {statistics?.newestJobs && statistics.newestJobs.length > 0 ? (
                      statistics.newestJobs.slice(0, 3).map((job, idx) => (
-                        <div key={idx} className='flex items-center justify-between p-4 text-sm'>
-                           <div className='min-w-0 flex-1'>
-                              <div className='truncate font-medium'>{job.title}</div>
-                              <div className='mt-1 flex items-center gap-2 text-xs text-gray-500'>
-                                 <span>{job.company}</span>
-                                 <span>•</span>
-                                 <span>{job.location}</span>
+                        <Link 
+                           key={idx} 
+                           href={`/job/${job.id}/detail`}
+                           className='block p-4 transition-colors hover:bg-gray-50'
+                        >
+                           <div className='mb-2'>
+                              <div className='mb-1 font-medium text-gray-900'>{job.title}</div>
+                              <div className='text-sm text-gray-600'>{job.company}</div>
+                           </div>
+                           <div className='flex flex-wrap items-center gap-2'>
+                              <div className='flex items-center gap-1.5 text-xs text-gray-500'>
+                                 <svg className='h-3.5 w-3.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' />
+                                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 11a3 3 0 11-6 0 3 3 0 016 0z' />
+                                 </svg>
+                                 {job.location}
                               </div>
+                              <span className='text-gray-300'>•</span>
+                              <div className='rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700'>
+                                 {job.workMode}
+                              </div>
+                              <span className='text-gray-300'>•</span>
+                              {job.salaryMin && job.salaryMax && (
+                                 <>
+                                    <span className='text-gray-300'>•</span>
+                                    <div className='text-xs font-medium text-green-600'>
+                                       {job.salaryMin.toLocaleString()} - {job.salaryMax.toLocaleString()} {job.currency}
+                                    </div>
+                                 </>
+                              )}
                            </div>
-                           <div className='ml-3 rounded-full bg-green-100 px-2 py-1 text-xs text-green-700'>
-                              {job.work_mode}
-                           </div>
-                        </div>
+                        </Link>
                      ))
                   ) : (
                      <div className='flex h-32 items-center justify-center text-sm text-gray-400'>
@@ -132,9 +151,9 @@ export default function RecruiterDashboardPage() {
                      </div>
                   )}
                </div>
-               <div className='p-4'>
-                  <Link href='/recruiter/job' className='text-sm text-primary hover:underline'>
-                     Xem tất cả tin tuyển dụng
+               <div className='border-t p-4'>
+                  <Link href='/recruiter/job' className='text-sm font-medium text-primary hover:underline'>
+                     Xem tất cả tin tuyển dụng →
                   </Link>
                </div>
             </div>

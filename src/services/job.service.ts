@@ -1,5 +1,6 @@
 import { BaseService } from '@/services/base.service'
-import type { JobDetail } from '@/types/job.type'
+import { PaginationResponse } from '@/types/api.type.'
+import type { ApplicationStatus, CreateJobRequest, JobApplicantResponse, JobDetail, JobResponse, JobStatus, UpdateJobRequest } from '@/types/job.type'
 
 /**
  * Job Service
@@ -25,6 +26,37 @@ class JobService extends BaseService {
    async getJobsByIds(jobIds: number[]): Promise<JobDetail[]> {
       const promises = jobIds.map((id) => this.getJobDetail(id))
       return Promise.all(promises)
+   }
+
+   async getCompanyJobs(status: JobStatus): Promise<PaginationResponse<JobResponse[]>> {
+      const response = await this.get<PaginationResponse<JobResponse[]>>(`/recruiters/company/jobs?jobStatus=${status}`)
+      console.log('Company jobs response:', response)
+      return response.data
+   }
+
+   async createJob(request: CreateJobRequest): Promise<JobResponse> {
+      const response = await this.post<JobResponse>('/job', request)
+      return response.data
+   }
+
+   async updateJob(jobId: number, request: UpdateJobRequest): Promise<JobResponse> {
+      const response = await this.put<JobResponse>(`/job/${jobId}`, request)
+      return response.data
+   }
+
+   async cancelJob(jobId: number): Promise<JobResponse> {
+      const response = await this.patch<JobResponse>(`/job/cancel/${jobId}`)
+      return response.data
+   }
+
+   async getJobApplicants(jobId: number): Promise<PaginationResponse<JobApplicantResponse[]>> {
+      const response = await this.get<PaginationResponse<any>>(`/recruiters/company/${jobId}/applicants`)
+      return response.data
+   }
+
+   async processJobApplication(applicationId: number, action: ApplicationStatus): Promise<JobApplicantResponse> {
+      const response = await this.post<JobApplicantResponse>(`/recruiters/company/applicants/${applicationId}?action=${action}`)
+      return response.data
    }
 
    /**

@@ -1,5 +1,7 @@
+import { ApiResponse } from '@/lib/axios'
 import { useSavedJobsStore } from '@/store/useSavedJobStore'
 import { PaginationResponse } from '@/types/api.type.'
+import { CandidateProfileResponse, UpdateCandidateProfileRequest } from '@/types/candidate.type'
 import { SavedJobType } from '@/types/job.type'
 import { BaseService } from './base.service'
 
@@ -47,12 +49,14 @@ class CandidateService extends BaseService {
       return response.data
    }
 
-   async getSavedJobs(): Promise<void> {
+   async getSavedJobs(): Promise<PaginationResponse<SavedJobType[]>> {
       const response = await this.get<PaginationResponse<SavedJobType[]>>(`/saved-jobs`)
 
       if (response.data) {
          useSavedJobsStore.getState().setJobs(response.data.content)
       }
+
+      return response.data
    }
 
    async saveJob(jobId: number): Promise<void> {
@@ -69,6 +73,16 @@ class CandidateService extends BaseService {
       if (response.code === 1000) {
          useSavedJobsStore.getState().removeJob(jobId)
       }
+   }
+
+   async updateProfile(
+      data: UpdateCandidateProfileRequest
+   ): Promise<ApiResponse<CandidateProfileResponse>> {
+      return await this.put<CandidateProfileResponse>(`/profile`, data)
+   }
+
+   async getProfile(): Promise<ApiResponse<CandidateProfileResponse>> {
+      return await this.get<CandidateProfileResponse>(`/profile`)
    }
 }
 const candidateService = new CandidateService()

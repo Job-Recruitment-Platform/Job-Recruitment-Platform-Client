@@ -44,14 +44,14 @@ export default function JobSearchItem({ job }: JobSearchItemProps) {
                      <JobTitle onClick={handleCardClick}>{job.title}</JobTitle>
                      <Company>{job.company}</Company>
                      <Meta>
-                        <Badge variant='outline'>{job.location}</Badge>
+                        {/* <Badge variant='outline'>{job.location}</Badge> */}
                         <Badge variant='outline'>
-                           {formatExperience(job.min_experience_years)}
+                           {formatExperience(job.minExperienceYears)}
                         </Badge>
                         <Badge variant='outline'>{job.seniority}</Badge>
                      </Meta>
                   </TitleContent>
-                  <Salary>{formatSalary(job.salary_min, job.salary_max, job.currency)}</Salary>
+                  <Salary>{formatSalary(job.salaryMin, job.salaryMax, job.currency)}</Salary>
                </TitleBlock>
                <Actions className='gap-x-2'>
                   <div className='flex-1'></div>

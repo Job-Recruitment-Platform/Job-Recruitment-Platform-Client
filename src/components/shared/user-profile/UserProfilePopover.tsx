@@ -4,8 +4,12 @@ import Button from '@/components/shared/Button'
 import UserInfo from '@/components/shared/user-profile/UserInfo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useAuth } from '@/hooks/useAuth'
+import candidateService from '@/services/candidate.service'
+import { recruiterService } from '@/services/recruiter.service'
+import { useSavedJobsStore } from '@/store/useSavedJobStore'
+import { useQuery } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
-import { Building2, LogOut, Settings, User } from 'lucide-react'
+import { Building2, Loader2, LogOut, Settings, User } from 'lucide-react'
 import { useRouter } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -18,6 +22,7 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
    const [open, setOpen] = useState(false)
    const { logout } = useAuth()
    const router = useRouter()
+   const { setJobs } = useSavedJobsStore()
 
    const isRecruiter = (() => {
       try {
@@ -28,9 +33,28 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
       }
    })()
 
+   // Fetch user profile based on role
+   const { data: recruiterData, isLoading: recruiterLoading } = useQuery({
+      queryKey: ['recruiter-profile'],
+      queryFn: () => recruiterService.getProfile(),
+      enabled: isRecruiter && open,
+      staleTime: 5 * 60 * 1000 // 5 minutes
+   })
+
+   const { data: candidateData, isLoading: candidateLoading } = useQuery({
+      queryKey: ['candidate-profile'],
+      queryFn: () => candidateService.getProfile(),
+      enabled: !isRecruiter && open,
+      staleTime: 5 * 60 * 1000 // 5 minutes
+   })
+
+   const isLoading = isRecruiter ? recruiterLoading : candidateLoading
+   const userData = isRecruiter ? recruiterData?.data : candidateData?.data
+
    const handleLogout = async () => {
       try {
          await logout()
+         setJobs([])
          setOpen(false)
          router.push('/')
       } catch (error) {
@@ -55,44 +79,72 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
          >
-            <UserInfo />
-            
+            {isLoading ? (
+               <div className='flex items-center justify-center border-b p-8'>
+                  <Loader2 className='text-primary h-6 w-6 animate-spin' />
+               </div>
+            ) : userData ? (
+               <UserInfo
+                  avatarUrl={userData.resource?.url}
+                  fullName={userData.fullName || 'User'}
+                  email={userData.email || 'N/A'}
+                  userId={userData.id}
+                  isVerified={true}
+               />
+            ) : (
+               <div className='border-b p-4 text-center text-sm text-gray-500'>
+                  Không thể tải thông tin người dùng
+               </div>
+            )}
+
             <div className='border-t py-2'>
-               <Link
-                  href='/(candidate)/profile'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <User size={16} />
-                  Hồ sơ của tôi
-               </Link>
-               <Link
-                  href='/(candidate)/profile/edit'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <Settings size={16} />
-                  Chỉnh sửa hồ sơ
-               </Link>
-               {isRecruiter && (
-                  <Link
-                  href='/recruiter/dashboard'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <Building2 size={16} />
-                  Khu vực nhà tuyển dụng
-               </Link>
+               {!isRecruiter && (
+                  <>
+                     <Link
+                        href='/profile/edit'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <User size={16} />
+                        Hồ sơ của tôi
+                     </Link>
+                     <Link
+                        href='/profile/edit'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <Settings size={16} />
+                        Chỉnh sửa hồ sơ
+                     </Link>
+                  </>
                )}
                {isRecruiter && (
-                  <Link
-                  href='/recruiter/settings/company'
-                  className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                  onClick={() => setOpen(false)}
-               >
-                  <Settings size={16} />
-                  Cài đặt công ty
-               </Link>
+                  <>
+                     <Link
+                        href='/recruiter/dashboard'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <Building2 size={16} />
+                        Khu vực nhà tuyển dụng
+                     </Link>
+                     <Link
+                        href='/recruiter/settings/profile'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <User size={16} />
+                        Hồ sơ cá nhân
+                     </Link>
+                     <Link
+                        href='/recruiter/settings/company'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <Settings size={16} />
+                        Cài đặt công ty
+                     </Link>
+                  </>
                )}
             </div>
 
