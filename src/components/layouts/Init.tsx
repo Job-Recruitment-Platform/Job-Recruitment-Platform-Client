@@ -1,38 +1,44 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
+import { useLogStore } from '@/hooks/useTracker'
 import candidateService from '@/services/candidate.service'
-import { TokenPayload } from '@/types/auth.type'
+import type { TokenPayload } from '@/types/auth.type'
 import { useQuery } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
 import { useEffect, useState } from 'react'
 
 export default function Init() {
    const { isLogin, isLoading } = useAuth()
+   const { setLoggedIn, startAutoFlush, stopAutoFlush } = useLogStore()
    const [isCandidate, setIsCandidate] = useState(false)
 
-   // Check user role from token
+   useEffect(() => {
+      setLoggedIn(isLogin)
+      if (isLogin) startAutoFlush()
+      else stopAutoFlush()
+   }, [isLogin, setLoggedIn, startAutoFlush, stopAutoFlush])
+
    useEffect(() => {
       if (!isLogin || isLoading) {
          setIsCandidate(false)
          return
       }
 
-      try {
-         const accessToken = localStorage.getItem('accessToken')
-         if (!accessToken) {
-            setIsCandidate(false)
-            return
-         }
+      const accessToken = localStorage.getItem('accessToken')
+      if (!accessToken) {
+         setIsCandidate(false)
+         return
+      }
 
+      try {
          const decoded = jwtDecode<TokenPayload>(accessToken)
-         setIsCandidate(decoded.role === 'CANDIDATE')
-      } catch (error) {
+         setIsCandidate(decoded?.role === 'CANDIDATE')
+      } catch {
          setIsCandidate(false)
       }
    }, [isLogin, isLoading])
 
-   // Fetch saved jobs only for candidates
    useQuery({
       queryKey: ['savedJobs'],
       queryFn: () => candidateService.getSavedJobs(),
@@ -42,5 +48,5 @@ export default function Init() {
       retry: false
    })
 
-   return <></>
+   return null
 }

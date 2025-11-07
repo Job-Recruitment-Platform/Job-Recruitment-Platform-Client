@@ -13,12 +13,13 @@ import CVSelector from './CVSelector'
 import CoverLetterInput from './CoverLetterInput'
 import DialogActions from './DialogActions'
 import toast from 'react-hot-toast'
+import { useLogStore } from '@/hooks/useTracker'
 
 type SelectionMode = 'library' | 'upload'
 
 interface ApplyJobDialogProps {
    job: {
-      id: string | number
+      id: number
       title: string
       minSalary: number
       maxSalary: number
@@ -34,12 +35,15 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
    const [uploadedFile, setUploadedFile] = useState<File | null>(null)
    const [coverLetter, setCoverLetter] = useState('')
    const [open, setOpen] = useState(false)
+   const { markApply } = useLogStore()
 
    // Use TanStack Query mutation
    const { mutate: applyJob, isPending } = useApplyJob({
       onSuccess: (data) => {
          console.log('✅ Apply job success data:', data)
          toast.success('Ứng tuyển thành công!')
+
+         markApply(job.id)
 
          // Reset form
          setSelectedCV(null)
