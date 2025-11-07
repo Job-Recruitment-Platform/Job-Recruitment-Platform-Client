@@ -1,5 +1,6 @@
 'use client'
 
+import apiClient from '@/lib/axios'
 import { create } from 'zustand'
 
 // ====== Event types (server receives UPPERCASE) ======
@@ -70,7 +71,7 @@ type LogStore = {
 }
 
 // ====== Config ======
-const API_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE}/api/analytics/batch`
+const API_ENDPOINT = `http://localhost:8080/api/interactions`
 const DEFAULT_INTERVAL = 60_000
 const MAX_BUCKET_SIZE = 2000
 
@@ -91,6 +92,7 @@ async function sendBatch(items: SendItem[]) {
    const blob = new Blob([body], { type: 'application/json' })
 
    let sent = false
+
    try {
       if ('sendBeacon' in navigator) {
          sent = navigator.sendBeacon(API_ENDPOINT, blob)
@@ -98,16 +100,16 @@ async function sendBatch(items: SendItem[]) {
    } catch {
       sent = false
    }
+
+   // fallback
    if (!sent) {
       try {
-         await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body,
-            keepalive: true
-         })
-      } catch {
-         // best-effort; ignore errors
+         await apiClient.post(API_ENDPOINT, items)
+      } catch (error) {
+         // best-effort; ignore error
+         if (process.env.NODE_ENV === 'development') {
+            console.warn('sendBatch failed:', error)
+         }
       }
    }
 }

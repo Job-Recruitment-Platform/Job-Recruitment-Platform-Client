@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
-import { useLogStore } from '@/hooks/useTracker' 
+import { useLogStore } from '@/hooks/useTracker'
 import { searchService } from '@/services/search.service'
 import type { PaginationResponse } from '@/types/api.type.'
 import type { JobSearchRequest, JobSearchResult } from '@/types/job.type'
@@ -40,7 +40,7 @@ export const useSearchJobs = (
 
    const { isLoading, data, error } = useQuery({
       queryKey: ['searchJobs', payload],
-      queryFn: () => searchService.searchJobs(payload),
+      queryFn: () => searchService.searchJobs(),
       enabled: queryEnabled,
       staleTime: 5 * 60 * 1000
    })
@@ -59,6 +59,7 @@ export const useSearchJobs = (
       if (!query) return
 
       // initBucket('search', jobIds, { query })
+      console.log('Initializing search bucket with results:', results.map((j) => j.id))
       initBucket(
          'search',
          results.map((j) => j.id),
