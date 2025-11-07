@@ -25,6 +25,7 @@ export interface JobSearchRequest {
 export interface JobSearchResult {
    id: number
    title: string
+   logo: string
    company: string
    location: string
    salaryMax: number
