@@ -71,7 +71,6 @@ type LogStore = {
 }
 
 // ====== Config ======
-const API_ENDPOINT = `http://localhost:8080/api/interactions`
 const DEFAULT_INTERVAL = 60_000
 const MAX_BUCKET_SIZE = 2000
 
@@ -87,30 +86,12 @@ function pruneObj<T extends object>(obj: Record<string, any>, keep = MAX_BUCKET_
    return obj
 }
 
-async function sendBatch(items: SendItem[]) {
-   const body = JSON.stringify(items)
-   const blob = new Blob([body], { type: 'application/json' })
-
-   let sent = false
-
+export async function sendBatch(items: SendItem[]) {
    try {
-      if ('sendBeacon' in navigator) {
-         sent = navigator.sendBeacon(API_ENDPOINT, blob)
-      }
-   } catch {
-      sent = false
-   }
-
-   // fallback
-   if (!sent) {
-      try {
-         await apiClient.post(API_ENDPOINT, items)
-      } catch (error) {
-         // best-effort; ignore error
-         if (process.env.NODE_ENV === 'development') {
-            console.warn('sendBatch failed:', error)
-         }
-      }
+      console.log('Sending batch of interaction items:', items)
+      await apiClient.post('/interactions', items) 
+   } catch (err) {
+      if (process.env.NODE_ENV === 'development') console.warn('sendBatch failed', err)
    }
 }
 
