@@ -37,9 +37,7 @@ export default function JobSearchItem({ job, query }: JobSearchItemProps) {
       console.log('Job card clicked:', isLogin)
       if (isLogin) {
          markClick({
-            jobId: job.id,
-            source: 'search',
-            query
+            jobId: job.id
          })
       }
       router.push(`/job/${job.id}/detail`)
@@ -47,7 +45,7 @@ export default function JobSearchItem({ job, query }: JobSearchItemProps) {
 
    const handleSave = () => {
       if (isLogin) {
-         markSave(job.id, { source: 'search', query })
+         markSave(job.id)
       }
    }
 
