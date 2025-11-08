@@ -11,7 +11,7 @@ export default function Home() {
             <FeatureJobList />
             <div className='my-5 flex w-full justify-center'>
                <Pagination>
-                  <div className='text-sm font-semibold text-gray-400'>8/32 trang</div>
+                  <div className='text-sm font-semibold text-gray-400'>1/10 trang</div>
                </Pagination>
             </div>
          </div>

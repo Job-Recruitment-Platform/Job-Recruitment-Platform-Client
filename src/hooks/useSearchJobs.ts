@@ -1,45 +1,72 @@
 'use client'
 
+import { useAuth } from '@/hooks/useAuth'
+import { useLogStore } from '@/hooks/useTracker'
 import { searchService } from '@/services/search.service'
 import type { PaginationResponse } from '@/types/api.type.'
 import type { JobSearchRequest, JobSearchResult } from '@/types/job.type'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-/**
- * Hook to search for jobs using TanStack Query with pagination support
- * @param initialPayload - Initial search request payload (with query keyword)
- * @param enabled - Whether the query should run (default: true)
- * @returns Object containing isLoading state, results, and pagination controls
- */
+const LIMIT = 10
+
 export const useSearchJobs = (
    initialPayload: Omit<JobSearchRequest, 'offset' | 'limit'>,
    enabled: boolean = true
 ) => {
    const [offset, setOffset] = useState(0)
-   const LIMIT = 10
+   const { isLogin } = useAuth()
 
-   const payload: JobSearchRequest = {
-      ...initialPayload,
-      offset,
-      limit: LIMIT,
-      weights: {
-         dense: 1,
-         sparse: 1
-      }
-   }
+   // Get init bucket 'search' function from store
+   const { initBucket /*, startAutoFlush*/ } = useLogStore()
+
+   // Get query (if any) and normalize it
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const query = (initialPayload as any)?.query?.toString().trim() ?? ''
+
+   // Reset page when query changes
+   useEffect(() => {
+      setOffset(0)
+   }, [query])
+
+   // Stabilize weights & payload
+   const weights = useMemo(() => ({ dense: 1, sparse: 1 }), [])
+   const payload: JobSearchRequest = useMemo(
+      () => ({ ...initialPayload, offset, limit: LIMIT, weights }),
+      [initialPayload, offset, weights]
+   )
+
+   const queryEnabled = enabled && query !== ''
 
    const { isLoading, data, error } = useQuery({
       queryKey: ['searchJobs', payload],
-      queryFn: () => searchService.searchJobs(payload),
-      enabled: enabled && initialPayload.query !== '',
-      staleTime: 1000 * 60 * 5 // 5 minutes
+      queryFn: () => searchService.searchJobs(),
+      enabled: queryEnabled,
+      staleTime: 5 * 60 * 1000
    })
 
-   const paginationData = data?.data as PaginationResponse<JobSearchResult[]> | undefined
-   const results = paginationData?.content || []
-   const isNext = paginationData?.hasNext || false
-   const isPrev = paginationData?.hasPrevious || false
+   // Calculate results before using in effect
+   const paginationData =
+      (data?.data as unknown as PaginationResponse<JobSearchResult[]>) || undefined
+   const results = paginationData?.content ?? []
+   const isNext = paginationData?.hasNext ?? false
+   const isPrev = paginationData?.hasPrevious ?? false
+
+   // When there are results & user is logged in -> initialize 'search' bucket with query metadata
+   useEffect(() => {
+      if (!isLogin) return
+      if (results.length === 0) return
+      if (!query) return
+
+      // initBucket('search', jobIds, { query })
+      console.log('Initializing search bucket with results:', results.map((j) => j.id))
+      initBucket(
+         'search',
+         results.map((j) => j.id),
+         { query }
+      )
+      // If you want auto flush: startAutoFlush()
+   }, [isLogin, results, query, initBucket])
 
    const handleNextPage = () => {
       if (isNext) {
@@ -55,9 +82,7 @@ export const useSearchJobs = (
       }
    }
 
-   const resetPagination = () => {
-      setOffset(0)
-   }
+   const resetPagination = () => setOffset(0)
 
    return {
       isLoading,

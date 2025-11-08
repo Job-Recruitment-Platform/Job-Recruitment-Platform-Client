@@ -30,23 +30,11 @@ const defaultApiClient: AxiosInstance = axios.create({
    }
 })
 
-// Create axios instance for Search Service (port 8000)
-const searchApiClient: AxiosInstance = axios.create({
-   baseURL: process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:8000/api',
-   timeout: 30000, // 30 seconds
-   headers: {
-      'Content-Type': 'application/json'
-   }
-})
-
 // Legacy: default apiClient (for backward compatibility)
 const apiClient: AxiosInstance = defaultApiClient
 
 // Setup authentication interceptors for both clients
 setupResponseInterceptors(defaultApiClient)
-setupResponseInterceptors(searchApiClient)
 setupAuthInterceptors(defaultApiClient)
-setupAuthInterceptors(searchApiClient)
 
 export default apiClient
-export { defaultApiClient, searchApiClient }
