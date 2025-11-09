@@ -29,8 +29,13 @@ export const workModeOptions: OptionType[] = [
    { label: 'Tất cả', value: '' },
    { label: 'Toàn thời gian', value: 'FULL-TIME' },
    { label: 'Bán thời gian', value: 'PART-TIME' },
-   { label: 'Làm việc từ xa', value: 'REMOTE' },
-   { label: 'Thực tập', value: 'INTERNSHIP' }
+   { label: 'Làm việc từ xa', value: 'REMOTE' }
+]
+
+export const currencyOptions: OptionType[] = [
+   { label: 'Tất cả', value: '' },
+   { label: 'USD', value: 'USD' },
+   { label: 'VND', value: 'VND' }
 ]
 
 export const jobMockData: JobType[] = [

@@ -17,16 +17,16 @@ export function setupResponseInterceptors(client: AxiosInstance): void {
                return Promise.reject(error)
             }
 
-            if (error.request) {
+            if (error.request) { 
                switch (error.code) {
                   case 'ECONNABORTED':
-                     toast.error('Hết thời gian chờ phản hồi từ server.')
+                     toast.error('Hết thời gian chờ phản hồi từ server.', { id: 'timeout-error' })
                      break
                   default:
                      if (typeof navigator !== 'undefined' && !navigator.onLine) {
-                        toast.error('Kiểm tra kết nối mạng.')
+                        toast.error('Kiểm tra kết nối mạng.', { id: 'network-error' })
                      } else {
-                        toast.error('Không thể kết nối đến server.')
+                        toast.error('Không thể kết nối đến server.', { id: 'network-error' })
                      }
                      break
                }
