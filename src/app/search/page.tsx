@@ -3,7 +3,8 @@
 import JobSearchItem from '@/components/features/job/JobSearchItem'
 import BoxSearch from '@/components/features/search/BoxSort'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
-import SidebarFilter from '@/components/layouts/SidebarFilter'
+import SidebarFilter from '@/components/layouts/FilterSideBar'
+import LocationSelectBox from '@/components/shared/LocationSelectBox'
 import { useSearchJobs } from '@/hooks/useSearchJobs'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
@@ -46,6 +47,7 @@ export default function SearchResultsPage() {
                      <p className='text-gray-600'>Đang tìm kiếm công việc...</p>
                   </div>
                )}
+
 
                {/* State 2: No keyword entered */}
                {!isLoading && keyword === '' && (

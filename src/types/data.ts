@@ -38,6 +38,14 @@ export const currencyOptions: OptionType[] = [
    { label: 'VND', value: 'VND' }
 ]
 
+export const datePostedOptions: OptionType[] = [
+   { label: 'Tất cả', value: '' },
+   { label: '24 giờ qua', value: 'last_24_hours' },
+   { label: '7 ngày qua', value: 'last_7_days' },
+   { label: '14 ngày qua', value: 'last_14_days' },
+   { label: '30 ngày qua', value: 'last_30_days' }
+]
+
 export const jobMockData: JobType[] = [
    {
       id: 1,

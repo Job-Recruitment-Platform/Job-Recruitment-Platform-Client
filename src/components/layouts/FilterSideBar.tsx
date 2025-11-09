@@ -1,6 +1,7 @@
+import LocationSelectBox from '@/components/shared/LocationSelectBox'
 import RadioFilter from '@/components/ui/radio-filter'
 import SalaryFilter from '@/components/ui/salary-filter'
-import { experienceOptions, levelOptions, workModeOptions } from '@/types/data'
+import { datePostedOptions, levelOptions, workModeOptions } from '@/types/data'
 
 export default function FilterSidebar() {
    return (
@@ -20,10 +21,19 @@ export default function FilterSidebar() {
             <SalaryFilter className='border-b pb-3.5' />
 
             <RadioFilter
+               header='Thời gian đăng tin'
+               options={datePostedOptions}
+               className='border-b pb-3.5'
+               paramKey={'datePosted'}
+            />
+
+            <LocationSelectBox />
+
+            <RadioFilter
                header='Loại hình công việc'
                columns={1}
                options={workModeOptions}
-               paramKey='work_mode'
+               paramKey='workMode'
             />
          </div>
       </div>
