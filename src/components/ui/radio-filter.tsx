@@ -29,8 +29,8 @@ export default function RadioFilter({
    const handleChange = (value: string) => {
       const params = new URLSearchParams(searchParams.toString())
       onValueChange?.(value)
-      
-      if (value === '') {
+
+      if (value === '' || value === 'all') {
          params.delete(paramKey)
       } else {
          params.set(paramKey, value)

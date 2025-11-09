@@ -2,7 +2,7 @@ import { JobSearchResult, JobType } from '@/types/job.type'
 import { OptionType } from '@/types/option.type'
 
 export const experienceOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: '1 Năm', value: '1' },
    { label: '2 Năm', value: '2' },
    { label: '3 Năm', value: '3' },
@@ -16,7 +16,7 @@ export const experienceOptions: OptionType[] = [
 ]
 
 export const levelOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: 'Intern', value: 'INTERN' },
    { label: 'Fresher', value: 'FRESHER' },
    { label: 'Junior', value: 'JUNIOR' },
@@ -26,24 +26,29 @@ export const levelOptions: OptionType[] = [
 ]
 
 export const workModeOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: 'Toàn thời gian', value: 'FULL-TIME' },
    { label: 'Bán thời gian', value: 'PART-TIME' },
    { label: 'Làm việc từ xa', value: 'REMOTE' }
 ]
 
 export const currencyOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: 'USD', value: 'USD' },
    { label: 'VND', value: 'VND' }
 ]
 
 export const datePostedOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: '24 giờ qua', value: 'last_24_hours' },
    { label: '7 ngày qua', value: 'last_7_days' },
    { label: '14 ngày qua', value: 'last_14_days' },
    { label: '30 ngày qua', value: 'last_30_days' }
+]
+
+export const jobRoleOptions: OptionType[] = [
+   { label: 'Tất cả', value: 'all' },
+   { label: 'Software Engineer', value: 'Software Engineer' }
 ]
 
 export const jobMockData: JobType[] = [

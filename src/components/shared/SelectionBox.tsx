@@ -36,7 +36,7 @@ export default function SelectionBox({
       const params = new URLSearchParams(searchParams.toString())
       onValueChange?.(value)
 
-      if (value === '') {
+      if (value === 'all' || value === '') {
          params.delete(paramKey)
       } else {
          params.set(paramKey, value)
