@@ -49,7 +49,6 @@ export default function Header() {
    const navLinks = [
       { href: '/', label: 'Trang chủ' },
       { href: '/search', label: 'Việc làm' },
-      { href: '#', label: 'Cẩm nang nghề nghiệp' }
    ]
    const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname?.startsWith(href))
 
