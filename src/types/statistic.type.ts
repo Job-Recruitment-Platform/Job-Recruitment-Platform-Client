@@ -1,21 +1,33 @@
-import { JobResponse } from "./job.type";
+import { JobResponse } from './job.type'
 
 export interface StatisticResponse {
-  currentPublishJobCount: number;
+   currentPublishJobCount: number
 
-  totalNewApplicationCount: number;
+   totalNewApplicationCount: number
 
-  totalPendingApplicationCount: number;
+   totalPendingApplicationCount: number
 
-  weeklyApplicationCount: Record<number, number>;
+   weeklyApplicationCount: Record<number, number>
 
-  newestJobs: Array<JobResponse>;
+   newestJobs: Array<JobResponse>
 
-  newestJobApplications: Array<NewestJobApplication>;
+   newestJobApplications: Array<NewestJobApplication>
+}
+
+export interface AdminStatisticResponse {
+   totalAccount: number
+   totalCandidate: number
+   totalRecruiter: number
+   totalCompany: number
+   totalJob: number
+   pendingCompanyVerification: number
+   pendingJobApproval: number
+   weeklyNewAccount: number
+   weeklyNewJob: number
 }
 
 interface NewestJobApplication {
-    jobTitle: string;
-    candidateName: string;
-    appliedAt: string;
+   jobTitle: string
+   candidateName: string
+   appliedAt: string
 }

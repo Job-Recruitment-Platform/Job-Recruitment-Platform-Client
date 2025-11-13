@@ -1,0 +1,136 @@
+/* Admin-specific overrides */
+.admin-sidebar {
+   max-width: none !important;
+}
+
+.admin-layout {
+   max-width: 100vw !important;
+}
+
+.admin-header {
+   max-width: 100vw !important;
+}
+
+/* Custom scrollbar for sidebar */
+.admin-sidebar-nav::-webkit-scrollbar {
+   width: 6px;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-track {
+   background: transparent;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-thumb {
+   background: rgba(255, 255, 255, 0.2);
+   border-radius: 3px;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-thumb:hover {
+   background: rgba(255, 255, 255, 0.3);
+}
+
+/* Gradient backgrounds for stat cards */
+.stat-card {
+   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Alert card animations */
+.alert-card {
+   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+   border: 2px solid #fbbf24;
+   transition: all 0.3s ease;
+}
+
+.alert-card:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 8px 16px rgba(251, 191, 36, 0.2);
+   border-color: #f59e0b;
+}
+
+/* Chart animations */
+@keyframes bar-grow {
+   from {
+      height: 0;
+   }
+}
+
+.chart-bar {
+   animation: bar-grow 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar active link glow effect - Updated colors */
+.sidebar-link-active {
+   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Sidebar inactive hover state */
+.sidebar-link-hover {
+   background: rgba(16, 185, 129, 0.1);
+}
+
+/* Mobile menu animation */
+@keyframes slide-in {
+   from {
+      transform: translateX(-100%);
+      opacity: 0;
+   }
+   to {
+      transform: translateX(0);
+      opacity: 1;
+   }
+}
+
+.mobile-sidebar-enter {
+   animation: slide-in 0.3s ease-out;
+}
+
+/* Pulse animation for pending badges */
+@keyframes pulse-glow {
+   0%,
+   100% {
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+   }
+   50% {
+      box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
+   }
+}
+
+.pending-badge {
+   animation: pulse-glow 2s infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+.admin-interactive {
+   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glass morphism effect for header */
+.admin-glass-header {
+   backdrop-filter: blur(10px);
+   background: rgba(255, 255, 255, 0.95);
+   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Sidebar gradient background */
+.admin-sidebar-bg {
+   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Sidebar header gradient */
+.admin-sidebar-header {
+   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard header gradient */
+.admin-dashboard-header {
+   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+   box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}

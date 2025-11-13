@@ -1,6 +1,5 @@
-import App from "next/app"
-import { SkillResponse } from "./skill.type"
-import { ResourceResponse } from "./resource.type"
+import { SkillResponse } from './skill.type'
+import { ResourceResponse } from './resource.type'
 
 /**
  * Job Search Request Types
@@ -35,7 +34,7 @@ export interface JobSearchResult {
    minExperienceYears: number
    seniority: 'INTERN' | 'FRESHER' | 'JUNIOR' | 'MID' | 'SENIOR' | 'MANAGER'
    workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'
-   status: 'PUBLISHED' | 'DRAFT' | 'EXPIRED' | 'PENDING' | 'CANCELED'
+   status: JobStatus
    skills: SkillResponse[]
    datePosted: number
    dateExpires: number
@@ -67,7 +66,7 @@ export interface JobDetail {
    maxCandidates: number | null
    datePosted: string
    dateExpires: string
-   status: 'PUBLISHED' | 'DRAFT' | 'EXPIRED'
+   status: JobStatus
    summary: string
    responsibilities: string
    requirements: string
@@ -91,24 +90,33 @@ export interface JobDetailResponse {
  * Job display type for UI (simplified)
  */
 export interface JobResponse {
-  id: number;
-  title: string;
-  company: string;
-  jobRole: string;
-  seniority: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER';
-  minExperienceYears: number;
-  location: string;
-  workMode: 'ONSITE' | 'REMOTE' | 'HYBRID';
-  salaryMin?: number;
-  salaryMax?: number;
-  currency: string;
-  maxCandidates?: number;
-  datePosted: string; // ISO 8601 format
-  dateExpires: string; // ISO 8601 format
-  status: 'PENDING' | 'PUBLISHED' | 'EXPIRED' | 'DRAFT' | 'CANCELED';
-  skills: SkillResponse[];
+   id: number
+   title: string
+   company: string
+   jobRole: string
+   seniority: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER'
+   minExperienceYears: number
+   location: string
+   workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'
+   salaryMin?: number
+   salaryMax?: number
+   currency: string
+   maxCandidates?: number
+   datePosted: string // ISO 8601 format
+   dateExpires: string // ISO 8601 format
+   status: JobStatus
+   skills: SkillResponse[]
 }
 
+export interface JobDetailResponse extends JobResponse {
+   summary: string
+   responsibilities: string
+   requirements: string
+   niceToHave: string
+   benefits: string
+   hiringProcess: string
+   notes: string
+}
 
 /**
  * Legacy job type (for backward compatibility)
@@ -139,67 +147,72 @@ export enum JobStatus {
 // Job action type
 
 export interface CreateJobRequest {
-  title: string;
-  jobRoleId: number;
-  seniorityLevel: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER'; // adjust as needed
-  employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'FREELANCE' | 'INTERNSHIP'; // adjust as needed
-  minExperienceYears: number;
-  locationId: number;
-  workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'; // adjust as needed
-  salaryMin?: number;
-  salaryMax?: number;
-  currency: string;
-  maxCandidates?: number;
-  dateExpires: string; // ISO 8601 format
-  summary: string;
-  responsibilities: string;
-  requirements: string;
-  niceToHave: string;
-  benefits: string;
-  hiringProcess: string;
-  notes: string;
-  saveAsDraft: boolean;
-  skills: string[];
+   title: string
+   jobRoleId: number
+   seniorityLevel: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER' // adjust as needed
+   employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'FREELANCE' | 'INTERNSHIP' // adjust as needed
+   minExperienceYears: number
+   locationId: number
+   workMode: 'ONSITE' | 'REMOTE' | 'HYBRID' // adjust as needed
+   salaryMin?: number
+   salaryMax?: number
+   currency: string
+   maxCandidates?: number
+   dateExpires: string // ISO 8601 format
+   summary: string
+   responsibilities: string
+   requirements: string
+   niceToHave: string
+   benefits: string
+   hiringProcess: string
+   notes: string
+   saveAsDraft: boolean
+   skills: string[]
 }
 
 export interface UpdateJobRequest {
-  title: string;
-  jobRoleId: number;
-  seniorityLevel: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER';
-  employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'VOLUNTEER' | 'TEMPORARY'; // adjust as needed
-  minExperienceYears: number;
-  locationId: number;
-  workMode: 'ONSITE' | 'REMOTE' | 'HYBRID';
-  salaryMin: number;
-  salaryMax: number;
-  currency: 'USD' | 'VND' | string; // extend as needed
-  dateExpires: string;
-  summary: string;
-  responsibilities: string;
-  requirements: string;
-  niceToHave: string;
-  benefits: string;
-  hiringProcess: string;
-  notes: string;
-  skills: string[];
+   title: string
+   jobRoleId: number
+   seniorityLevel: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER'
+   employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'VOLUNTEER' | 'TEMPORARY' // adjust as needed
+   minExperienceYears: number
+   locationId: number
+   workMode: 'ONSITE' | 'REMOTE' | 'HYBRID'
+   salaryMin: number
+   salaryMax: number
+   currency: 'USD' | 'VND' | string // extend as needed
+   dateExpires: string
+   summary: string
+   responsibilities: string
+   requirements: string
+   niceToHave: string
+   benefits: string
+   hiringProcess: string
+   notes: string
+   skills: string[]
 }
 
 // Job applicant type
 export interface JobApplicantResponse {
-  id: number;
-  jobId: number;
-  candidateId: number;
-  candidateName: string;
-  email: string;
-  phone: string;
-  status: ApplicationStatus;
-  resource: ResourceResponse[];
+   id: number
+   jobId: number
+   candidateId: number
+   candidateName: string
+   email: string
+   phone: string
+   status: ApplicationStatus
+   resource: ResourceResponse[]
 }
 
 export enum ApplicationStatus {
-  SUBMITTED = "SUBMITTED",
-  REVIEWED = "REVIEWED",
-  INTERVIEW = "INTERVIEW",
-  OFFERED = "OFFERED",
-  REJECTED = "REJECTED"
+   SUBMITTED = 'SUBMITTED',
+   REVIEWED = 'REVIEWED',
+   INTERVIEW = 'INTERVIEW',
+   OFFERED = 'OFFERED',
+   REJECTED = 'REJECTED'
+}
+
+export enum ModerateAction {
+   APPROVE = 'APPROVE',
+   REJECT = 'REJECT'
 }
