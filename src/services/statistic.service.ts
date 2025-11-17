@@ -1,6 +1,6 @@
 import { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
-import { StatisticResponse } from '@/types/statistic.type'
+import { AdminStatisticResponse, StatisticResponse } from '@/types/statistic.type'
 
 /**
  * Statistic Service
@@ -8,15 +8,20 @@ import { StatisticResponse } from '@/types/statistic.type'
  */
 class StatisticService extends BaseService {
    constructor() {
-        super('/statistics')
+      super('/statistics')
    }
 
    async getStatistics(): Promise<ApiResponse<StatisticResponse>> {
-      return await this.get<StatisticResponse>('', {
-        headers: {
+      return await this.get<StatisticResponse>('/recruiter', {
+         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`
-        }
+         }
       })
+   }
+
+   async getAdminStatistics(): Promise<AdminStatisticResponse> {
+      const response = await this.get<AdminStatisticResponse>('/admin')
+      return response.data
    }
 }
 
