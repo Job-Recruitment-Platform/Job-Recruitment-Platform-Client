@@ -37,7 +37,7 @@ class JobService extends BaseService {
     * GET /job/public/detail/{job_id}
     */
    async getJobDetail(jobId: number): Promise<JobDetail> {
-      const response = await this.get<JobDetail>(`/job/public/detail/${jobId}`)
+      const response = await this.get<JobDetail>(`/jobs/public/detail/${jobId}`)
       return response.data
    }
 
