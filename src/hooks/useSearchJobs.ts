@@ -23,10 +23,6 @@ export const useSearchJobs = (
       ...initialPayload,
       offset,
       limit: LIMIT,
-      weights: {
-         dense: 1,
-         sparse: 1
-      }
    }
 
    const { isLoading, data, error } = useQuery({

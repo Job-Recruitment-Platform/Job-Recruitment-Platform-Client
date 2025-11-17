@@ -34,7 +34,7 @@ export default function SkillsFieldArray<T extends FieldValues>({ name }: Props<
                      render={({ field }) => (
                         <FormItem>
                            <FormControl>
-                              <Input placeholder='Tên kỹ năng (VD: React)' {...field} />
+                              <Input placeholder='Tên kỹ năng (VD: React)' {...field} value={field.value ?? ''} />
                            </FormControl>
                            <FormMessage />
                         </FormItem>

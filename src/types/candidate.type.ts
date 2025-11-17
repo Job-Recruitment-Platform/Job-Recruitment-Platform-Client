@@ -1,6 +1,6 @@
 import { ResourceResponse } from "./resource.type"
 
-export type Seniority = 'INTERN' | 'JUNIOR' | 'SENIOR' | 'LEAD'
+export type Seniority = 'INTERN' | 'FRESHER' | 'JUNIOR' | 'MID' | 'SENIOR' | 'MANAGER'
 export type ResourceType = 'AVATAR' | 'RESUME' | 'PORTFOLIO'
 
 export interface Location {

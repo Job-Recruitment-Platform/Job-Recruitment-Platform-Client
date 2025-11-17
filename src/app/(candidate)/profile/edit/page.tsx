@@ -15,6 +15,7 @@ import candidateService from '@/services/candidate.service'
 import {
    CandidateProfileResponse,
    CandidateSkill,
+   Seniority,
    UpdateCandidateProfileRequest
 } from '@/types/candidate.type'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -33,7 +34,12 @@ const formSchema = z.object({
       ward: z.string().min(1, 'Bắt buộc'),
       provinceCity: z.string().min(1, 'Bắt buộc')
    }),
-   seniority: z.enum(['INTERN', 'JUNIOR', 'SENIOR', 'LEAD']),
+   seniority: z
+      .enum(['INTERN', 'FRESHER', 'JUNIOR', 'MID', 'SENIOR', 'MANAGER'])
+      .or(z.literal(''))
+      .refine((val) => val !== '', {
+         message: 'Vui lòng chọn cấp bậc'
+      }),
    salaryExpectMin: z.string(),
    salaryExpectMax: z.string(),
    currency: z.string().min(1, 'Bắt buộc'),
@@ -56,36 +62,51 @@ export default function EditProfilePage() {
    const [avatarPreview, setAvatarPreview] = useState(
       'https://www.topcv.vn/images/avatar-default.jpg'
    )
-   const [defaultValues, setDefaultValues] = useState<UpdateCandidateProfileRequest | null>(null)
+   type FormData = z.infer<typeof formSchema>
+   const [defaultValues, setDefaultValues] = useState<FormData | null>(null)
 
-   const mapProfileToForm = (p: CandidateProfileResponse): UpdateCandidateProfileRequest => ({
-      fullName: p.fullName,
-      location: {
-         streetAddress: p.location?.streetAddress || '',
-         ward: p.location?.ward || '',
-         provinceCity: p.location?.provinceCity || ''
-      },
-      seniority: p.seniority || 'JUNIOR',
-      salaryExpectMin: String(p.salaryExpectMin || ''),
-      salaryExpectMax: String(p.salaryExpectMax || ''),
-      currency: p.currency || 'VND',
-      remotePref: !!p.remotePref,
-      relocationPref: !!p.relocationPref,
-      bio: p.bio || '',
-      skills: (p.skills || []).map((cs: CandidateSkill) => ({
-         skillName: cs.skill?.name || '',
-         level: Number(cs.level || 1)
-      }))
-   })
+   const mapProfileToForm = (p: CandidateProfileResponse): FormData => {
+      // Use empty string if seniority doesn't exist, otherwise use the value from API
+      const seniority = p.seniority ? p.seniority : ('' as '')
 
-   const form = useForm<UpdateCandidateProfileRequest>({
+      return {
+         fullName: p.fullName,
+         location: {
+            streetAddress: p.location?.streetAddress || '',
+            ward: p.location?.ward || '',
+            provinceCity: p.location?.provinceCity || ''
+         },
+         seniority,
+         salaryExpectMin: String(p.salaryExpectMin || ''),
+         salaryExpectMax: String(p.salaryExpectMax || ''),
+         currency: p.currency || 'VND',
+         remotePref: !!p.remotePref,
+         relocationPref: !!p.relocationPref,
+         bio: p.bio || '',
+         skills: (p.skills || []).map((cs: CandidateSkill) => ({
+            skillName: cs.skill?.name || '',
+            level: Number(cs.level || 1)
+         }))
+      }
+   }
+
+   const form = useForm<FormData>({
       resolver: zodResolver(formSchema),
       defaultValues: defaultValues || {
+         fullName: '',
+         location: {
+            streetAddress: '',
+            ward: '',
+            provinceCity: ''
+         },
+         seniority: '',
+         salaryExpectMin: '',
+         salaryExpectMax: '',
+         currency: 'VND',
          remotePref: false,
          relocationPref: false,
          bio: '',
-         salaryExpectMin: '',
-         salaryExpectMax: ''
+         skills: []
       }
    })
 
@@ -141,10 +162,21 @@ export default function EditProfilePage() {
       }
    }
 
-   const onSubmit = async (data: UpdateCandidateProfileRequest) => {
+   const onSubmit = async (data: FormData) => {
       setSaving(true)
       try {
-         const res = await candidateService.updateProfile(data)
+         // Validation ensures seniority is not empty, but we check at runtime for safety
+         if (data.seniority === '') {
+            showErrorToast('Vui lòng chọn cấp bậc')
+            setSaving(false)
+            return
+         }
+         
+         const submitData: UpdateCandidateProfileRequest = {
+            ...data,
+            seniority: data.seniority as Seniority
+         }
+         const res = await candidateService.updateProfile(submitData)
          if (res?.code === 1000) {
             showSuccessToast('Cập nhật hồ sơ thành công')
          } else {
@@ -171,7 +203,7 @@ export default function EditProfilePage() {
                      <h1 className='text-2xl font-semibold'>Chỉnh sửa hồ sơ</h1>
                      <p className='text-sm text-gray-500'>Cập nhật thông tin cá nhân của bạn</p>
                   </div>
-                  <Link href='/(candidate)/profile'>
+                  <Link href='/profile'>
                      <Button variant='outline'>Quay lại</Button>
                   </Link>
                </div>
@@ -219,6 +251,12 @@ export default function EditProfilePage() {
                      </div>
                   </section>
 
+                  {/* About Me */}
+                  <section className='rounded-lg border bg-white p-6'>
+                     <h2 className='mb-4 text-lg font-semibold'>Giới thiệu bản thân</h2>
+                     <BioFormField control={form.control} name={'bio'} />
+                  </section>
+
                   {/* Professional Information */}
                   <section className='rounded-lg border bg-white p-6'>
                      <h2 className='mb-4 text-lg font-semibold'>Thông tin nghề nghiệp</h2>
@@ -232,12 +270,6 @@ export default function EditProfilePage() {
                         />
                         <SkillsFieldArray name={'skills'} />
                      </div>
-                  </section>
-
-                  {/* About Me */}
-                  <section className='rounded-lg border bg-white p-6'>
-                     <h2 className='mb-4 text-lg font-semibold'>Giới thiệu bản thân</h2>
-                     <BioFormField control={form.control} name={'bio'} />
                   </section>
 
                   {/* Action Buttons */}
