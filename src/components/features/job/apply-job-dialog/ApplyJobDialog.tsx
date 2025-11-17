@@ -17,12 +17,13 @@ import candidateService from '@/services/candidate.service'
 import { resourceService } from '@/services/resource.service'
 import type { ResourceResponse } from '@/types/resource.type'
 import { ResourceType } from '@/types/resource.type'
+import { useLogStore } from '@/hooks/useTracker'
 
 type SelectionMode = 'library' | 'upload'
 
 interface ApplyJobDialogProps {
    job: {
-      id: string | number
+      id: number
       title: string
       minSalary: number
       maxSalary: number
@@ -41,12 +42,15 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
    const [cvLibrary, setCvLibrary] = useState<ResourceResponse[]>([])
    const [isLoadingCVLibrary, setIsLoadingCVLibrary] = useState(false)
    const [cvLibraryError, setCvLibraryError] = useState<string | null>(null)
+   const { markApply } = useLogStore()
 
    // Use TanStack Query mutation
    const { mutate: applyJob, isPending } = useApplyJob({
       onSuccess: (data) => {
          console.log('✅ Apply job success data:', data)
          toast.success('Ứng tuyển thành công!')
+
+         markApply(job.id)
 
          // Reset form
          setSelectedCV(null)

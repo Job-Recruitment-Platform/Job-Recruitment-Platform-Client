@@ -11,7 +11,6 @@ import { useSearchParams } from 'next/navigation'
 export default function SearchResultsPage() {
    const searchParams = useSearchParams()
    const keyword = searchParams.get('key_word') || ''
-
    const {
       results,
       isLoading,
@@ -65,39 +64,27 @@ export default function SearchResultsPage() {
                )}
 
                {/* Results with pagination */}
-               {!isLoading && keyword !== '' && results.length > 0 && (
-                  <>
-                     {/* Job list */}
-                     <div className='space-y-3'>
-                        {results.map((job) => (
-                           <JobSearchItem key={job.id} job={job} />
-                        ))}
-                     </div>
+               <>
+                  {/* Job list */}
+                  <div className='space-y-3'>
+                     {results.map((job) => (
+                        <JobSearchItem key={job.id} job={job} query={keyword} />
+                     ))}
+                  </div>
 
-                     {/* Pagination controls */}
-                     <div className='flex items-center justify-center gap-4 py-6'>
-                        <button
-                           onClick={handlePreviousPage}
-                           disabled={!hasPreviousPage}
-                           className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-                        >
-                           <ChevronLeftIcon size={16} />
-                        </button>
+                  {/* Pagination controls */}
+                  <div className='flex items-center justify-center gap-4 py-6'>
+                     <button className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'>
+                        <ChevronLeftIcon size={16} />
+                     </button>
 
-                        <span className='text-sm font-medium text-gray-600'>
-                           Trang {currentPage}
-                        </span>
+                     <span className='text-sm font-medium text-gray-600'>Trang 1</span>
 
-                        <button
-                           onClick={handleNextPage}
-                           disabled={!hasNextPage}
-                           className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-                        >
-                           <ChevronRightIcon size={16} />
-                        </button>
-                     </div>
-                  </>
-               )}
+                     <button className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'>
+                        <ChevronRightIcon size={16} />
+                     </button>
+                  </div>
+               </>
             </div>
          </div>
       </div>

@@ -10,16 +10,23 @@ type SavedJobButtonProps = {
    jobId: number
    className?: string
    children?: React.ReactNode
+   onClick?: () => void
 }
 
 const isApiError = (error: unknown): error is ApiError => {
    return error instanceof Error && error.name === 'ApiError'
 }
 
-export default function SavedJobButton({ className, jobId, children }: SavedJobButtonProps) {
+export default function SavedJobButton({
+   className,
+   jobId,
+   children,
+   onClick
+}: SavedJobButtonProps) {
    const isSaved = useSavedJobsStore((state) => state.jobs.some((j) => j.job.id === jobId))
 
    const handleToggleSave = async () => {
+      onClick?.()
       try {
          if (isSaved) {
             await candidateService.removeSavedJob(jobId)
