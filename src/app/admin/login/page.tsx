@@ -8,7 +8,6 @@ import { z } from 'zod'
 import { Eye, EyeOff, Shield } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import Button from '@/components/shared/Button'
-import { showSuccessToast, showErrorToast } from '@/lib/toast'
 import { authService } from '@/services/auth.service'
 import { LogoutRequest, TokenPayload } from '@/types/auth.type'
 import { jwtDecode } from 'jwt-decode'
@@ -52,11 +51,9 @@ export default function AdminLoginPage() {
             authService.logout(logoutRequest)
             throw new Error('Không có quyền truy cập')
          }
-
-         showSuccessToast('Đăng nhập thành công')
          router.push('/admin/dashboard')
       } catch (error: any) {
-         showErrorToast(error.message || 'Đăng nhập thất bại')
+         // Blagh
       } finally {
          setLoading(false)
       }
@@ -78,11 +75,7 @@ export default function AdminLoginPage() {
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
                <div>
                   <div className='block text-sm font-medium text-gray-700'>Email</div>
-                  <Input
-                     {...register('email')}
-                     type='email'
-                     className='mt-1'
-                  />
+                  <Input {...register('email')} type='email' className='mt-1' />
                   {errors.email && (
                      <p className='mt-1 text-xs text-red-500'>{errors.email.message}</p>
                   )}
@@ -91,10 +84,7 @@ export default function AdminLoginPage() {
                <div>
                   <div className='block text-sm font-medium text-gray-700'>Mật khẩu</div>
                   <div className='relative mt-1'>
-                     <Input
-                        {...register('password')}
-                        type={showPassword ? 'text' : 'password'}
-                     />
+                     <Input {...register('password')} type={showPassword ? 'text' : 'password'} />
                      <button
                         type='button'
                         onClick={() => setShowPassword(!showPassword)}

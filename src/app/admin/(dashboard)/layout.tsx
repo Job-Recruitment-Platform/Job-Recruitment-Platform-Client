@@ -165,12 +165,12 @@ export default function AdminDashboardLayout({
                </button>
 
                {/* Page Title - Desktop */}
-               <div className='hidden lg:block'>
+               {/* <div className='hidden lg:block'>
                   <h1 className='text-lg font-semibold text-gray-900'>
                      {navItems.find((item) => pathname?.startsWith(item.href))?.label ||
                         'Dashboard'}
                   </h1>
-               </div>
+               </div> */}
 
                {/* User Info / Actions */}
                <div className='hidden items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 sm:flex'>
