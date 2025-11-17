@@ -14,7 +14,6 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { jwtDecode } from 'jwt-decode'
 
-
 const loginSchema = z.object({
    email: z
       .string()
@@ -51,9 +50,14 @@ export default function LoginForm({ className }: LoginFormProps) {
          // Clear form after successful login
          form.reset()
 
-         const decoded: TokenPayload = jwtDecode<
-         { iss: string, sub: string, role: string, exp: number, iat: number, tokenType: string }>
-         (localStorage.getItem('accessToken') || '')
+         const decoded: TokenPayload = jwtDecode<{
+            iss: string
+            sub: string
+            role: string
+            exp: number
+            iat: number
+            tokenType: string
+         }>(localStorage.getItem('accessToken') || '')
 
          // Redirect to home after 1.5 seconds
          if (decoded.role === 'RECRUITER') {
