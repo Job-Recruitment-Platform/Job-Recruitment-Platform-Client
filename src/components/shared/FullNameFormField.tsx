@@ -29,6 +29,7 @@ export default function FullNameFormField<TFieldValues extends FieldValues>({
                <FormControl>
                   <FormInput
                      {...field}
+                     value={field.value ?? ''}
                      placeholder={placeholder}
                      type='text'
                      leftIcon={<FilledIcons icon={UserIcon} fillColor='primary' size={20} />}

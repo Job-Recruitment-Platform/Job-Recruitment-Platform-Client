@@ -27,7 +27,7 @@ export default function BioFormField<TFieldValues extends FieldValues>({
             <FormItem className={className}>
                <FormLabel className='font-medium text-gray-800/90'>{label}</FormLabel>
                <FormControl>
-                  <Textarea rows={rows} placeholder={placeholder} {...field} />
+                  <Textarea rows={rows} placeholder={placeholder} {...field} value={field.value ?? ''} />
                </FormControl>
                <FormMessage />
             </FormItem>

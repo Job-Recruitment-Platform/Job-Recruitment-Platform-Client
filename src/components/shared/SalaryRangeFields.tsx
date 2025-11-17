@@ -25,15 +25,14 @@ export default function SalaryRangeFields<T extends FieldValues>({
             name={minField}
             render={({ field }) => (
                <FormItem>
-                  <FormLabel>Lương mong muốn (min)</FormLabel>
+                  <FormLabel>Lương mong muốn (Thấp nhất)</FormLabel>
                   <FormControl>
                      <Input
                         type='number'
                         placeholder='100'
                         value={field.value ?? ''}
                         onChange={(e) => {
-                           const v = e.target.value
-                           field.onChange(v === '' ? undefined : Number(v))
+                           field.onChange(e.target.value)
                         }}
                         onBlur={field.onBlur}
                         name={field.name}
@@ -49,15 +48,14 @@ export default function SalaryRangeFields<T extends FieldValues>({
             name={maxField}
             render={({ field }) => (
                <FormItem>
-                  <FormLabel>Lương mong muốn (max)</FormLabel>
+                  <FormLabel>Lương mong muốn (Cao nhất)</FormLabel>
                   <FormControl>
                      <Input
                         type='number'
                         placeholder='9000'
                         value={field.value ?? ''}
                         onChange={(e) => {
-                           const v = e.target.value
-                           field.onChange(v === '' ? undefined : Number(v))
+                           field.onChange(e.target.value)
                         }}
                         onBlur={field.onBlur}
                         name={field.name}
@@ -75,7 +73,7 @@ export default function SalaryRangeFields<T extends FieldValues>({
                <FormItem>
                   <FormLabel>Tiền tệ</FormLabel>
                   <FormControl>
-                     <Input placeholder='VND' {...field} />
+                     <Input placeholder='VND' {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                </FormItem>

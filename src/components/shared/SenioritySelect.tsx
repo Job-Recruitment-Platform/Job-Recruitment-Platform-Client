@@ -10,7 +10,7 @@ const OPTIONS: Option[] = [
    { label: 'Junior', value: 'JUNIOR' },
    { label: 'Mid', value: 'MID' },
    { label: 'Senior', value: 'SENIOR' },
-   { label: 'Lead', value: 'LEAD' }
+   { label: 'Manager', value: 'MANAGER' }
 ]
 
 type Props<T extends FieldValues> = {
@@ -31,7 +31,7 @@ export default function SenioritySelect<T extends FieldValues>({ control, name }
                      className={cn(
                         'focus-visible:ring-primary/20 h-9 w-full rounded-md border bg-white px-3 text-sm outline-none focus-visible:ring-2'
                      )}
-                     value={field.value}
+                     value={field.value ?? ''}
                      onChange={field.onChange}
                   >
                      <option value=''>Chọn cấp bậc</option>

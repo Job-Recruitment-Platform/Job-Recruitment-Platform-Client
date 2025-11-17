@@ -21,7 +21,7 @@ export default function GenderFormField<TFieldValues extends FieldValues>({
             <FormItem>
                <FormLabel className='font-medium text-gray-800/90'>{label}</FormLabel>
                <FormControl>
-                  <RadioGroup value={field.value} onValueChange={field.onChange}>
+                  <RadioGroup value={field.value ?? ''} onValueChange={field.onChange}>
                      <div className='flex items-center space-x-2'>
                         <RadioGroupItem value='male' id='male' />
                         <label htmlFor='male' className='cursor-pointer'>

@@ -27,6 +27,20 @@ class ResourceService extends BaseService {
         })
     }
 
+    async uploadResume(file: File): Promise<ApiResponse<ResourceResponse>> {
+        const formData = new FormData()
+        formData.append('file', file, file.name)
+        return await this.post<ResourceResponse>(`/upload/resume`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+    }
+
+    async deleteResource(resourceId: number): Promise<ApiResponse<void>> {
+        return await this.delete<void>(`/${resourceId}`)
+    }
+
     async downloadResource(resourceUrl: string): Promise<ArrayBuffer> {
          // Server returns ApiResponse<{ content: ArrayBuffer }> structure
          // Response: { code: 1000, data: { content: ArrayBuffer | base64 string } }

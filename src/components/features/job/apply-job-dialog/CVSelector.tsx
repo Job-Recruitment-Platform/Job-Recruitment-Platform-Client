@@ -1,6 +1,7 @@
 'use client'
 
-import { Upload } from 'lucide-react'
+import { Loader2, Upload } from 'lucide-react'
+import Link from 'next/link'
 import UploadCVForm from './UploadCVForm'
 
 interface CV {
@@ -16,7 +17,9 @@ interface CVSelectorProps {
    onModeChange: (mode: SelectionMode) => void
    onCVSelect: (cvId: string) => void
    onFileSelected: (file: File | null) => void
-   cvList?: CV[]
+    cvList: CV[]
+    isLoadingCVs?: boolean
+    manageHref?: string
 }
 
 export default function CVSelector({
@@ -25,7 +28,9 @@ export default function CVSelector({
    onModeChange,
    onCVSelect,
    onFileSelected,
-   cvList = []
+   cvList = [],
+   isLoadingCVs = false,
+   manageHref = '/profile/resume'
 }: CVSelectorProps) {
    return (
       <div className='space-y-4'>
@@ -55,13 +60,23 @@ export default function CVSelector({
                   <p className='text-sm font-medium text-gray-700'>
                      Chọn CV khác trong thư viện CV của tôi
                   </p>
-
                   {selectedMode === 'library' && (
                      <div className='mt-2 space-y-2'>
-                        {cvList.length === 0 ? (
-                           <p className='text-sm text-gray-500'>
-                              Bạn chưa có CV nào trong thư viện.
-                           </p>
+                        {isLoadingCVs ? (
+                           <div className='flex items-center gap-2 text-sm text-gray-500'>
+                              <Loader2 className='h-4 w-4 animate-spin text-primary' />
+                              Đang tải danh sách CV...
+                           </div>
+                        ) : cvList.length === 0 ? (
+                           <div className='space-y-1 text-sm text-gray-500'>
+                              <p>Bạn chưa có CV nào trong thư viện.</p>
+                              <Link
+                                 href={manageHref}
+                                 className='text-xs font-medium text-primary hover:underline'
+                              >
+                                 Quản lý CV của bạn
+                              </Link>
+                           </div>
                         ) : (
                            <>
                               <p className='mt-1 text-xs text-gray-600'>CV Online</p>
