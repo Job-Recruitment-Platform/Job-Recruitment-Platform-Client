@@ -2,7 +2,7 @@ import { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
 import { PaginationResponse } from '@/types/api.type.'
 import { mockJobSearchResult } from '@/types/data'
-import type { JobSearchResult } from '@/types/job.type'
+import type { JobSearchRequest, JobSearchResult } from '@/types/job.type'
 
 /**
  * Search Service
@@ -13,7 +13,12 @@ class SearchService extends BaseService {
       super('/job/public')
    }
 
-   async searchJobs(): Promise<ApiResponse<PaginationResponse<JobSearchResult[]>>> {
+   async searchJobs(
+      payload: JobSearchRequest
+   ): Promise<ApiResponse<PaginationResponse<JobSearchResult[]>>> {
+      // Log the request payload for debugging
+      console.log('Search Jobs Payload:', payload)
+
       // Return mock data for development/testing
       const mockResponse: ApiResponse<PaginationResponse<JobSearchResult[]>> = {
          code: 200,

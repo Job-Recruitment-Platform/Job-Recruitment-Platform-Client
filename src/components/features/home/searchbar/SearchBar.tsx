@@ -20,7 +20,7 @@ export default function SearchBar({ className }: SearchBarProps) {
       if (!keyword.trim()) return
       // Navigate to search page with query parameter
       const searchParams = new URLSearchParams({
-         key_word: keyword.trim()
+         query: keyword.trim()
       })
       router.push(`/search?${searchParams.toString()}`)
    }

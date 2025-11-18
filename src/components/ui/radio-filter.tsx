@@ -11,6 +11,7 @@ type RadioFilterProps = {
    columns?: 1 | 2
    options: OptionType[]
    paramKey: string
+   onValueChange?: (value: string) => void
 }
 
 export default function RadioFilter({
@@ -18,7 +19,8 @@ export default function RadioFilter({
    columns = 1,
    options,
    header,
-   paramKey
+   paramKey,
+   onValueChange
 }: RadioFilterProps) {
    const router = useRouter()
    const searchParams = useSearchParams()
@@ -26,8 +28,9 @@ export default function RadioFilter({
 
    const handleChange = (value: string) => {
       const params = new URLSearchParams(searchParams.toString())
+      onValueChange?.(value)
 
-      if (value === '') {
+      if (value === '' || value === 'all') {
          params.delete(paramKey)
       } else {
          params.set(paramKey, value)

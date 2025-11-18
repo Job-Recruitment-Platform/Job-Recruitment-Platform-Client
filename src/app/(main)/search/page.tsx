@@ -3,26 +3,23 @@
 import JobSearchItem from '@/components/features/job/JobSearchItem'
 import BoxSearch from '@/components/features/search/BoxSort'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
-import SidebarFilter from '@/components/layouts/SidebarFilter'
+import SidebarFilter from '@/components/layouts/FilterSideBar'
 import { useSearchJobs } from '@/hooks/useSearchJobs'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 
 export default function SearchResultsPage() {
    const searchParams = useSearchParams()
-   const keyword = searchParams.get('key_word') || ''
+   const query = searchParams.get('query') || ''
    const {
       results,
       isLoading,
       hasNextPage,
       hasPreviousPage,
       currentPage,
-      totalResults,
       handleNextPage,
       handlePreviousPage
-   } = useSearchJobs({
-      query: keyword
-   })
+   } = useSearchJobs()
 
    return (
       <div className='bg-smoke w-full'>
@@ -47,18 +44,18 @@ export default function SearchResultsPage() {
                   </div>
                )}
 
-               {/* State 2: No keyword entered */}
-               {!isLoading && keyword === '' && (
+               {/* State 2: No query entered */}
+               {!isLoading && query === '' && (
                   <div className='py-8 text-center'>
                      <p className='text-gray-600'>Nhập từ khoá để tìm kiếm</p>
                   </div>
                )}
 
                {/* State 3: Empty results */}
-               {!isLoading && keyword !== '' && results.length === 0 && (
+               {!isLoading && query !== '' && results.length === 0 && (
                   <div className='py-8 text-center'>
                      <p className='text-gray-600'>
-                        Không tìm thấy công việc cho từ khoá &quot;{keyword}&quot;
+                        Không tìm thấy công việc cho từ khoá &quot;{query}&quot;
                      </p>
                   </div>
                )}
@@ -68,19 +65,27 @@ export default function SearchResultsPage() {
                   {/* Job list */}
                   <div className='space-y-3'>
                      {results.map((job) => (
-                        <JobSearchItem key={job.id} job={job} query={keyword} />
+                        <JobSearchItem key={job.id} job={job} query={query} />
                      ))}
                   </div>
 
                   {/* Pagination controls */}
                   <div className='flex items-center justify-center gap-4 py-6'>
-                     <button className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'>
+                     <button
+                        onClick={handlePreviousPage}
+                        disabled={!hasPreviousPage}
+                        className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+                     >
                         <ChevronLeftIcon size={16} />
                      </button>
 
-                     <span className='text-sm font-medium text-gray-600'>Trang 1</span>
+                     <span className='text-sm font-medium text-gray-600'>Trang {currentPage}</span>
 
-                     <button className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'>
+                     <button
+                        onClick={handleNextPage}
+                        disabled={!hasNextPage}
+                        className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+                     >
                         <ChevronRightIcon size={16} />
                      </button>
                   </div>

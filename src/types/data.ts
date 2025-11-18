@@ -2,7 +2,7 @@ import { JobSearchResult, JobType } from '@/types/job.type'
 import { OptionType } from '@/types/option.type'
 
 export const experienceOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: '1 Năm', value: '1' },
    { label: '2 Năm', value: '2' },
    { label: '3 Năm', value: '3' },
@@ -16,7 +16,7 @@ export const experienceOptions: OptionType[] = [
 ]
 
 export const levelOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: 'Intern', value: 'INTERN' },
    { label: 'Fresher', value: 'FRESHER' },
    { label: 'Junior', value: 'JUNIOR' },
@@ -26,11 +26,29 @@ export const levelOptions: OptionType[] = [
 ]
 
 export const workModeOptions: OptionType[] = [
-   { label: 'Tất cả', value: '' },
+   { label: 'Tất cả', value: 'all' },
    { label: 'Toàn thời gian', value: 'FULL-TIME' },
    { label: 'Bán thời gian', value: 'PART-TIME' },
-   { label: 'Làm việc từ xa', value: 'REMOTE' },
-   { label: 'Thực tập', value: 'INTERNSHIP' }
+   { label: 'Làm việc từ xa', value: 'REMOTE' }
+]
+
+export const currencyOptions: OptionType[] = [
+   { label: 'Tất cả', value: 'all' },
+   { label: 'USD', value: 'USD' },
+   { label: 'VND', value: 'VND' }
+]
+
+export const datePostedOptions: OptionType[] = [
+   { label: 'Tất cả', value: 'all' },
+   { label: '24 giờ qua', value: 'last_24_hours' },
+   { label: '7 ngày qua', value: 'last_7_days' },
+   { label: '14 ngày qua', value: 'last_14_days' },
+   { label: '30 ngày qua', value: 'last_30_days' }
+]
+
+export const jobRoleOptions: OptionType[] = [
+   { label: 'Tất cả', value: 'all' },
+   { label: 'Software Engineer', value: 'Software Engineer' }
 ]
 
 export const jobMockData: JobType[] = [
@@ -110,7 +128,7 @@ export const jobMockData: JobType[] = [
 
 export const mockJobSearchResult: JobSearchResult[] = [
    {
-      id: 1,
+      id: 91,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/YKksZdqoHhIgbSJwN0d5Byim9I6kBWuG_1707983415____0b8facb24f743dfadd49211d21495fa9.jpg',
       title: 'Kỹ Sư Lập Trình Nhúng (C/C++)',
       company: 'Công ty TNHH Công Nghệ Dicom',
@@ -128,7 +146,7 @@ export const mockJobSearchResult: JobSearchResult[] = [
       skills: []
    },
    {
-      id: 2,
+      id: 92,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/9elArcuygLjya82ubvJl0ctJpvEzQZY1_1687320656____2e355c0a67075b013b977e886d88ce7d.jpeg',
       title: 'BackEnd Developer',
       company: 'Cty Cổ Phần Warppipe',
@@ -146,7 +164,7 @@ export const mockJobSearchResult: JobSearchResult[] = [
       skills: []
    },
    {
-      id: 3,
+      id: 93,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-63e1cb5539e62.jpg',
       title: 'Backend (Java) Developer',
       company: 'Ngân Hàng TMCP Việt Nam Thịnh Vượng (VPBank)',
@@ -164,7 +182,7 @@ export const mockJobSearchResult: JobSearchResult[] = [
       skills: []
    },
    {
-      id: 4,
+      id: 94,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/porters-asia-vietnam-company-limited-e2a86b01cb08722dd97ea14c0e5219c2-66987cccbffaf.jpg',
       title: 'Middle/Senior Frontend Engineer(ReactJS,Fullstack)',
       company: 'PORTERS ASIA VIETNAM COMPANY LIMITED',
