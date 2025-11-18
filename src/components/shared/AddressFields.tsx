@@ -22,7 +22,7 @@ export default function AddressFields({ prefix = 'location' }: AddressFieldsProp
                <FormItem>
                   <FormLabel>Địa chỉ</FormLabel>
                   <FormControl>
-                     <Input placeholder='Số nhà, đường...' {...field} />
+                     <Input placeholder='Số nhà, đường...' {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                </FormItem>
@@ -35,7 +35,7 @@ export default function AddressFields({ prefix = 'location' }: AddressFieldsProp
                <FormItem>
                   <FormLabel>Phường/Xã</FormLabel>
                   <FormControl>
-                     <Input placeholder='Phường/Xã' {...field} />
+                     <Input placeholder='Phường/Xã' {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                </FormItem>
@@ -48,7 +48,7 @@ export default function AddressFields({ prefix = 'location' }: AddressFieldsProp
                <FormItem>
                   <FormLabel>Tỉnh/Thành phố</FormLabel>
                   <FormControl>
-                     <Input placeholder='TP. Hồ Chí Minh' {...field} />
+                     <Input placeholder='TP. Hồ Chí Minh' {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                </FormItem>

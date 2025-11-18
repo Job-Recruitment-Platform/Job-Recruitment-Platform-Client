@@ -8,11 +8,15 @@ import {
    DialogTrigger
 } from '@/components/ui/dialog'
 import { useApplyJob } from '@/hooks/useCandidate'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import CVSelector from './CVSelector'
 import CoverLetterInput from './CoverLetterInput'
 import DialogActions from './DialogActions'
 import toast from 'react-hot-toast'
+import candidateService from '@/services/candidate.service'
+import { resourceService } from '@/services/resource.service'
+import type { ResourceResponse } from '@/types/resource.type'
+import { ResourceType } from '@/types/resource.type'
 import { useLogStore } from '@/hooks/useTracker'
 
 type SelectionMode = 'library' | 'upload'
@@ -35,6 +39,9 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
    const [uploadedFile, setUploadedFile] = useState<File | null>(null)
    const [coverLetter, setCoverLetter] = useState('')
    const [open, setOpen] = useState(false)
+   const [cvLibrary, setCvLibrary] = useState<ResourceResponse[]>([])
+   const [isLoadingCVLibrary, setIsLoadingCVLibrary] = useState(false)
+   const [cvLibraryError, setCvLibraryError] = useState<string | null>(null)
    const { markApply } = useLogStore()
 
    // Use TanStack Query mutation
@@ -76,6 +83,36 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
       setUploadedFile(file)
    }
 
+   const fetchCvLibrary = useCallback(async () => {
+      try {
+         setIsLoadingCVLibrary(true)
+         setCvLibraryError(null)
+         const res = await candidateService.getCandidateResumes(1, 50)
+         const list = (Array.isArray(res?.data?.content) ? res.data.content : []) as ResourceResponse[]
+         const cvResources = list.filter((item) => item.resourceType === ResourceType.CV)
+         setCvLibrary(cvResources)
+         if (cvResources.length === 0) {
+            setSelectionMode('upload')
+            setSelectedCV(null)
+         } else {
+            setSelectionMode((prev) => (prev === 'upload' ? prev : 'library'))
+            setSelectedCV((prev) => prev ?? String(cvResources[0].id))
+         }
+      } catch (error) {
+         console.error('Error loading CV library:', error)
+         setCvLibraryError('Không tải được danh sách CV đã lưu')
+         setSelectionMode('upload')
+         setSelectedCV(null)
+      } finally {
+         setIsLoadingCVLibrary(false)
+      }
+   }, [])
+
+   useEffect(() => {
+      if (!open) return
+      fetchCvLibrary()
+   }, [open, fetchCvLibrary])
+
    const handleSubmit = async () => {
       // Validate based on selection mode
       if (selectionMode === 'library' && !selectedCV) {
@@ -88,8 +125,33 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
          return
       }
 
-      // TODO: Handle library CV selection
-      // For now, only handle file upload
+      if (selectionMode === 'library') {
+         const selectedResource = cvLibrary.find((item) => String(item.id) === selectedCV)
+         if (!selectedResource) {
+            alert('Không tìm thấy CV đã chọn')
+            return
+         }
+         try {
+            const arrayBuffer = await resourceService.downloadResource(selectedResource.url)
+            if (!arrayBuffer) {
+               throw new Error('Không tải được dữ liệu CV')
+            }
+            const mimeType = selectedResource.mimeType || 'application/pdf'
+            const blob = new Blob([arrayBuffer], { type: mimeType })
+            const fileName = selectedResource.name || 'cv.pdf'
+            const file = new File([blob], fileName, { type: mimeType })
+            applyJob({
+               jobId: job.id,
+               file,
+               coverLetter: coverLetter || undefined
+            })
+         } catch (error) {
+            console.error('Error preparing CV from library:', error)
+            alert('Không thể tải CV từ thư viện. Vui lòng thử lại hoặc chọn cách tải CV mới.')
+         }
+         return
+      }
+
       if (selectionMode === 'upload' && uploadedFile) {
          applyJob({
             jobId: job.id,
@@ -135,7 +197,15 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
                   }}
                   onCVSelect={setSelectedCV}
                   onFileSelected={handleFileSelected}
+                  cvList={cvLibrary.map((item) => ({
+                     id: String(item.id),
+                     name: item.name || `CV ${item.id}`
+                  }))}
+                  isLoadingCVs={isLoadingCVLibrary}
                />
+               {cvLibraryError && (
+                  <p className='text-xs text-red-500'>{cvLibraryError}</p>
+               )}
 
                {/* Cover Letter */}
                <CoverLetterInput value={coverLetter} onChange={setCoverLetter} />

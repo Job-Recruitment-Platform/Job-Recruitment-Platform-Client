@@ -101,12 +101,20 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                {!isRecruiter && (
                   <>
                      <Link
-                        href='/profile/edit'
+                        href='/profile/resume'
                         className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                         onClick={() => setOpen(false)}
                      >
                         <User size={16} />
-                        Hồ sơ của tôi
+                        CV của tôi
+                     </Link>
+                     <Link
+                        href='/profile'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <User size={16} />
+                        Hồ sơ cá nhân
                      </Link>
                      <Link
                         href='/profile/edit'

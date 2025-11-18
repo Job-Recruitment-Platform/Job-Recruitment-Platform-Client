@@ -4,6 +4,7 @@ import { PaginationResponse } from '@/types/api.type.'
 import { CandidateProfileResponse, UpdateCandidateProfileRequest } from '@/types/candidate.type'
 import { SavedJobType } from '@/types/job.type'
 import { BaseService } from './base.service'
+import { ResourceResponse } from '@/types/resource.type'
 
 export interface ApplyJobRequest {
    jobId: string | number
@@ -85,12 +86,13 @@ class CandidateService extends BaseService {
       return await this.get<CandidateProfileResponse>(`/profile`)
    }
 
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   async getResume(): Promise<ApiResponse<PaginationResponse<any>>> {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await this.get<PaginationResponse<any>>(`/resumes`)
-      console.log('Resume Response:', response)
-      return response
+   async getCandidateResumes(
+      page: number = 1,
+      size: number = 10
+   ): Promise<ApiResponse<PaginationResponse<ResourceResponse>>> {
+      return await this.get<PaginationResponse<ResourceResponse>>(
+         `/resumes?page=${page}&size=${size}`
+      )
    }
 }
 const candidateService = new CandidateService()

@@ -1,4 +1,6 @@
 export interface ResourceResponse {
+  [x: string]: string | number | Date;
+  resourceName: ReactNode;
   id: number;
   mimeType: string;
   resourceType: ResourceType;
