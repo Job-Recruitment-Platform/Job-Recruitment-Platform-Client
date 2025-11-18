@@ -84,6 +84,14 @@ class CandidateService extends BaseService {
    async getProfile(): Promise<ApiResponse<CandidateProfileResponse>> {
       return await this.get<CandidateProfileResponse>(`/profile`)
    }
+
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   async getResume(): Promise<ApiResponse<PaginationResponse<any>>> {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await this.get<PaginationResponse<any>>(`/resumes`)
+      console.log('Resume Response:', response)
+      return response
+   }
 }
 const candidateService = new CandidateService()
 export default candidateService

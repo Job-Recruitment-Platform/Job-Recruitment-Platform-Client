@@ -128,7 +128,7 @@ export const jobMockData: JobType[] = [
 
 export const mockJobSearchResult: JobSearchResult[] = [
    {
-      id: 1,
+      id: 91,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/YKksZdqoHhIgbSJwN0d5Byim9I6kBWuG_1707983415____0b8facb24f743dfadd49211d21495fa9.jpg',
       title: 'Kỹ Sư Lập Trình Nhúng (C/C++)',
       company: 'Công ty TNHH Công Nghệ Dicom',
@@ -146,7 +146,7 @@ export const mockJobSearchResult: JobSearchResult[] = [
       skills: []
    },
    {
-      id: 2,
+      id: 92,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/9elArcuygLjya82ubvJl0ctJpvEzQZY1_1687320656____2e355c0a67075b013b977e886d88ce7d.jpeg',
       title: 'BackEnd Developer',
       company: 'Cty Cổ Phần Warppipe',
@@ -164,7 +164,7 @@ export const mockJobSearchResult: JobSearchResult[] = [
       skills: []
    },
    {
-      id: 3,
+      id: 93,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/ngan-hang-tmcp-viet-nam-thinh-vuong-vpbank-63e1cb5539e62.jpg',
       title: 'Backend (Java) Developer',
       company: 'Ngân Hàng TMCP Việt Nam Thịnh Vượng (VPBank)',
@@ -182,7 +182,7 @@ export const mockJobSearchResult: JobSearchResult[] = [
       skills: []
    },
    {
-      id: 4,
+      id: 94,
       logo: 'https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/porters-asia-vietnam-company-limited-e2a86b01cb08722dd97ea14c0e5219c2-66987cccbffaf.jpg',
       title: 'Middle/Senior Frontend Engineer(ReactJS,Fullstack)',
       company: 'PORTERS ASIA VIETNAM COMPANY LIMITED',
