@@ -30,17 +30,17 @@ export default function SearchBar({ className }: SearchBarProps) {
          onSubmit={handleSearch}
          className={`my-5 flex w-full items-stretch gap-x-2 rounded-full bg-white p-2 ${className}`}
       >
-         <CategorySelection />
+         {/* <CategorySelection /> */}
          <div className='flex flex-1 items-center border-x px-2'>
             <input
                type='text'
                placeholder='Vị trí tuyển dụng, tên công ty'
-               className='h-[35px] w-full text-black outline-none'
+               className='h-[35px] w-full text-black border-none outline-none'
                value={keyword}
                onChange={(e) => setKeyword(e.target.value)}
             />
          </div>
-         <MultiLocationSelection />
+         {/* <MultiLocationSelection /> */}
          <Button variant='primary' className='rounded-full px-5 py-2' type='submit'>
             <SearchIcon size={16} />
             <span>Tìm kiếm</span>
