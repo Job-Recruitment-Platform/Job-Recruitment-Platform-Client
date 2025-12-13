@@ -94,6 +94,12 @@ class JobService extends BaseService {
       return response.data
    }
 
+   // Recommend
+   async getRecommendedJobs(): Promise<JobResponse[]> {
+      const response = await this.get<JobResponse[]>('/jobs/public/recommend')
+      return response.data
+   }
+
    /**
     * Check if job is available (not expired)
     */

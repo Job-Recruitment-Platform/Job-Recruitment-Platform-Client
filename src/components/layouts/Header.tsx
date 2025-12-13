@@ -12,6 +12,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useQuery } from '@tanstack/react-query'
 import { recruiterService } from '@/services/recruiter.service'
 import candidateService from '@/services/candidate.service'
+import { jobService } from '@/services/job.service'
 
 export default function Header() {
    const { isLogin } = useAuth()
@@ -54,6 +55,7 @@ export default function Header() {
 
    return (
       <header className='bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b'>
+         <button onClick={() => jobService.getRecommendedJobs()}>Click</button>
          <div className='container mx-auto flex items-center justify-between gap-4 px-5 py-3'>
             <div className='flex min-w-0 items-center gap-6'>
                <Link href='/' className='flex items-center gap-2 rounded-md px-2 py-1 text-primary hover:opacity-90'>

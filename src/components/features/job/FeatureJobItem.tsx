@@ -11,18 +11,18 @@ import {
    TitleBlock,
    TitleContent
 } from '@/components/ui/job-card'
-import { JobType } from '@/types/job.type'
+import { JobResponse, JobType } from '@/types/job.type'
 import { HeartIcon } from 'lucide-react'
 
 type FeatureJobItemProps = {
-   job: JobType
+   job: JobResponse
 }
 
 export default function FeatureJobItem({ job }: FeatureJobItemProps) {
    return (
       <JobCard className='!min-h-[124px] bg-white !p-3'>
          <Body>
-            <Logo className='h-[64px] w-[64px]' src={job.logo} />
+            <Logo className='h-[64px] w-[64px]' src={job.company} />
             <Content>
                <TitleBlock>
                   <TitleContent className='line-clamp-1 !space-y-0.5'>
@@ -36,8 +36,8 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
          </Body>
          <Footer className='space-x-3'>
             <div className='flex-1 space-x-2'>
-               <Badge variant='outline'>{job.location}</Badge>
-               <Badge variant='outline'>Lương: {job.salary}</Badge>
+               <Badge variant='outline'>{job.location.split(', ')[3]}</Badge>
+               <Badge variant='outline'>Lương: {job.salaryMin} - {job.salaryMax}</Badge>
             </div>
             <Button variant='outline' className='rounded-full !p-1.5'>
                <HeartIcon size={10} />
