@@ -10,7 +10,7 @@ import type { JobSearchRequest, JobSearchResult } from '@/types/job.type'
  */
 class SearchService extends BaseService {
    constructor() {
-      super('/job/public')
+      super('/jobs/public')
    }
 
    async searchJobs(
