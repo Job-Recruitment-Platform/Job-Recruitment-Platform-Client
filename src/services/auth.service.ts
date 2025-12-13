@@ -1,6 +1,13 @@
 import type { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
-import type { LoginRequest, LogoutRequest, RegisterRequest, TokenResponse, UserResponse } from '@/types/auth.type'
+import type {
+   LoginRequest,
+   LogoutRequest,
+   RegisterRequest,
+   TokenResponse,
+   UserResponse
+} from '@/types/auth.type'
+import { jwtDecode } from 'jwt-decode'
 
 /**
  * Authentication Service
@@ -24,6 +31,7 @@ class AuthService extends BaseService {
    async login(payload: LoginRequest): Promise<ApiResponse<TokenResponse>> {
       const response = await this.post<TokenResponse>('/login', payload)
       this.saveTokens(response.data)
+      this.saveAuthState(response.data.accessToken)
       return response
    }
 
@@ -32,9 +40,10 @@ class AuthService extends BaseService {
     */
    async logout(payload: LogoutRequest): Promise<void> {
       try {
-         await this.post('/logout', payload)
+         // await this.post('/logout', payload)  // error ???
       } finally {
          this.clearTokens()
+         this.clearAuthState()
       }
    }
 
@@ -69,6 +78,33 @@ class AuthService extends BaseService {
       if (tokens.refreshToken) {
          localStorage.setItem('refreshToken', tokens.refreshToken)
       }
+   }
+
+   /**
+    * Save isLogin and role to localStorage
+    */
+   private saveAuthState(accessToken?: string): void {
+      if (typeof window === 'undefined') return
+      if (accessToken) {
+         localStorage.setItem('isLogin', 'true')
+         try {
+            const decoded: any = jwtDecode(accessToken)
+            if (decoded && decoded.role) {
+               localStorage.setItem('role', decoded.role)
+            }
+         } catch (e) {
+            localStorage.removeItem('role')
+         }
+      }
+   }
+
+   /**
+    * Clear isLogin and role from localStorage
+    */
+   private clearAuthState(): void {
+      if (typeof window === 'undefined') return
+      localStorage.removeItem('isLogin')
+      localStorage.removeItem('role')
    }
 
    /**

@@ -10,38 +10,14 @@ import type { JobSearchRequest, JobSearchResult } from '@/types/job.type'
  */
 class SearchService extends BaseService {
    constructor() {
-      super('/job/public')
+      super('/jobs/public')
    }
 
    async searchJobs(
       payload: JobSearchRequest
    ): Promise<ApiResponse<PaginationResponse<JobSearchResult[]>>> {
-      // Log the request payload for debugging
-      console.log('Search Jobs Payload:', payload)
-
-      // Return mock data for development/testing
-      const mockResponse: ApiResponse<PaginationResponse<JobSearchResult[]>> = {
-         code: 200,
-         message: 'Success',
-         data: {
-            page: 1,
-            size: 10,
-            totalElements: mockJobSearchResult.length,
-            totalPages: 1,
-            first: true,
-            last: true,
-            hasNext: false,
-            hasPrevious: false,
-            content: mockJobSearchResult
-         }
-      }
-      console.log('Search Jobs Response:', mockResponse)
-      return mockResponse
-
-      // Uncomment below to use actual API with payload
-      // const response = await this.post<PaginationResponse<JobSearchResult[]>>('/search', payload)
-      // console.log('Search Jobs Response:', response)
-      // return response
+      const response = await this.post<PaginationResponse<JobSearchResult[]>>('/search', payload)
+      return response
    }
 }
 // Export singleton instance

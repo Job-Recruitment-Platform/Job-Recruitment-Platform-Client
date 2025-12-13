@@ -8,7 +8,7 @@ type CategoryMenuProps = {
 export default function CategoryMenu({ className }: CategoryMenuProps) {
    return (
       <div
-         className={`flex h-[270px] w-full flex-col rounded-md bg-white pt-2.5 text-black ${className}`}
+         className={`flex h-full w-full flex-col rounded-md bg-white pt-2.5 text-black ${className}`}
       >
          <div className='flex flex-1 flex-col justify-evenly pl-5'>
             <CategoryItem item='Công nghệ thông tin' />
