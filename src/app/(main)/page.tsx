@@ -12,9 +12,9 @@ export default function Home() {
       usePaginationClient({ items: recommendedJobs || [], itemsPerPage: 9 })
 
    return (
-      <div className='w-full bg-[#f3f5f7]'>
+      <div className='w-full bg-[#f0f0f0] h-full'>
          <HomeHero />
-         <div className='container'>
+         <div className='container min-h-[50vh]'>
             <h2 className='text-primary py-3'>Việc làm tốt nhất</h2>
             <div className='container grid grid-cols-3 gap-4'>
                {pagedItems.map((job) => (
@@ -22,8 +22,15 @@ export default function Home() {
                ))}
             </div>
             <div className='my-5 flex w-full justify-center'>
-               <Pagination>
-                  <div className='text-sm font-semibold text-gray-400'>1/10 trang</div>
+               <Pagination
+                  onNext={next}
+                  onPrev={prev}
+                  disabledNext={!isNext}
+                  disabledPrev={!isPrev}
+               >
+                  <div className='text-sm font-semibold text-gray-400'>
+                     {currentPage}/{totalPages} trang
+                  </div>
                </Pagination>
             </div>
          </div>
