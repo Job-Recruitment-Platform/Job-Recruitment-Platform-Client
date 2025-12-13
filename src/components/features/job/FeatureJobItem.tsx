@@ -13,12 +13,21 @@ import {
 } from '@/components/ui/job-card'
 import { JobResponse } from '@/types/job.type'
 import { HeartIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type FeatureJobItemProps = {
    job: JobResponse
 }
 
 export default function FeatureJobItem({ job }: FeatureJobItemProps) {
+   // use hooks
+   const router = useRouter()
+
+   // another func
+   const handleTitleClick = () => {
+      router.push(`/job/${job.id}/detail`)
+   }
+
    return (
       <JobCard className='!min-h-[124px] bg-white !p-3'>
          <Body>
@@ -26,7 +35,10 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
             <Content>
                <TitleBlock>
                   <TitleContent className='line-clamp-1 !space-y-0.5'>
-                     <JobTitle className='line-clamp-2 text-sm font-semibold text-wrap'>
+                     <JobTitle
+                        className='line-clamp-2 cursor-pointer text-sm font-semibold text-wrap hover:underline'
+                        onClick={handleTitleClick}
+                     >
                         {job.title}
                      </JobTitle>
                      <Company className='text-xs text-gray-500'>{job.company}</Company>
