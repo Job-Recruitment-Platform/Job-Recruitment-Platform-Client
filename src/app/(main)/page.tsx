@@ -19,6 +19,8 @@ export default function Home() {
             <div className='flex items-center gap-x-2'>
                <BriefcaseBusinessIcon size={25} color='#00b14f' />
                <h2 className='text-primary py-3'>Việc làm tốt nhất</h2>
+               <div className='font-bold text-[#00b14f]'>|</div>
+               <div className='text-sm pt-1 text-gray-400'>Được đề xuất bởi: BotCV</div>
             </div>
 
             <div className='container grid grid-cols-3 gap-4'>
