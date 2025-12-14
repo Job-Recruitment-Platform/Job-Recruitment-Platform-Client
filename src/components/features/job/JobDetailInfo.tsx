@@ -13,10 +13,10 @@ export default function JobDetailInfo({ job }: JobDetailInfoProps) {
             <div className='border-primary border-l-7 pl-3 text-[20px] font-bold text-black/80'>
                Chi tiết tuyển dụng
             </div>
-            <Button variant='outline'>
+            {/* <Button variant='outline'>
                <BellIcon size={16} strokeWidth={2} className='text-primary-green' />
                <div>Gửi tôi việc làm tương tự</div>
-            </Button>
+            </Button> */}
          </div>
          <div>
             <div className='mb-1 text-[17px] font-semibold text-black/80'>Mô tả công việc</div>
