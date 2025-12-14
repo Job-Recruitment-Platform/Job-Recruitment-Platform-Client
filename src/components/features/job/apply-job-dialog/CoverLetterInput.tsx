@@ -33,7 +33,7 @@ export default function CoverLetterInput({
             <div className='mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-500 text-sm text-white'>
                🍃
             </div>
-            <h3 className='font-semibold text-gray-800'>Thu giới thiệu:</h3>
+            <h3 className='font-semibold text-gray-800'>Thư giới thiệu:</h3>
          </div>
 
          <p className='pl-8 text-sm text-gray-600'>
