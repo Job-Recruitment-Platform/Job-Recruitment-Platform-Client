@@ -1,7 +1,14 @@
+'use client'
+
+import CategoryDetail from '@/components/features/category/category-menu/CategoryDetail'
 import CategoryMenu from '@/components/features/category/category-menu/CategoryMenu'
 import SearchBar from '@/components/features/home/searchbar/SearchBar'
+import { JobFamily } from '@/types/job-category.type'
+import { useState } from 'react'
 
 export default function HomeHero() {
+   const [hoveredCategory, setHoveredCategory] = useState<JobFamily | null>(null)
+
    return (
       <div
          className='flex w-full justify-center space-y-3 py-5'
@@ -24,16 +31,17 @@ export default function HomeHero() {
             <SearchBar />
 
             {/*  Category & Category list  */}
-            <div className='flex !h-[288px] !items-stretch gap-x-2'>
+            <div
+               className='flex !h-[288px] !items-stretch gap-x-2'
+               onMouseLeave={() => setHoveredCategory(null)}
+            >
                <div className='flex-1/3'>
-                  <CategoryMenu />
+                  {/*  Show Job Category  */}
+                  <CategoryMenu onHoverCategory={setHoveredCategory} />
                </div>
-               <div className='flex-2/3'>
-                  <img
-                     src='https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/banners/70JMzq6wtsE9olC5DGHSoViPXeqFt1PB_1765247587____2cabb4d369fceb34a213e7049f115877.jpg'
-                     alt=''
-                     className='h-[288px] w-full rounded-md object-cover'
-                  />
+               {/*  Banner show SubFamily and JobRole  */}
+               <div className='flex-2/3 overflow-y-auto'>
+                  <CategoryDetail category={hoveredCategory} />
                </div>
             </div>
          </div>

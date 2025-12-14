@@ -27,10 +27,10 @@ const registerSchema = z
          .email({ message: 'Email không hợp lệ' }),
       password: z
          .string()
-         .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
-         .regex(/[A-Z]/, { message: 'Mật khẩu phải có ít nhất 1 chữ hoa' })
-         .regex(/[a-z]/, { message: 'Mật khẩu phải có ít nhất 1 chữ thường' })
-         .regex(/[0-9]/, { message: 'Mật khẩu phải có ít nhất 1 số' }),
+         .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
+         // .regex(/[A-Z]/, { message: 'Mật khẩu phải có ít nhất 1 chữ hoa' })
+         // .regex(/[a-z]/, { message: 'Mật khẩu phải có ít nhất 1 chữ thường' })
+         // .regex(/[0-9]/, { message: 'Mật khẩu phải có ít nhất 1 số' }),
       confirmPassword: z.string().min(1, { message: 'Vui lòng xác nhận mật khẩu' })
    })
    .refine((data) => data.password === data.confirmPassword, {

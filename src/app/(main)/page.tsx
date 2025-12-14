@@ -4,7 +4,7 @@ import HomeHero from '@/components/features/home/HomeHero'
 import FeatureJobItem from '@/components/features/job/FeatureJobItem'
 import Pagination from '@/components/ui/pagination'
 import { usePaginationClient } from '@/hooks/usePaginationClient'
-import { useRecommendQuery } from '@/hooks/useRecommend'
+import { useRecommendQuery } from '@/hooks/useRecommendQuery'
 
 export default function Home() {
    const { recommendedJobs } = useRecommendQuery()

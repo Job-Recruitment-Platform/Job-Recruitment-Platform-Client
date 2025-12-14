@@ -13,14 +13,7 @@ const defaultConfig = {
 export const showSuccessToast = (message: string, config?: Partial<Toast>) => {
    return toast.success(message, {
       ...defaultConfig,
-      ...config,
-      style: {
-         ...defaultConfig.style,
-         background: '#10b981',
-         color: '#fff',
-         ...config?.style
-      },
-      icon: '✅'
+      ...config
    })
 }
 
@@ -29,14 +22,7 @@ export const showErrorToast = (message: string, config?: Partial<Toast>) => {
    return toast.error(message, {
       ...defaultConfig,
       duration: 5000,
-      ...config,
-      style: {
-         ...defaultConfig.style,
-         background: '#ef4444',
-         color: '#fff',
-         ...config?.style
-      },
-      icon: '❌'
+      ...config
    })
 }
 
