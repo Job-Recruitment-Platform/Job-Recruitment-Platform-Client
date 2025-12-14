@@ -53,7 +53,7 @@ export default function SearchResultsPage() {
 
                {/* State 3: Empty results */}
                {!isLoading && query !== '' && results.length === 0 && (
-                  <div className='py-8 text-center'>
+                  <div className='py-20 text-center'>
                      <p className='text-gray-600'>
                         Không tìm thấy công việc cho từ khoá &quot;{query}&quot;
                      </p>
@@ -61,35 +61,39 @@ export default function SearchResultsPage() {
                )}
 
                {/* Results with pagination */}
-               <>
-                  {/* Job list */}
-                  <div className='space-y-3'>
-                     {results.map((job) => (
-                        <JobSearchItem key={job.id} job={job} query={query} />
-                     ))}
-                  </div>
+               {results.length > 0 && (
+                  <>
+                     {/* Job list */}
+                     <div className='space-y-3'>
+                        {results.map((job) => (
+                           <JobSearchItem key={job.id} job={job} query={query} />
+                        ))}
+                     </div>
 
-                  {/* Pagination controls */}
-                  <div className='flex items-center justify-center gap-4 py-6'>
-                     <button
-                        onClick={handlePreviousPage}
-                        disabled={!hasPreviousPage}
-                        className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-                     >
-                        <ChevronLeftIcon size={16} />
-                     </button>
+                     {/* Pagination controls */}
+                     <div className='flex items-center justify-center gap-4 py-6'>
+                        <button
+                           onClick={handlePreviousPage}
+                           disabled={!hasPreviousPage}
+                           className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+                        >
+                           <ChevronLeftIcon size={16} />
+                        </button>
 
-                     <span className='text-sm font-medium text-gray-600'>Trang {currentPage}</span>
+                        <span className='text-sm font-medium text-gray-600'>
+                           Trang {currentPage}
+                        </span>
 
-                     <button
-                        onClick={handleNextPage}
-                        disabled={!hasNextPage}
-                        className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-                     >
-                        <ChevronRightIcon size={16} />
-                     </button>
-                  </div>
-               </>
+                        <button
+                           onClick={handleNextPage}
+                           disabled={!hasNextPage}
+                           className='bg-primary hover:bg-primary/90 flex items-center gap-2 rounded-full p-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+                        >
+                           <ChevronRightIcon size={16} />
+                        </button>
+                     </div>
+                  </>
+               )}
             </div>
          </div>
       </div>

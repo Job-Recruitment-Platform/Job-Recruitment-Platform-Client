@@ -27,7 +27,7 @@ export default function SortAdvanced() {
       <div className='flex flex-1 items-center gap-x-2 text-[15px] font-medium text-gray-800/90'>
          <div>Săp xếp theo</div>
          <Select value={sortValue} onValueChange={setSortValue}>
-            <SelectTrigger className='hover:border-primary flex-1 rounded-full'>
+            <SelectTrigger className='hover:border-primary w-[200px] rounded-full'>
                <SelectValue placeholder='Chọn một tiêu chí' />
             </SelectTrigger>
             <SelectContent>

@@ -1,12 +1,19 @@
 'use client'
 
 import { JobFamily, SubFamily } from '@/types/job-category.type'
+import { useRouter } from 'next/navigation'
 
 type CategoryDetailProps = {
    category: JobFamily | null
 }
 
 export default function CategoryDetail({ category }: CategoryDetailProps) {
+   const router = useRouter()
+
+   const handleJobRoleClick = (jobRoleName: string) => {
+      router.push(`/search?jobRole=${encodeURIComponent(jobRoleName)}`)
+   }
+
    if (!category) {
       return (
          <div className='flex h-full w-full items-center justify-center rounded-md bg-white'>
@@ -39,6 +46,7 @@ export default function CategoryDetail({ category }: CategoryDetailProps) {
                      {subFamily.jobRoles.map((jobRole) => (
                         <span
                            key={jobRole.id}
+                           onClick={() => handleJobRoleClick(jobRole.name)}
                            className='hover:border-primary hover:text-primary cursor-pointer rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs whitespace-nowrap text-gray-700 transition-colors'
                         >
                            {jobRole.name}

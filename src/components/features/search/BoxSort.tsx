@@ -20,12 +20,12 @@ export default function BoxSearch() {
    }
 
    return (
-      <div className='flex w-full items-center gap-x-3'>
-         <div className='pl-2 text-[15px] font-medium text-gray-800/90'>Tìm kiếm theo:</div>
+      <div className='flex w-full justify-end gap-x-3'>
+         {/* <div className='pl-2 text-[15px] font-medium text-gray-800/90'>Tìm kiếm theo:</div>
          {OptionButton('Tên việc làm', 'jobTitle')}
          {OptionButton('Tên công ty', 'companyName')}
          {OptionButton('Cả hai', 'both')}
-         <div className='h-[25px] w-[1px] bg-gray-800/50'></div>
+         <div className='h-[25px] w-[1px] bg-gray-800/50'></div> */}
          <SortAdvanced />
       </div>
    )
