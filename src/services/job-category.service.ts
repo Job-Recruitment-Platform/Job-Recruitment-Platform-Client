@@ -5,7 +5,7 @@ import { PaginationResponse } from "@/types/api.type.";
 
 class JobCategoryService extends BaseService {
     constructor() {
-        super('/jobs/category')
+        super('/jobs/categories/public');
     }
 
     async getAllCategories(page: number = 0, size: number = 10): Promise<PaginationResponse<JobFamily[]>> {

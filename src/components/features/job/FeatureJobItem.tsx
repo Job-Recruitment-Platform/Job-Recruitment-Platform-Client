@@ -11,6 +11,7 @@ import {
    TitleBlock,
    TitleContent
 } from '@/components/ui/job-card'
+import { formatSalary } from '@/lib/formatters/salary'
 import { JobResponse } from '@/types/job.type'
 import { HeartIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -31,7 +32,7 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
    return (
       <JobCard className='!min-h-[124px] bg-white !p-3'>
          <Body>
-            <Logo className='h-[64px] w-[64px]' src={job.company} />
+            <Logo className='h-[64px] w-[64px]' src='https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/blIMwOaMu1vR5HA2q1qixuQcdruqmhLE_1673949472____18dcb5a2afb47fbb9286eae60c901605.jpg' />
             <Content>
                <TitleBlock>
                   <TitleContent className='line-clamp-1 !space-y-0.5'>
@@ -49,8 +50,8 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
          <Footer className='space-x-3'>
             <div className='flex flex-1 items-center space-x-2'>
                <Badge variant='outline'>
-                  {job.salaryMin?.toLocaleString()} - {job.salaryMax?.toLocaleString()}{' '}
-                  {job.currency}
+                  {formatSalary(job.salaryMin, job.currency)} -{' '}
+                  {formatSalary(job.salaryMax, job.currency)} {job.currency}
                </Badge>
                {job.location && (
                   <span className='line-clamp-1 flex-1 rounded-full bg-[#eaecef] px-2 py-0.5 text-xs font-medium'>
