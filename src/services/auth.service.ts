@@ -1,5 +1,6 @@
 import type { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
+import { useAuthStore } from '@/store/useAuthStore'
 import type {
    LoginRequest,
    LogoutRequest,
@@ -81,30 +82,36 @@ class AuthService extends BaseService {
    }
 
    /**
-    * Save isLogin and role to localStorage
+    * Save isLogin and role to localStorage and Zustand store
     */
    private saveAuthState(accessToken?: string): void {
       if (typeof window === 'undefined') return
       if (accessToken) {
          localStorage.setItem('isLogin', 'true')
+         useAuthStore.getState().setIsLogin(true)
+
          try {
             const decoded: any = jwtDecode(accessToken)
             if (decoded && decoded.role) {
                localStorage.setItem('role', decoded.role)
+               useAuthStore.getState().setRole(decoded.role)
             }
          } catch (e) {
             localStorage.removeItem('role')
+            useAuthStore.getState().setRole(null)
          }
       }
    }
 
    /**
-    * Clear isLogin and role from localStorage
+    * Clear isLogin and role from localStorage and Zustand store
     */
    private clearAuthState(): void {
       if (typeof window === 'undefined') return
       localStorage.removeItem('isLogin')
       localStorage.removeItem('role')
+      useAuthStore.getState().setIsLogin(false)
+      useAuthStore.getState().setRole(null)
    }
 
    /**
