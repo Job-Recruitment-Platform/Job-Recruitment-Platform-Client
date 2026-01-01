@@ -2,7 +2,7 @@ import { ApiResponse } from '@/lib/axios'
 import { useSavedJobsStore } from '@/store/useSavedJobStore'
 import { PaginationResponse } from '@/types/api.type.'
 import { CandidateProfileResponse, UpdateCandidateProfileRequest } from '@/types/candidate.type'
-import { SavedJobType } from '@/types/job.type'
+import { SavedJobType, JobApplicationResponse } from '@/types/job.type'
 import { BaseService } from './base.service'
 import { ResourceResponse } from '@/types/resource.type'
 
@@ -92,6 +92,15 @@ class CandidateService extends BaseService {
    ): Promise<ApiResponse<PaginationResponse<ResourceResponse>>> {
       return await this.get<PaginationResponse<ResourceResponse>>(
          `/resumes?page=${page}&size=${size}`
+      )
+   }
+
+   async getCandidateApplications(
+      page: number = 1,
+      size: number = 10
+   ): Promise<ApiResponse<PaginationResponse<JobApplicationResponse>>> {
+      return await this.get<PaginationResponse<JobApplicationResponse>>(
+         `/applications?page=${page}&size=${size}`
       )
    }
 }

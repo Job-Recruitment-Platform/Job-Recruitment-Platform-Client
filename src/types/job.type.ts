@@ -1,5 +1,7 @@
 import { SkillResponse } from './skill.type'
 import { ResourceResponse } from './resource.type'
+import { id } from 'zod/v4/locales'
+import { CompanyResponse } from './company.type'
 
 /**
  * Job Search Request Types
@@ -202,6 +204,16 @@ export interface JobApplicantResponse {
    phone: string
    status: ApplicationStatus
    resource: ResourceResponse[]
+}
+
+export interface JobApplicationResponse {
+   id: number
+   candidateId: number
+   company: CompanyResponse
+   jobResponse: JobResponse
+   status: ApplicationStatus
+   resource: ResourceResponse
+   appliedAt: Date
 }
 
 export enum ApplicationStatus {

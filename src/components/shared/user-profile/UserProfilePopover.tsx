@@ -9,7 +9,7 @@ import { recruiterService } from '@/services/recruiter.service'
 import { useSavedJobsStore } from '@/store/useSavedJobStore'
 import { useQuery } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
-import { Building2, Loader2, LogOut, Settings, User } from 'lucide-react'
+import { Building2, Loader2, LogOut, Settings, User, FileUser, ClipboardClock } from 'lucide-react'
 import { useRouter } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -101,14 +101,6 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                {!isRecruiter && (
                   <>
                      <Link
-                        href='/profile/resume'
-                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
-                        onClick={() => setOpen(false)}
-                     >
-                        <User size={16} />
-                        CV của tôi
-                     </Link>
-                     <Link
                         href='/profile'
                         className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                         onClick={() => setOpen(false)}
@@ -117,12 +109,28 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
                         Hồ sơ cá nhân
                      </Link>
                      <Link
+                        href='/profile/resume'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <FileUser size={16} />
+                        CV của tôi
+                     </Link>
+                     <Link
                         href='/profile/edit'
                         className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
                         onClick={() => setOpen(false)}
                      >
                         <Settings size={16} />
                         Chỉnh sửa hồ sơ
+                     </Link>
+                     <Link
+                        href='/profile/my-jobs'
+                        className='flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50'
+                        onClick={() => setOpen(false)}
+                     >
+                        <ClipboardClock size={16} />
+                        Hồ sơ ứng tuyển của tôi
                      </Link>
                   </>
                )}
