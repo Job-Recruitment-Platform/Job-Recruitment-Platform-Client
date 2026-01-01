@@ -6,9 +6,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useAuth } from '@/hooks/useAuth'
 import candidateService from '@/services/candidate.service'
 import { recruiterService } from '@/services/recruiter.service'
+import { useAuthStore } from '@/store/useAuthStore'
 import { useSavedJobsStore } from '@/store/useSavedJobStore'
 import { useQuery } from '@tanstack/react-query'
-import { jwtDecode } from 'jwt-decode'
 import { Building2, Loader2, LogOut, Settings, User } from 'lucide-react'
 import { useRouter } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
@@ -23,15 +23,9 @@ export default function UserProfilePopover({ children }: UserProfileDialogProps)
    const { logout } = useAuth()
    const router = useRouter()
    const { setJobs } = useSavedJobsStore()
+   const { role } = useAuthStore()
 
-   const isRecruiter = (() => {
-      try {
-         const decoded: { role: string } = jwtDecode(localStorage.getItem('accessToken') || '')
-         return decoded.role === 'RECRUITER'
-      } catch {
-         return false
-      }
-   })()
+   const isRecruiter = role === 'RECRUITER'
 
    // Fetch user profile based on role
    const { data: recruiterData, isLoading: recruiterLoading } = useQuery({
