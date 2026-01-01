@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
                icon={AlertCircle}
                label='Tin tuyển dụng chờ duyệt'
                value={stats?.pendingJobApproval || 0}
-               href='/admin/jobs'
+               href='/admin/jobs/verify'
             />
          </div>
 

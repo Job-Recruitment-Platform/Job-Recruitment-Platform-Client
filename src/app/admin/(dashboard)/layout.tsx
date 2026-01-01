@@ -29,7 +29,7 @@ export default function AdminDashboardLayout({
       { href: '/admin/dashboard', label: 'Tổng quan', icon: LayoutDashboard },
       { href: '/admin/companies/verify', label: 'Xác thực công ty', icon: Building2 },
       { href: '/admin/jobs/verify', label: 'Quản lý tin tuyển dụng', icon: Briefcase },
-      { href: '/admin/settings', label: 'Cài đặt hệ thống', icon: Settings }
+      // { href: '/admin/settings', label: 'Cài đặt hệ thống', icon: Settings }
    ]
 
    const handleLogout = () => {

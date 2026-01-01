@@ -24,6 +24,14 @@ export function useRouteGuard() {
          }
       }
 
+      // ADMIN: Only allow admin routes
+      if (role === 'ADMIN') {
+         if (!isAdminRoute && !isAuthRoute) {
+            router.replace('/admin/dashboard')
+            return
+         }
+      }
+
       // CANDIDATE: Block recruiter and admin routes
       if (role === 'CANDIDATE') {
          if (isRecruiterRoute || isAdminRoute) {
