@@ -15,7 +15,7 @@ export const BUSINESS_ERROR_MESSAGES: Record<number, string> = {
    1012: 'Tài khoản này không được phép thực hiện thao tác này.',
    // ===== Auth (1101 - 1200)
    1101: 'Bạn chưa đăng nhập.',
-   1102: 'Bạn không có quyền truy cập.',
+   // 1102: 'Bạn không có quyền truy cập.',
    1103: 'Tài khoản của bạn đã bị khóa.',
    1104: 'Mã đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
 
@@ -50,9 +50,12 @@ export const BUSINESS_ERROR_MESSAGES: Record<number, string> = {
 
 export const getBusinessErrorMessage = (code: unknown): string => {
    const n = typeof code === 'string' ? Number(code) : (code as number)
-   return BUSINESS_ERROR_MESSAGES[n] ?? 'Có lỗi xảy ra, vui lòng thử lại sau.'
+   return BUSINESS_ERROR_MESSAGES[n] ?? ''
 }
 
 export const handleBusinessErrorCode = (code: unknown): void => {
-   toast.error(getBusinessErrorMessage(code))
+   const msg = getBusinessErrorMessage(code)
+   if (msg) {
+      toast.error(msg)
+   }
 }

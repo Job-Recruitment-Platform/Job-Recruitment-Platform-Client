@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { showSuccessToast } from '@/lib/toast'
 import '@/styles/admin.css'
+import { authService } from '@/services/auth.service'
 
 export default function AdminDashboardLayout({
    children
@@ -33,9 +34,7 @@ export default function AdminDashboardLayout({
    ]
 
    const handleLogout = () => {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      showSuccessToast('Đăng xuất thành công')
+      authService.logout()
       router.push('/admin/login')
    }
 

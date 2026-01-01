@@ -1,13 +1,7 @@
 import type { ApiResponse } from '@/lib/axios'
 import { BaseService } from '@/services/base.service'
 import { useAuthStore } from '@/store/useAuthStore'
-import type {
-   LoginRequest,
-   LogoutRequest,
-   RegisterRequest,
-   TokenResponse,
-   UserResponse
-} from '@/types/auth.type'
+import type { LoginRequest, RegisterRequest, TokenResponse, UserResponse } from '@/types/auth.type'
 import { jwtDecode } from 'jwt-decode'
 
 /**
@@ -39,7 +33,8 @@ class AuthService extends BaseService {
    /**
     * Logout user
     */
-   async logout(payload: LogoutRequest): Promise<void> {
+   // async logout(payload: LogoutRequest)
+   async logout(): Promise<void> {
       try {
          // await this.post('/logout', payload)  // error ???
       } finally {
