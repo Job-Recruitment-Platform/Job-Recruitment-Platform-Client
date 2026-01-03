@@ -95,6 +95,7 @@ export interface JobResponse {
    id: number
    title: string
    company: string
+   logo: string
    jobRole: string
    seniority: 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD' | 'MANAGER'
    minExperienceYears: number

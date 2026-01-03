@@ -31,7 +31,7 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
    return (
       <JobCard className='!min-h-[124px] bg-white !p-3'>
          <Body>
-            <Logo className='h-[64px] w-[64px]' src={job.company} />
+            <Logo className='h-[64px] w-[64px]' src={job.logo} />
             <Content>
                <TitleBlock>
                   <TitleContent className='line-clamp-1 !space-y-0.5'>
