@@ -16,6 +16,7 @@ class SearchService extends BaseService {
    async searchJobs(
       payload: JobSearchRequest
    ): Promise<ApiResponse<PaginationResponse<JobSearchResult[]>>> {
+      console.log('Search payload:', payload)
       const response = await this.post<PaginationResponse<JobSearchResult[]>>('/search', payload)
       return response
    }

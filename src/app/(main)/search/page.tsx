@@ -58,7 +58,7 @@ export default function SearchResultsPage() {
                {!isLoading && query !== '' && results.length === 0 && (
                   <div className='py-20 text-center'>
                      <p className='text-gray-600'>
-                        Không tìm thấy công việc cho từ khoá &quot;{query}&quot;
+                        Không tìm thấy công việc
                      </p>
                   </div>
                )}
