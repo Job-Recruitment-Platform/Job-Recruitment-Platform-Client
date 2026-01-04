@@ -2,6 +2,7 @@
 
 import CategoryItem from '@/components/features/category/category-menu/CategoryItem'
 import Pagination from '@/components/ui/pagination'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useJobCategoryQuery } from '@/hooks/useJobCategoryQuery'
 import { JobFamily } from '@/types/job-category.type'
 import { useState } from 'react'
@@ -41,7 +42,7 @@ export default function CategoryMenu({ className, onHoverCategory }: CategoryMen
             {isLoading
                ? // Loading skeleton
                  Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className='h-5 w-3/4 animate-pulse rounded bg-gray-200' />
+                    <Skeleton key={index} className='h-5 w-9/10' />
                  ))
                : categories.map((category) => (
                     <CategoryItem
