@@ -39,7 +39,7 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
    return (
       <JobCard className='!min-h-[124px] bg-white !p-3'>
          <Body>
-            <Logo className='h-[64px] w-[64px]' src='https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/blIMwOaMu1vR5HA2q1qixuQcdruqmhLE_1673949472____18dcb5a2afb47fbb9286eae60c901605.jpg' />
+            <Logo className='h-[64px] w-[64px]' src={job.logo} />
             <Content>
                <TitleBlock>
                   <TitleContent className='line-clamp-1 !space-y-0.5'>
