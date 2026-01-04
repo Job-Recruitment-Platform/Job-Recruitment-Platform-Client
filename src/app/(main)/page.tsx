@@ -5,12 +5,14 @@ import FeatureJobItem from '@/components/features/job/FeatureJobItem'
 import Pagination from '@/components/ui/pagination'
 import { usePaginationClient } from '@/hooks/usePaginationClient'
 import { useRecommendQuery } from '@/hooks/useRecommendQuery'
+import { useLogStore } from '@/hooks/useTracker'
 import { BriefcaseBusinessIcon } from 'lucide-react'
 
 export default function Home() {
    const { recommendedJobs } = useRecommendQuery()
    const { pagedItems, currentPage, totalPages, isNext, isPrev, next, prev, goTo } =
       usePaginationClient({ items: recommendedJobs || [], itemsPerPage: 9 })
+   const { markClick } = useLogStore()
 
    return (
       <div className='h-full w-full bg-[#f0f0f0]'>

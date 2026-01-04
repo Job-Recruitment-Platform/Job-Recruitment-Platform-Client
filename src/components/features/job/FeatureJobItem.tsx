@@ -1,4 +1,5 @@
 import Button from '@/components/shared/Button'
+import SavedJobButton from '@/components/shared/SavedJobButton'
 import { Badge } from '@/components/ui/badge'
 import {
    Body,
@@ -11,6 +12,7 @@ import {
    TitleBlock,
    TitleContent
 } from '@/components/ui/job-card'
+import { useLogStore } from '@/hooks/useTracker'
 import { formatSalary } from '@/lib/formatters/salary'
 import { JobResponse } from '@/types/job.type'
 import { HeartIcon } from 'lucide-react'
@@ -23,9 +25,14 @@ type FeatureJobItemProps = {
 export default function FeatureJobItem({ job }: FeatureJobItemProps) {
    // use hooks
    const router = useRouter()
+   const { markClick } = useLogStore()
 
    // another func
    const handleTitleClick = () => {
+      markClick({
+         jobId: job.id,
+         source: "recommended"
+      })
       router.push(`/job/${job.id}/detail`)
    }
 
@@ -59,9 +66,7 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
                   </span>
                )}
             </div>
-            <Button variant='outline' className='rounded-full !p-1.5'>
-               <HeartIcon size={10} />
-            </Button>
+            <SavedJobButton jobId={job.id} className='rounded-full !p-1.5' />
          </Footer>
       </JobCard>
    )
