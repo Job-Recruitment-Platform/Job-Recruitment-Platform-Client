@@ -15,9 +15,26 @@ export const formatSalary = (
    salaryMax: number | undefined,
    currency: string
 ): string => {
+   // Case 1: No salary provided
    if (!salaryMin || !salaryMax) {
       return 'Thương lượng'
    }
+
+   // Case 2: VND - Convert to millions
+   if (currency === 'VND') {
+      const minInMillions = Math.floor(salaryMin / 1000000)
+      const maxInMillions = Math.floor(salaryMax / 1000000)
+      return `${minInMillions} - ${maxInMillions} triệu`
+   }
+
+   // Case 3: USD - Format with dot separator and USD suffix
+   if (currency === 'USD') {
+      const formattedMin = salaryMin.toLocaleString('de-DE')
+      const formattedMax = salaryMax.toLocaleString('de-DE')
+      return `${formattedMin} - ${formattedMax} USD`
+   }
+
+   // Default: Raw values
    return `${salaryMin} - ${salaryMax} ${currency}`
 }
 

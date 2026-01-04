@@ -20,16 +20,19 @@ export const levelOptions: OptionType[] = [
    { label: 'Intern', value: 'INTERN' },
    { label: 'Fresher', value: 'FRESHER' },
    { label: 'Junior', value: 'JUNIOR' },
-   { label: 'Middle', value: 'MIDDLE' },
+   { label: 'Mid', value: 'MID' },
    { label: 'Senior', value: 'SENIOR' },
-   { label: 'Leader', value: 'LEADER' }
+   { label: 'Manager', value: 'MANAGER' }
 ]
 
 export const workModeOptions: OptionType[] = [
    { label: 'Tất cả', value: 'all' },
-   { label: 'Toàn thời gian', value: 'FULL-TIME' },
-   { label: 'Bán thời gian', value: 'PART-TIME' },
-   { label: 'Làm việc từ xa', value: 'REMOTE' }
+   { label: 'Toàn thời gian', value: 'FULL_TIME' },
+   { label: 'Bán thời gian', value: 'PART_TIME' },
+   { label: 'Hợp đồng', value: 'CONTRACT' },
+   { label: 'Thực tập', value: 'INTERNSHIP' },
+   { label: 'Tình nguyện', value: 'VOLUNTEER' },
+   { label: 'Thời vụ', value: 'TEMPORARY' }
 ]
 
 export const currencyOptions: OptionType[] = [
