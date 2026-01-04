@@ -31,7 +31,7 @@ type JobSearchItemProps = {
 export default function JobSearchItem({ job, query }: JobSearchItemProps) {
    const router = useRouter()
    const { isLogin } = useAuth()
-   const { markClick, markSave } = useLogStore()
+   const { markClick } = useLogStore()
 
    const handleCardClick = () => {
       console.log('Job card clicked:', isLogin)
@@ -68,6 +68,7 @@ export default function JobSearchItem({ job, query }: JobSearchItemProps) {
                      <Button
                         variant='primary'
                         className='hidden rounded-full px-4 !py-[4px] group-hover:block'
+                        onClick={handleCardClick}
                      >
                         Ứng tuyển
                      </Button>
