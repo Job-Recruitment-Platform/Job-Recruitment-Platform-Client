@@ -2,6 +2,7 @@
 
 import { JobFamily, SubFamily } from '@/types/job-category.type'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 
 type CategoryDetailProps = {
    category: JobFamily | null
@@ -30,19 +31,13 @@ export default function CategoryDetail({ category }: CategoryDetailProps) {
       <div className='flex h-full w-full flex-col overflow-y-auto rounded-md bg-white p-4'>
          <div className='grid grid-cols-[auto_1fr] gap-y-3'>
             {category.subFamilies.map((subFamily: SubFamily) => (
-               <>
+               <React.Fragment key={subFamily.id}>
                   {/* SubFamily - Cột trái */}
-                  <div
-                     key={`sub-${subFamily.id}`}
-                     className='flex items-start border-b border-gray-100 py-2 pr-5'
-                  >
+                  <div className='flex items-start border-b border-gray-100 py-2 pr-5'>
                      <h3 className='text-primary text-sm font-semibold'>{subFamily.name}</h3>
                   </div>
                   {/* JobRoles - Cột phải */}
-                  <div
-                     key={`roles-${subFamily.id}`}
-                     className='flex flex-wrap items-center gap-2 border-b border-gray-100 py-2'
-                  >
+                  <div className='flex flex-wrap items-center gap-2 border-b border-gray-100 py-2'>
                      {subFamily.jobRoles.map((jobRole) => (
                         <span
                            key={jobRole.id}
@@ -53,7 +48,7 @@ export default function CategoryDetail({ category }: CategoryDetailProps) {
                         </span>
                      ))}
                   </div>
-               </>
+               </React.Fragment>
             ))}
          </div>
          {/* Scroll hint */}

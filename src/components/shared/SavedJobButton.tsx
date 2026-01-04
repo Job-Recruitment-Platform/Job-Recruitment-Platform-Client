@@ -1,4 +1,5 @@
 import Button from '@/components/shared/Button'
+import { useLogStore } from '@/hooks/useTracker'
 import { ApiError } from '@/lib/axios'
 import { showErrorToast, showInfoToast } from '@/lib/toast'
 import { cn } from '@/lib/utils'
@@ -24,6 +25,7 @@ export default function SavedJobButton({
    onClick
 }: SavedJobButtonProps) {
    const isSaved = useSavedJobsStore((state) => state.jobs.some((j) => j.job.id === jobId))
+   const { markSave } = useLogStore()
 
    const handleToggleSave = async () => {
       onClick?.()
@@ -32,6 +34,7 @@ export default function SavedJobButton({
             await candidateService.removeSavedJob(jobId)
          } else {
             await candidateService.saveJob(jobId)
+            markSave(jobId)
          }
       } catch (error) {
          if (isApiError(error) && error.code === 409) {

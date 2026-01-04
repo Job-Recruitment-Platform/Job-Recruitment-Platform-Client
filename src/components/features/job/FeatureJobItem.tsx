@@ -1,4 +1,5 @@
 import Button from '@/components/shared/Button'
+import SavedJobButton from '@/components/shared/SavedJobButton'
 import { Badge } from '@/components/ui/badge'
 import {
    Body,
@@ -11,6 +12,8 @@ import {
    TitleBlock,
    TitleContent
 } from '@/components/ui/job-card'
+import { useLogStore } from '@/hooks/useTracker'
+import { formatSalary } from '@/lib/formatters/salary'
 import { JobResponse } from '@/types/job.type'
 import { HeartIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -22,9 +25,14 @@ type FeatureJobItemProps = {
 export default function FeatureJobItem({ job }: FeatureJobItemProps) {
    // use hooks
    const router = useRouter()
+   const { markClick } = useLogStore()
 
    // another func
    const handleTitleClick = () => {
+      markClick({
+         jobId: job.id,
+         source: "recommended"
+      })
       router.push(`/job/${job.id}/detail`)
    }
 
@@ -49,8 +57,8 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
          <Footer className='space-x-3'>
             <div className='flex flex-1 items-center space-x-2'>
                <Badge variant='outline'>
-                  {job.salaryMin?.toLocaleString()} - {job.salaryMax?.toLocaleString()}{' '}
-                  {job.currency}
+                  {formatSalary(job.salaryMin, job.currency)} -{' '}
+                  {formatSalary(job.salaryMax, job.currency)} {job.currency}
                </Badge>
                {job.location && (
                   <span className='line-clamp-1 flex-1 rounded-full bg-[#eaecef] px-2 py-0.5 text-xs font-medium'>
@@ -58,9 +66,7 @@ export default function FeatureJobItem({ job }: FeatureJobItemProps) {
                   </span>
                )}
             </div>
-            <Button variant='outline' className='rounded-full !p-1.5'>
-               <HeartIcon size={10} />
-            </Button>
+            <SavedJobButton jobId={job.id} className='rounded-full !p-1.5' />
          </Footer>
       </JobCard>
    )

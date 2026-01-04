@@ -37,16 +37,12 @@ export default function JobSearchItem({ job, query }: JobSearchItemProps) {
       console.log('Job card clicked:', isLogin)
       if (isLogin) {
          markClick({
-            jobId: job.id
+            jobId: job.id,
+            query: query,
+            source: "search"
          })
       }
       router.push(`/job/${job.id}/detail`)
-   }
-
-   const handleSave = () => {
-      if (isLogin) {
-         markSave(job.id)
-      }
    }
 
    return (
@@ -86,7 +82,6 @@ export default function JobSearchItem({ job, query }: JobSearchItemProps) {
                      {/* Save job */}
                      <SavedJobButton
                         jobId={job.id}
-                        onClick={handleSave}
                         className='rounded-full !p-1.5'
                      />
                   </div>
