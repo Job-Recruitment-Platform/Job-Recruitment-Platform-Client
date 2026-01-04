@@ -1,7 +1,6 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
-import { useLogStore } from '@/hooks/useTracker'
 import { searchService } from '@/services/search.service'
 import type { PaginationResponse } from '@/types/api.type.'
 import type { JobSearchRequest, JobSearchResult } from '@/types/job.type'
@@ -15,9 +14,6 @@ export const useSearchJobs = (enabled: boolean = true) => {
    const [offset, setOffset] = useState(0)
    const { isLogin } = useAuth()
    const searchParams = useSearchParams()
-
-   // Get init bucket 'search' function from store
-   const { initBucket /*, startAutoFlush*/ } = useLogStore()
 
    // Extract query from URL params (changed from 'key_word' to 'query')
    const query = searchParams.get('query')?.trim() ?? ''
@@ -93,25 +89,6 @@ export const useSearchJobs = (enabled: boolean = true) => {
    const results = useMemo(() => paginationData?.content ?? [], [paginationData])
    const isNext = paginationData?.hasNext ?? false
    const isPrev = paginationData?.hasPrevious ?? false
-
-   // When there are results & user is logged in -> initialize 'search' bucket with query metadata
-   useEffect(() => {
-      if (!isLogin) return
-      if (results.length === 0) return
-      if (!query) return
-
-      // initBucket('search', jobIds, { query })
-      console.log(
-         'Initializing search bucket with results:',
-         results.map((j) => j.id)
-      )
-      initBucket(
-         'search',
-         results.map((j) => j.id),
-         { query }
-      )
-      // If you want auto flush: startAutoFlush()
-   }, [isLogin, results, query, initBucket])
 
    const handleNextPage = () => {
       if (isNext) {
