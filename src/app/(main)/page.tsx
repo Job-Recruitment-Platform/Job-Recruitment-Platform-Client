@@ -2,6 +2,7 @@
 
 import HomeHero from '@/components/features/home/HomeHero'
 import FeatureJobItem from '@/components/features/job/FeatureJobItem'
+import FeatureJobItemSkeleton from '@/components/features/job/FeatureJobItemSkeleton'
 import Pagination from '@/components/ui/pagination'
 import { usePaginationClient } from '@/hooks/usePaginationClient'
 import { useRecommendQuery } from '@/hooks/useRecommendQuery'
@@ -26,6 +27,9 @@ export default function Home() {
             </div>
 
             <div className='container grid grid-cols-3 gap-4'>
+               {recommendedJobs.length === 0 && Array.from({ length: 9 }).map((_, index) => (
+                  <FeatureJobItemSkeleton key={index} />
+               ))}
                {pagedItems.map((job) => (
                   <FeatureJobItem key={job.id} job={job} />
                ))}
