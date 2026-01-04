@@ -18,6 +18,7 @@ import { resourceService } from '@/services/resource.service'
 import type { ResourceResponse } from '@/types/resource.type'
 import { ResourceType } from '@/types/resource.type'
 import { useLogStore } from '@/hooks/useTracker'
+import { formatSalary } from '@/lib/formatters/job.formatter'
 
 type SelectionMode = 'library' | 'upload'
 
@@ -175,7 +176,7 @@ export default function ApplyJobDialog({ job, onSuccess, children }: ApplyJobDia
                         Ứng tuyển {job.title}
                      </DialogTitle>
                      <p className='mt-1 text-xs text-gray-500'>
-                        (Thu nhập {job.minSalary} - {job.maxSalary} {job.currency}/Tháng)
+                        (Thu nhập {formatSalary(job.minSalary, job.maxSalary, job.currency)}/Tháng)
                      </p>
                   </div>
                </div>

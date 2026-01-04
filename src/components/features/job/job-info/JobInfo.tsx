@@ -2,7 +2,7 @@ import ApplyJobDialog from '@/components/features/job/apply-job-dialog/ApplyJobD
 import BasicInfoBox from '@/components/features/job/job-info/BasicInfoBox'
 import Button from '@/components/shared/Button'
 import SavedJobButton from '@/components/shared/SavedJobButton'
-import { formatSalary } from '@/lib/formatters/salary'
+import { formatSalary } from '@/lib/formatters/job.formatter'
 import { JobDetail } from '@/types/job.type'
 import { CheckIcon, CircleDollarSignIcon, ClockIcon, MapPinIcon, SendIcon } from 'lucide-react'
 
@@ -26,7 +26,7 @@ export default function JobInfo({ job }: JobInfoProps) {
                <BasicInfoBox
                   type='secondary'
                   label='Mức lương'
-                  value={formatSalary(job.salaryMin, job.currency) + ' - ' + formatSalary(job.salaryMax, job.currency)}
+                  value={formatSalary(job.salaryMin, job.salaryMax, job.currency)}
                   icon={CircleDollarSignIcon}
                />
             </div>

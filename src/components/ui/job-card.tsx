@@ -109,7 +109,7 @@ export const Actions = ({ children, className }: WithChildren) => (
 )
 
 export const Salary = ({ children, className }: WithChildren) => (
-   <div className={cx('text-primary text-right text-sm font-semibold', className)}>{children}</div>
+   <div className={cx('text-primary text-right text-sm font-bold', className)}>{children}</div>
 )
 
 export const Meta = ({ children, className }: WithChildren) => (
