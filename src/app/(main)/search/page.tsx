@@ -1,6 +1,7 @@
 'use client'
 
 import JobSearchItem from '@/components/features/job/JobSearchItem'
+import JobSearchItemSkeleton from '@/components/features/job/JobSearchItemSkeleton'
 import BoxSearch from '@/components/features/search/BoxSort'
 import OptionSearchJob from '@/components/features/search/OptionSearchJob'
 import SidebarFilter from '@/components/layouts/FilterSideBar'
@@ -39,8 +40,10 @@ export default function SearchResultsPage() {
 
                {/* State 1: Loading state */}
                {isLoading && (
-                  <div className='py-8 text-center'>
-                     <p className='text-gray-600'>Đang tìm kiếm công việc...</p>
+                  <div className='space-y-3'>
+                     {Array.from({ length: 5 }).map((_, index) => (
+                        <JobSearchItemSkeleton key={index} />
+                     ))}
                   </div>
                )}
 
