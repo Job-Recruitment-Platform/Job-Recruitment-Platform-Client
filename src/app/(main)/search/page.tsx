@@ -8,8 +8,9 @@ import SidebarFilter from '@/components/layouts/FilterSideBar'
 import { useSearchJobs } from '@/hooks/useSearchJobs'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function SearchResultsPage() {
+function SearchResultsContent() {
    const searchParams = useSearchParams()
    const query = searchParams.get('query') || ''
    const {
@@ -100,5 +101,33 @@ export default function SearchResultsPage() {
             </div>
          </div>
       </div>
+   )
+}
+
+function SearchLoadingFallback() {
+   return (
+      <div className='bg-smoke w-full'>
+         <div className='w-full bg-[#19734e]'>
+            <div className='container py-4.5'>
+               <div className='h-12 animate-pulse rounded bg-white/20' />
+            </div>
+         </div>
+         <div className='container mt-5 flex gap-x-2 px-2'>
+            <div className='w-64 animate-pulse rounded bg-gray-200' />
+            <div className='flex-1 space-y-3'>
+               {Array.from({ length: 5 }).map((_, index) => (
+                  <JobSearchItemSkeleton key={index} />
+               ))}
+            </div>
+         </div>
+      </div>
+   )
+}
+
+export default function SearchResultsPage() {
+   return (
+      <Suspense fallback={<SearchLoadingFallback />}>
+         <SearchResultsContent />
+      </Suspense>
    )
 }

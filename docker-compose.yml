@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # Frontend Application
+  # ============================================
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
+        NEXT_PUBLIC_SEARCH_API_URL: ${NEXT_PUBLIC_SEARCH_API_URL:-http://localhost:8000/api}
+    image: jrp-client:latest
+    container_name: jrp-client
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
+      - NEXT_PUBLIC_SEARCH_API_URL=${NEXT_PUBLIC_SEARCH_API_URL:-http://localhost:8000/api}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - jrp-network
+    # Uncomment to connect with backend services
+    # depends_on:
+    #   - backend
+
+networks:
+  jrp-network:
+    driver: bridge
+    # Connect to external network if backend is running separately
+    # external: true
+    # name: job-recruitment-platform-server_jrp-network

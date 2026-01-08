@@ -3,6 +3,7 @@
 import Button from '@/components/shared/Button'
 import { useFileUploader } from '@/hooks/useFileUploader'
 import { Upload, X } from 'lucide-react'
+import { useEffect } from 'react'
 
 interface UploadCVFormProps {
    onFileSelected?: (file: File | null) => void
@@ -28,18 +29,19 @@ export default function UploadCVForm({ onFileSelected }: UploadCVFormProps) {
 
    const selectedFile = items.length > 0 ? items[0] : null
 
-   // Notify parent when file changes
+   // Notify parent when file changes - use useEffect to avoid setState during render
+   useEffect(() => {
+      if (selectedFile && selectedFile.state !== 'error') {
+         onFileSelected?.(selectedFile.file)
+      } else {
+         onFileSelected?.(null)
+      }
+   }, [selectedFile, onFileSelected])
+
    const handleRemoveFile = (id: string) => {
       removeItem(id)
-      onFileSelected?.(null)
    }
 
-   // Watch for file selection changes
-   if (selectedFile && selectedFile.state !== 'error') {
-      onFileSelected?.(selectedFile.file)
-   } else if (!selectedFile) {
-      onFileSelected?.(null)
-   }
 
    return (
       <div className='space-y-4'>
@@ -54,9 +56,8 @@ export default function UploadCVForm({ onFileSelected }: UploadCVFormProps) {
 
          {/* File Upload Area */}
          <div
-            className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition ${
-               dragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-gray-400'
-            }`}
+            className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition ${dragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-gray-400'
+               }`}
             onDrop={onDrop}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
